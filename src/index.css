@@ -2,8 +2,9 @@
 
 @font-face {
   font-family: 'Inter';
-  src: url('./assets/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
-  font-weight: 100 400 700 900;
+  src: url('./assets/font/Inter/Inter-VariableFont_opsz\,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
 }
 
 :root {
@@ -28,13 +29,19 @@
   --info-bg:#DC2626;
   --action-bg: #F97316;
   --accent-bg: #1A73E833;
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5); 
+  --gradient-bg: linear-gradient(to right, #1A73E8, #193CB8);
+  --gradient-regis-bg: linear-gradient(to right, #1447E6, #312C85);
+  --gradient-forgot-bg: linear-gradient(to right, #4F39F6, #1C398E);
   --shadow:rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
   --sans-serif: 'Inter', sans-serif;
 
+  --font-medium:500;
+  --text-medium:14px;
+
   letter-spacing: 0.18px;
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 16px;
   color: var(--text);
   background: var(--container-bg);
   font-synthesis: none;
@@ -55,7 +62,7 @@ body {
   width: 100%;
   max-width: 100%;
   min-height: 100svh;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans-serif);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -63,7 +70,6 @@ body {
 
 h1,
 h2, h3, h4, h5 {
-  font-family: var(--heading);
   font-weight: 700;
   color: var(--text-h);
 }
@@ -149,4 +155,18 @@ main {
 
 .border-b-accent {
   border-bottom: 1px solid var(--accent-border);
+}
+
+.login-bg {
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(26, 115, 232, 0.855),
+      rgba(25, 60, 184, 0.91)
+    ),
+    url('@/assets/bg/login-bg.png');
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

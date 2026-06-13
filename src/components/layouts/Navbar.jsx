@@ -15,40 +15,24 @@ import Logo from "../ui/Logo"
 
 export default function Navbar({notifActions}) {
   const [userData, setUserData] = useState({})
-  const [totalChart, setTotalCart] = useState(0)
+  const [totalCart, setTotalCart] = useState(0)
 
   useEffect(() => {
     function getUser(){
       const user = JSON.parse(window.localStorage.getItem("user"))
       setUserData(user)
+      setTotalCart(user.cart.length)
     }
     getUser()
-  },[notifActions])
+  },[setUserData, setTotalCart, notifActions])
 
-  useEffect(() => {
-    function setNotifTotal(){
-      try{
-        if(userData) {
-          setTotalCart(userData?.cart?.length)
-        }
-      } catch(err){
-        console.error(err.message)
-
-        function getUser(){
-          const user = JSON.parse(window.localStorage.getItem("user"))
-          setUserData(user)
-        }
-        getUser() // if error happend recall getUser() to gather updated data
-      }
-    }
-    setNotifTotal()
-  },[userData, setUserData, notifActions])
 
   function handleSearch(e){
     e.preventDefault()
     try{
       const inputData = new FormData(e.target).get("search")
       // do search action here
+      if(inputData) window.location.herf = "/browse-product"
     } catch(err){
       console.error(err.message)
     }
@@ -64,7 +48,7 @@ export default function Navbar({notifActions}) {
             <img src={location} alt="location" />
             <p>Kirim ke: Jakarta Selatan</p>
           </div>
-          <div className="flex flex-row justify-between w-[28%]">
+          <div className="flex flex-row justify-between w-[32%]">
             <p className="text-light">
 							📞 0800-1234-5678 (Gratis)
             </p>
@@ -107,7 +91,7 @@ export default function Navbar({notifActions}) {
                 <Link to={"/profile"} className="h-[40px] min-w-[40px] justify-center cursor-pointer flex items-center 
 								gap-1">
                   <img src={profile} alt="profile" />
-                  {userData && <p className="text-h">{userData?.fullname?.split(" ")[0]}</p>}
+                  {userData && <p className="text-h text-sm">{userData?.fullname?.split(" ")[0]}</p>}
                 </Link>
               </li>
               <li>
@@ -119,11 +103,11 @@ export default function Navbar({notifActions}) {
               <li>
                 <Link to={"/cart"} className="h-[40px] w-[40px] cursor-pointer flex items-center 
 								justify-center relative">
-                  {totalChart && 
-									<span className="rounded-full info-bg flex items-center justify-center text-light 
-									text-xs absolute top-0 right-0 z-2 p-1">
-									  {totalChart}
-									</span>}
+                  {totalCart >= 1 && 
+									<div className="rounded-full bg-(--info-bg) flex items-center justify-center text-light 
+									text-[11px] absolute top-0 left-7 z-2 px-[6px] py-[1px]">
+									  {totalCart}
+									</div>}
                   <img src={cart} alt="wishlist" />
                 </Link>
               </li>
