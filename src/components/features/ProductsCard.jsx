@@ -14,10 +14,8 @@ export default function Card({count = 4}){
       const apiUrl = "/data/products.json"
       const res = await fetch(apiUrl)
       const data = await res.json()
-      console.log(data)
       setDatas(data)
     }
-
     getProducts()
   },[])
 
@@ -32,7 +30,7 @@ export default function Card({count = 4}){
   }
 
   return(
-    <div className={`grid grid-cols-${count} gap-3`}>
+    <div className={`grid ${count === 2 ? 'grid-cols-2' : 'grid-cols-4'} gap-3`}>
       {datas?.map((item, index) => (
         <Link
           key={index}

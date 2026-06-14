@@ -1,8 +1,6 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 import moneyFormat from "@/utils/money-format";
 
 // component
@@ -12,6 +10,8 @@ import ActionButton from "@/components/ui/ActionButton.jsx"
 import ProductsCard from "@/components/features/ProductsCard.jsx"
 
 // asset
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 import Plus from "@/assets/icons/plus-black.svg"
 import ArrowRight from "@/assets/icons/bc-arrow-right-mute.svg"
 import Minus from "@/assets/icons/minus-black.svg"
@@ -93,7 +93,7 @@ export default function ProductDetails(){
             </li>
             <li>
               <Link to={"/browse-product/all"}>
-                Electornics
+                Electronics
               </Link>
             </li>
             <li>
@@ -101,8 +101,8 @@ export default function ProductDetails(){
             </li>                        
           </ul>
         </div>
-        <div className="flex flex-row h-fit bg-[yellow] ">
-          <section className="w-[48%] bg-[green] flex flex-col">
+        <div className="flex flex-row h-fit">
+          <section className="w-[48%] flex flex-col">
             <div className="rounded-xl overflow-hidden h-[604px] relative">
               { data.discount &&
                 <div className="px-4 py-1 rounded-full bg-(--info-bg) text-light flex absolute 
@@ -137,7 +137,7 @@ export default function ProductDetails(){
           </section>
 
           <section className="w-[52%] flex justify-end">
-            <div className="w-[96%] h-full bg-[white] flex flex-col gap-3">
+            <div className="w-[96%] h-full flex flex-col gap-3">
               <div className="flex gap-1 items-center m-0">
                 <p>{data.brand}</p>
                 <p>·</p>
@@ -240,21 +240,21 @@ export default function ProductDetails(){
                 />
               </div>
 
-              <div className="flex gap-2 mt-3">
+              <div className="flex  mt-3 w-full justify-between">
                 <div className="flex flex-col items-center justify-center gap-1 h-[73px] 
-                w-[193px] bg-(--input-bg) rounded-lg text-xs">
+                w-[195px] bg-(--content-deep-bg) rounded-lg text-xs">
                   <img src={Delivery} alt="delivery" />
                   <p className="text-h">Gratis Ongkir</p>
                   <p>Min. Rp 100.000</p>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-1 h-[73px] 
-                w-[193px] bg-(--input-bg) rounded-lg text-xs">
+                w-[195px] bg-(--content-deep-bg) rounded-lg text-xs">
                   <img src={Safe} alt="delivery" />
                   <p className="text-h">Pembayaran Aman</p>
                   <p>SSL Terenkripsi</p>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-1 h-[73px] 
-                w-[193px] bg-(--input-bg) rounded-lg text-xs">
+                w-[195px] bg-(--content-deep-bg) rounded-lg text-xs">
                   <img src={Return} alt="delivery" />
                   <p className="text-h">Retur 30 Hari</p>
                   <p>Gratis retur</p>

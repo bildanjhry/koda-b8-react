@@ -45,7 +45,7 @@ export default function ProfileLayout({children}){
   return (
     <MainLayout>
       <div className="w-[80%] h-full flex flex-row 
-        pt-12">
+        pt-12 pb-12">
         <aside className="w-[256px] h-[80%]">
           <div className="flex flex-col gap-3">
             <div className="rounded-xl bg-white items-center py-3 border-light flex 
@@ -88,6 +88,11 @@ export default function ProfileLayout({children}){
 
 function ListSideMenu({dataMenu, path}){
 
+  
+  function handleLogout(){
+    window.location.href ="/login"
+  }
+
   return(
     <ul className="w-full flex flex-col">
       {dataMenu?.map((item, index) => (
@@ -110,6 +115,7 @@ function ListSideMenu({dataMenu, path}){
       ))}
       <li className="border-t border-(--border)">
         <button
+          onClick={handleLogout}
           className="h-[52px] w-full flex flex-row items-center 
           hover:bg-(--accent-bg) justify-between px-4 cursor-pointer">
           <div className="flex flex-row gap-3 items-center">

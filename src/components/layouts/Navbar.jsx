@@ -118,8 +118,8 @@ export default function Navbar({notifActions}) {
       <section className="h-[41px] flex items-center gap-5 w-[83%] justify-self-center ">
 		    <div className="flex gap-1 items-center h-full px-1 ">
           <img src={hamMenu} alt="category menu list" />
-          <select name="cateogry" id="category" className="text-h">
-            <option value="" disabled id="category">Semua Kategori</option>
+            <select name="cateogry" id="category" className="text-h text-sm">
+            <option value=""id="category">Semua Kategori</option>
           </select>
         </div>		
         <ul className="w-full h-full flex gap-8 text-sm">
