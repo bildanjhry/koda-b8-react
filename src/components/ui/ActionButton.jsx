@@ -1,11 +1,11 @@
 export default function SubmitButton({
-    img, 
-    buttonText, 
-    color, 
-    bg, 
-    handleOnclick, 
-    order = "left-to-right", 
-    border = false 
+  img, 
+  buttonText, 
+  color, 
+  bg, 
+  handleOnclick, 
+  order = "left-to-right", 
+  border = false 
 }){
   return (
     <>

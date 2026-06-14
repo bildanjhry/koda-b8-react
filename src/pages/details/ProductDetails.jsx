@@ -13,14 +13,13 @@ import ProductsCard from "@/components/features/ProductsCard.jsx"
 
 // asset
 import Plus from "@/assets/icons/plus-black.svg"
+import ArrowRight from "@/assets/icons/bc-arrow-right-mute.svg"
 import Minus from "@/assets/icons/minus-black.svg"
 import Cart from "@/assets/icons/cart-orange.svg"
 import Wishlist from "@/assets/icons/wishlist-mute.svg"
 import Delivery from "@/assets/icons/delivery-blue.svg"
 import Return from "@/assets/icons/return.svg"
 import Safe from "@/assets/icons/safe-blue.svg"
-import ArrowRight from "@/assets/icons/bc-arrow-right-mute.svg"
-
 
 export default function ProductDetails(){
   const [data, setData] = useState({})
