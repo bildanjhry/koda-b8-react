@@ -1,12 +1,20 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 
-// component
-import Landing from "@/pages/Landing.jsx";
+//auth
 import Login from "@/pages/auth/Login.jsx";
 import Register from "@/pages/auth/Register.jsx";
-import BrowseProduct from "@/pages/Browse-prod.jsx";
 import ForgotPass from "@/pages/auth/ForgotPass.jsx";
+
+// products
+import BrowseProduct from "@/pages/Browse-prod.jsx";
 import ProductDetails from "@/pages/details/ProductDetails.jsx"
+
+// profiles
+import Orders from "@/pages/profiles/Orders.jsx";
+import Address from "@/pages/profiles/Address.jsx"
+import Wishlist from "@/pages/profiles/Wishlist.jsx"
+
+import Landing from "@/pages/Landing.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +40,18 @@ const router = createBrowserRouter([
   {
     path:"/details/:id",
     element: <ProductDetails/>
+  },
+  {
+    path:"/profiles",
+    element: <Orders/>
+  },
+  {
+    path:"/profile-address",
+    element: <Address/>
+  },
+  {
+    path:"/profile-wishlist",
+    element: <Wishlist/>
   },
 ])
 

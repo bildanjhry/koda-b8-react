@@ -1,0 +1,37 @@
+[
+    {
+        "id":"1pe",
+        "name":"Pesanan Saya",
+        "path":"/my-profiles",
+        "icon":"/images/profilesMenu/order-mute.svg",
+        "activeIcon":"/images/profilesMenu/order-blue.svg"        
+    },
+    {
+        "id":"2wi",
+        "name":"Wishlist",
+        "path":"/wishlist",
+        "icon":"/images/profilesMenu/wishlist-mute.svg",
+        "activeIcon":"/images/profilesMenu/wishlist-blue.svg"
+    },
+    {
+        "id":"3al",
+        "name":"Alamat Saya",
+        "path":"/my-address",
+        "icon":"/images/profilesMenu/location-mute.svg",
+        "activeIcon":"/images/profilesMenu/location-blue.svg"        
+    },
+    {
+        "id":"4me",
+        "name":"Metode Pembayaran",
+        "path":"/payment-method",
+        "icon":"/images/profilesMenu/payment-mute.svg",
+        "activeIcon":"/images/profilesMenu/payment-mute.svg"        
+    },
+    {
+        "id":"5pe",
+        "name":"Pengaturan Profil",
+        "path":"/settings",
+        "icon":"/images/profilesMenu/settings-mute.svg",
+        "activeIcon":"/images/profilesMenu/settings-blue.svg"        
+    }            
+]
