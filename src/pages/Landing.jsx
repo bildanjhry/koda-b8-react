@@ -76,7 +76,7 @@ export default function Landing(){
 
           <div className="mb-8 w-full">
             <header className="flex items-center justify-between mt-2">
-              <section className="h-[5rem] flex flex-row items-center gap-2">
+              <section className="h-20 flex flex-row items-center gap-2">
                 <div className="flex flex-row justify-start 
                 w-fit h-full items-center gap-3">
                   <h3 className="">Produk Unggulan</h3>
