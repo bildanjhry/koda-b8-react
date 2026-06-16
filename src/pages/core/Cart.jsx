@@ -27,8 +27,8 @@ export default function Cart(){
 
               <div className="flex items-center h-[100px] justify-between">
                 <img 
-                className="w-[96px] h-[100px] rounded-xl"
-                src={null} alt="product" />
+                  className="w-[96px] h-[100px] rounded-xl"
+                  src={null} alt="product" />
                 <div className="flex flex-col justify-between h-full ">
                   <p className="text-h font-[500] text-xm">Headphone Wireless Premium</p>
                   <p className="text-xs">Hitam</p>
@@ -43,8 +43,8 @@ export default function Cart(){
                   </div>
                   <button className="flex items-center gap-2 cursor-pointer">
                     <img 
-                    className="w-3 h-3"
-                    src={Wishlist} alt="wishlist" />
+                      className="w-3 h-3"
+                      src={Wishlist} alt="wishlist" />
                     <p className="text-xs">Simpan ke wishlist</p>
                   </button>
                 </div>
@@ -67,12 +67,12 @@ export default function Cart(){
               </div>
               <form action="" className="h-[46px] w-full flex justify-between">
                 <input 
-                placeholder="Masukan Kode Promo"
-                className="w-[84%] h-full bg-(--input-bg) text-sm pl-4 rounded-xl"
-                type="text" name="code" id="code" />
+                  placeholder="Masukan Kode Promo"
+                  className="w-[84%] h-full bg-(--input-bg) text-sm pl-4 rounded-xl"
+                  type="text" name="code" id="code" />
                 <button 
-                type="submit"
-                className="bg-(--main-bg) w-[15%] cursor-pointer h-full rounded-xl text-white text-sm"
+                  type="submit"
+                  className="bg-(--main-bg) w-[15%] cursor-pointer h-full rounded-xl text-white text-sm"
                 >
                   Terapkan
                 </button>
@@ -109,9 +109,9 @@ export default function Cart(){
           </aside>
         </div>
         <div className="flex flex-col gap-2 mt-8">
-           <header className="h-13 flex items-center">
+          <header className="h-13 flex items-center">
             <h3>Kamu mungkin suka ini</h3>
-           </header>
+          </header>
           <ProductsCard/>
         </div>
       </div>
