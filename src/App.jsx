@@ -7,7 +7,7 @@ import ForgotPass from "@/pages/auth/ForgotPass.jsx";
 
 // products
 import BrowseProduct from "@/pages/Browse-prod.jsx";
-import ProductDetails from "@/pages/details/ProductDetails.jsx"
+import ProductDetails from "@/pages/details/ProductDetails.jsx";
 
 // profiles
 import Orders from "@/pages/profiles/Orders.jsx";
@@ -18,12 +18,16 @@ import PaymentMethod from "@/pages/profiles/Payment-method.jsx";
 
 // core
 import Cart from "@/pages/core/Cart";
-import CheckoutDelivery from "@/pages/core/checkout/Deliver.jsx"
+import CheckoutDelivery from "@/pages/core/checkout/Deliver.jsx";
 import Payment from "@/pages/core/checkout/Payment";
 import Confirm from "@/pages/core/checkout/Confirm";
 
 // admin
-import Dashboard from "./pages/admin/Dashboard";
+import Dashboard from "@/pages/admin/Dashboard.jsx";
+import Customers from "@/pages/admin/Customers.jsx";
+import Products from "@/pages/admin/Products.jsx";
+import Settings from "@/pages/admin/Settings.jsx";
+import CustomersOrders from "@/pages/admin/Orders.jsx"
 
 
 import Landing from "@/pages/Landing.jsx";
@@ -95,6 +99,22 @@ const router = createBrowserRouter([
     path:"/dashboard",
     element: <Dashboard/>
   },    
+  {
+    path:"/customers",
+    element: <Customers/>
+  },
+  {
+    path:"/Products",
+    element: <Products/>
+  },
+  {
+    path:"/orders",
+    element: <CustomersOrders/>
+  },
+  {
+    path:"/settings",
+    element: <Settings/>
+  },
 
 ])
 
