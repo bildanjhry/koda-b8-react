@@ -1,12 +1,15 @@
 import { Link } from "react-router"
 import { useEffect, useRef, useState } from "react"
 import { useForm  } from "react-hook-form"
+import useUser from "@/hooks/useUser"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useLocation, useNavigate } from "react-router"
 
 // component
 import AuthButton from "@/components/ui/AuthButton.jsx"
 import SubmitButton from "@/components/ui/SubmitButton.jsx"
+import Alert from "@/components/ui/Alert"
 
 // asset
 import Email from "@/assets/icons/email-mute.svg"
@@ -17,51 +20,14 @@ import Back from "@/assets/icons/arrow-left-mute.svg"
 import ShowPass from "@/assets/icons/watch-mute.svg"
 import HidePass from "@/assets/icons/watch-hide-mute.png"
 
-const schema = yup.object({
-  fullname: yup.string().required("Silahkan masukan nama anda").min(3),
-  email:yup.string().required("Silahkan masukan email anda"),
-  password:yup.string().min(8, "Minimal password 8 Karakter"),
-  confirmPassword:yup.string().min(8, "Minimal password 8 Karakter"),
-})
-
 export default function FormSection({type}){
-  
-  const { register, errors, getValues, } = useForm({
-    resolver:schema,
-    defaultValues: {
-      id:"",
-      cart:[],
-      address:[],
-      fullname:"",
-      email:"",
-      password:"",
-      bio:{
-        fullname:this?.fullname,
-        email:this?.email,
-        phone:"",
-        age:"",
-        dateBirth:"",
-        address:[],
-        picture:""
-      },
-      wishlist:[],
-      checkout:[{
-        checkoutId:"",
-        paymentMetod:"",
-        paymentStatus:"",
-        orderStatus:"",
-        product:[],
-        promo:""
-      }]
-    }
-  })
 
   function chooseForm(){
     switch(type){
     case "login":
-      return FormLogin(schema)
+      return FormLogin()
     case "register" :
-      return FormRegister(schema)
+      return FormRegister()
     case "forgot-pass" :
       return FormForgotPass()
     default :
@@ -77,42 +43,82 @@ export default function FormSection({type}){
 }
 
 function FormLogin(){
-  function handleSubmit(e){
-    e.preventDefault()
+  const location = useLocation()
+  const { accounts } = useUser("accounts")
+  const navigate = useNavigate()
+  const [errorLogin, setErrorLogin] = useState({
+    error:false,
+    message:""
+  })
+  
+  const schema = yup.object({
+    email:yup.string().required("Silahkan masukan email anda"),
+    password:yup.string().required("Masukan Password anda")
+      .min(8, "Minimal password 8 Karakter"),
+  })
+  
+  const { register, handleSubmit, setValues, watch, formState: {errors} } = useForm({
+    resolver:yupResolver(schema),
+    defaultValues: {
+      email:"",
+      password:""
+    }
+  })
 
+  useEffect(() => {
+  },[watch])
+
+  // set manually email after success register
+  useEffect(() => {
+    setValues({email:location.state.email})
+  },[setValues, location])
+  
+  function onSubmit(data){
     try{
-      const userAccounts = JSON.parse(window.localStorage.getItem("accounts"))
-      const data = new FormData(e.target)
-
       // filtering if data matches
-      const user = userAccounts.filter((item) => {
-      	return item.email === data.get("email") && atob(item.password) === data.get("password")
+      const user = accounts.filter((item) => {
+      	return item.email === data.email && atob(item.password) === data.password
       })
-      if(!user) throw new Error("Akun tidak ditemukan")
+      if(!user.length) throw new Error("Akun tidak ditemukan")
       window.localStorage.setItem("user", JSON.stringify(user[0]))
-      window.location.href = "/"
+      navigate("/") // navigate to landing
     } catch(err){
-      // handling if error happend
-      console.log(err.message)
+      // error handling
+      setErrorLogin({
+        error:true,
+        message:err.message
+      })
     }
   }
 
   return (
     <form
       className="w-[53%] flex flex-col gap-3"
-      onSubmit={(e) => {handleSubmit(e)}} 
-      action="">
-      <h1>Masuk ke Akun</h1>
-      <p className="relative bottom-5 text-sm">Belum punya akun?
+      onSubmit={handleSubmit(onSubmit)} 
+      onFocus={() => { 
+        if(errorLogin.error){
+          setErrorLogin({
+            error:false,
+            message:"",
+          })
+        }
+      }} >
+      <h1 className="text-h ">Masuk ke Akun</h1>
+      <p className="relative bottom-4 text-sm ">Belum punya akun?
         <Link to={"/register"} className="text-[blue]"> Daftar gratis</Link>
       </p>
+      {errorLogin.error &&
+      <Alert variant={"error"}>
+        <p>{errorLogin.message}</p>
+      </Alert>
+      }
       <div className="flex justify-between">
         <AuthButton buttonText={"Google"} />
         <AuthButton buttonText={"Faceboook"} />
       </div>
       <div className="flex items-center gap-4 my-4">
         <div className="h-px flex-1 bg-gray-300"></div>
-        <span className="text-gray-500">
+        <span className="text-gray-500 text-sm">
             atau masuk dengan email
         </span>
         <div className="h-px flex-1 bg-gray-300"></div>
@@ -123,10 +129,12 @@ function FormLogin(){
           <div className="relative">
             <img className="absolute p-4" src={Email} alt="" />
             <input 
+              {...register("email")}
               className="w-full h-[46px] text-sm pl-12 border-light input-bg rounded-xl"
               placeholder="email@contoh.com"
               type="email" name="email" id="email" />
           </div>
+          {errors?.email && <p className="text-xs text-red-500">{errors.email?.message}</p>}
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex justify-between">
@@ -136,32 +144,57 @@ function FormLogin(){
           <div className="relative">
             <img className="absolute p-4" src={Password} alt="" />
             <input 
+              {...register("password")}
               className="w-full h-[46px] text-sm px-12 border-light input-bg rounded-xl"
               placeholder="Masukan kata sandi"
               type="password" name="password" id="password" />
           </div>
+          {errors?.password && <p className="text-xs text-red-500">{errors.password?.message}</p>}
         </div>
         <div className="flex items-center gap-2">
           <input type="checkbox" name="remember-me" id="remember-me" value={"remember-me"}/>
           <label htmlFor="remember-me" className="cursor-pointer text-sm">Ingatkan saya dalam 30 hari</label>
         </div>
-        <SubmitButton img={Inside} buttonText={"Masuk"}/>
+        <SubmitButton img={Inside} buttonText={"Masuk"}>
+        </SubmitButton>
         <div className="w-full flex flex-col justify-center items-center gap-7 mt-3">
           <p className="text-center text-xs">🔒 Login aman dengan enkripsi SSL 256-bit</p>
-          <p className="text-center text-xs flex w-[100%]">Dengan masuk, kamu menyetujui Syarat & Ketentuan dan Kebijakan Privasi kami.</p>            
+          <p className="text-center text-xs flex w-full">Dengan masuk, kamu menyetujui Syarat & Ketentuan dan Kebijakan Privasi kami.</p>            
         </div>
       </div>
     </form>		
   )
 }
 
-function FormRegister(schema){
+function FormRegister(){
   const [hidePass, setHidePass] = useState(true)
   const [hidePassCon, setHidePassCon] = useState(true)
+  const [registerEvent, setRegisterEvent] = useState({
+    event:false,
+    status:"",
+    message:""
+  })
   const passwordConRef = useRef()
   const passwordRef = useRef()
+  const navigate = useNavigate()
 
-  const { register, formState: { errors }, watch, getValues, handleSubmit, setError, clearErrors} = useForm({
+  function handleIdUser(name){
+    return `${Math.round(Math.random() * 999)}
+    ${name.slice(0, 3)}${Date.now().toString(35)}`
+  }
+
+  const schema = yup.object({
+    fullname: yup.string().required("Silahkan masukan nama anda").min(3),
+    email:yup.string().required("Silahkan masukan email anda"),
+    password:yup.string().required("Buat Password anda")
+      .min(8, "Minimal password 8 Karakter"),
+    confirmPassword:yup.string().required("Konfirmasi password anda")
+      .min(8, "Minimal password 8 Karakter"),
+  })
+
+
+  const { register, formState: { errors }, watch, handleSubmit,
+    setError, clearErrors} = useForm({
     resolver:yupResolver(schema),
     defaultValues: {
       id:"",
@@ -192,102 +225,82 @@ function FormRegister(schema){
     }
   })
 
-
-  console.log(getValues("password"))
-
-  // const confirmPass = watch("confirmPassword")
-  // const password = watch("password")
-
-  // // watching password syncs
-  // useEffect(() => {
-  //   if(confirmPass !== password){
-  //     setError("confirmPassword", { type:"custom", message:"Password tidak sesuai"})
-  //   } else { clearErrors("confirmPassword") }
-  // },[watch, setError, clearErrors, password, confirmPass])
+  // watching password syncs
+  const confirmPass = watch("confirmPassword")
+  const password = watch("password")
+  useEffect(() => {
+    if(confirmPass !== password){
+      setError("confirmPassword", 
+        { type:"custom", message:"Password tidak sesuai"})
+    } else { clearErrors("confirmPassword") }
+  },[watch, setError, clearErrors, password, confirmPass])
 
 
-  function onSubmit(e){
-    e.preventDefault()
+  function onSubmit(data){
+    if(confirmPass !== password){
+      setError("confirmPassword", 
+        { type:"custom", message:"Password tidak sesuai"})
+    } else clearErrors("confirmPassword")
+    
     try{
       let userDatas = []
-      let formData = {
-        id:"",
-        cart:[],
-        address:[],
-        bio:{
-          fullname:"",
-          email:"",
-          phone:"",
-          age:"",
-          dateBirth:"",
-          picture:""
-        },
-        wishlist:[],
-        checkout:[{
-          checkoutId:"",
-          paymentMetod:"",
-          paymentStatus:"",
-          orderStatus:"",
-          product:[],
-          promo:""
-        }]
-      }
-      const data = new FormData(e.target)
-      console.log(Object.fromEntries(data.entries()))
-      const formatObjData = Object.fromEntries(data.entries())
-      if(data.get("password") !== data.get("confirm-password")) {
-        throw new Error("Pastikan Pasword sama")
-      }
-      if(data.get("password").length <= 6 || data.get("confirm-password").length <= 6) {
-        throw new Error("Minimum password adalah 6 Karakter")
-      }
-
       const account = JSON.parse(window.localStorage.getItem("accounts"))
       if(account) userDatas = [...account] // append existing accounts
 
-      for(const props in formatObjData){
-        if(!(props === "confirm-password" || props === "remember-me")){
-          formData[props] = formatObjData[props]
-        }
-      }
       // manually create user's id
-      const idUser = ((account? account.length+1 : 1)+data.get("fullname").slice(0,2).toLowerCase())
-      formData["id"] = idUser
-      formData["password"] = btoa(formData["password"]) // encode user's password
-      formData.bio.fullname = formData["fullname"]
-      formData.bio.email = formData["email"]
-      userDatas.push(formData)
+      data.id = handleIdUser(data.fullname)
+     
+      data.bio.fullname = data.fullname
+      data.bio.email = data.email
+      data.password = btoa(data.password)
+      userDatas.push(data)
 
-     // window.localStorage.setItem("accounts", JSON.stringify(userDatas))
-     // window.location.href = "/login"
+      window.localStorage.setItem("accounts", JSON.stringify(userDatas))
+      setRegisterEvent({
+        event:true,
+        status:"success",
+        message:"Sukses Membuat Akun"
+      })
+      window.setTimeout(() => {
+        navigate("/login", { state: { email: data.email}})
+      },2000)
     } catch(err){
-      // handling if error happend
-     // alert(err.message)
+      // error handling
+      setRegisterEvent({
+        event:true,
+        status:"error",
+        message:err.message
+      })
+      alert(err.message)
     } 
   }
 
-
-  function handleWatchPass(e, name){
-    if(name === "password"){
-      setHidePass(!hidePass)
-      if(passwordRef.current.type === "password") passwordRef.current.type = "text"
-      else passwordRef.current.type = "password"
-    } else if(name === "confirmPassword") {
-      setHidePassCon(!hidePassCon)
-      if(passwordConRef.current.type === "password") passwordConRef.current.type = "text"
-      else passwordConRef.current.type = "password"
-    }
-  }
+  // function handleWatchPass(name){
+  //   if(name === "password"){
+  //     setHidePass(!hidePass)
+  //     if(passwordRef.current.type === "password") passwordRef.current.type = "text"
+  //     else passwordRef.current.type = "password"
+  //   } else if(name === "confirmPassword") {
+  //     setHidePassCon(!hidePassCon)
+  //     if(passwordConRef.current.type === "password") passwordConRef.current.type = "text"
+  //     else passwordConRef.current.type = "password"
+  //   }
+  // }
 
   return (
     <form
       className="w-[53%] flex flex-col gap-2"
-      onSubmit={(e) => handleSubmit(onSubmit(e))} 
-      action="">
-      <h1>Buat Akun Baru</h1>
-      <p className="relative bottom-5 text-sm">Sudah punya akun?
+      onSubmit={handleSubmit(onSubmit)} 
+      action="POST">
+      <h1 className="text-h">Buat Akun Baru</h1>
+      <p className="relative bottom-4 text-sm">Sudah punya akun?
         <Link to={"/login"} className="text-[blue]"> Masuk disini</Link>
       </p>
+      { registerEvent.event && 
+        <Alert variant={registerEvent.status}>
+          <p>{registerEvent.message}</p>
+        </Alert>
+      }
       <div className="flex justify-between">
         <AuthButton buttonText={"Daftar via Google"} />
         <AuthButton buttonText={"Daftar via Facebook"} />
@@ -317,12 +330,12 @@ function FormRegister(schema){
           <div className="relative">
             <img className="absolute p-4" src={Email} alt="" />
             <input 
-              required
               {...register("email")}
               className="w-full h-[46px] text-sm pl-12 border-light input-bg rounded-xl"
               placeholder="email@contoh.com"
               type="email" name="email" id="email" />
           </div>
+          {errors?.email && <p className="text-xs text-red-500">{errors.email?.message}</p>}
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex justify-between">
@@ -332,16 +345,14 @@ function FormRegister(schema){
             <img className="absolute p-4" src={Password} alt="password lock" />
             <button 
               type="button"
-              onClick={() =>{handleWatchPass("password")}}
+              // onClick={() =>{handleWatchPass("password")}}
               className="absolute right-0 p-4 cursor-pointer box">
               <img
 							 className="w-[16px] h-[16px]"
 							 src={hidePass ? ShowPass : HidePass} alt="show password" id="show-pass"/>
             </button>						
             <input 
-              required
               {...register("password")}
-              ref={passwordRef}
               className="w-full h-[46px] text-sm px-12 border-light input-bg rounded-xl"
               placeholder="Minimal 8 karakter"
               type={`${hidePass ? 'password' : 'text'}`} name="password" id="password" />
@@ -356,28 +367,27 @@ function FormRegister(schema){
             <img className="absolute p-4" src={Password} alt="password lock" />
             <button 
               type="button"
-              onClick={() => {handleWatchPass("confirmPassword")}}
+              // onClick={() => {handleWatchPass("confirmPassword")}}
               className="absolute right-0 p-4 cursor-pointer">
               <img 
-                className="w-[16px] h-[16px]"
+                className="w-4 h-4"
                 src={hidePassCon ? ShowPass : HidePass} alt="show password" id="show-pass"/>
             </button>
             <input
-              required
               {...register("confirmPassword")} 
-              ref={passwordConRef}
               className="w-full h-[46px] text-sm px-12 border-light input-bg rounded-xl"
               placeholder="Minimal 8 karakter"
               type={`${hidePassCon ? 'password' : 'text'}`} name="confirmPassword" id="confrimPassword" />
           </div>
-           {errors?.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword?.message}</p>}
+          {errors?.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>}
         </div>				
         <div className="flex items-start gap-2 mt-2">
           <input 
             className="relative top-1"
             required type="checkbox" name="remember-me" id="remember-me" value={"remember-me"}/>
-          <label htmlFor="remember-me" className="cursor-pointer text-xs relative">Saya menyetujui Syarat & Ketentuan dan Kebijakan Privasi
-					 BeliMudah</label>
+          <label htmlFor="remember-me" className="cursor-pointer text-xs relative">
+            Saya menyetujui Syarat & Ketentuan dan Kebijakan Privasi BeliMudah
+          </label>
         </div>
         <SubmitButton 
           img={Inside} 
@@ -393,9 +403,9 @@ function FormRegister(schema){
 }
 
 function FormForgotPass(){
+
   function handleSubmit(e){
     e.preventDefault()
-
     try{
       const data = new FormData(e.target)
 
