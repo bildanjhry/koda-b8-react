@@ -107,7 +107,7 @@ export default function Navbar({notifActions}) {
               <li>
                 <Link to={"/cart"} className="h-10 w-10 cursor-pointer flex items-center 
 								justify-center relative">
-                  {cart?.length >= 1 && 
+                  {globalCart?.length >= 1 && 
 									<div className="rounded-full bg-(--info-bg) flex items-center justify-center text-light 
 									text-[11px] absolute top-0 left-7 z-2 px-1.5 py-px">
 									  {globalCart.length}

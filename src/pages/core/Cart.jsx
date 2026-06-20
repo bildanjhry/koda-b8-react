@@ -1,4 +1,8 @@
 import useUser from "@/hooks/useUser";
+import { useContext, useState } from "react";
+import moneyFormat from "@/utils/money-format.js"
+
+import { UserContext } from "@/hooks/context/UserContext";
 
 // component
 import MainLayout from "@/components/layouts/MainLayout";
@@ -11,9 +15,29 @@ import Plus from "@/assets/icons/plus-black.svg"
 import Wishlist from "@/assets/icons/wishlist-mute.svg"
 import Delete from "@/assets/icons/delete-mute.svg"
 import Promo from "@/assets/icons/promo-code-blue.svg"
+import { useNavigate } from "react-router";
 
 export default function Cart(){
-  const {cart} = useUser()
+  const {cart, setCart, address} = useUser()
+  const [globalCart, setGlobalCart] = useContext(UserContext)
+  const navigate = useNavigate()
+
+  function handleDelete(id){
+    const filteredItem = globalCart.filter((item) => item.cartId !== id)
+    setCart(filteredItem)
+    setGlobalCart(() => {
+      return filteredItem
+    })
+  }
+
+
+  function handleCheckout(){
+    if(address.length < 1){
+      alert("Masukan Address dulu")
+      navigate("/my-profiles/address")
+    }
+    navigate("/checkout")
+  }
 
   return(
     <MainLayout>
@@ -25,45 +49,52 @@ export default function Cart(){
         { cart.length > 0 ?
           <div className="w-full min-h-77.25 mt-5 flex flex-row justify-between">
             <main className="w-[66%] min-h-full flex flex-col gap-3 justify-between">
-              <section className="w-full min-h-36.25 bg-white rounded-xl border-light flex
-            flex-row justify-between items-center px-8">
+              {globalCart.map((item, index) => (
+                <section 
+                  key={index}
+                  className="w-full min-h-36.25 bg-white rounded-xl border-light flex
+                  flex-row justify-between items-center px-7">
 
-                <div className="flex items-center h-25 justify-between">
-                  <img 
-                    className="w-24 h-25 rounded-xl"
-                    src={null} alt="product" />
-                  <div className="flex flex-col justify-between h-full ">
-                    <p className="text-h font-medium text-xm">Headphone Wireless Premium</p>
-                    <p className="text-xs">Hitam</p>
-                    <div className="flex felx-col h-[1.9rem] text-sm w-fit items-center 
-                  rounded-lg border-light">
-                      <div className="w-10 flex justify-center items-center">
-                        <img src={Minus} alt="decrease" />
+                  <div className="flex items-center h-25 gap-6 justify-between">
+                    <img 
+                      className="w-24 h-full rounded-xl overflow-hidden"
+                      src={item.image?.path} alt={item.image?.alt} />
+                    <div className="flex flex-col justify-between h-full ">
+                      <p className="text-h font-medium text-xm">{item.name}</p>
+                      <p className="text-xs">{item?.variants?.charAt(0).toUpperCase() + item?.variants?.slice(1)}</p>
+                      <div className="flex felx-col h-[1.9rem] text-sm w-fit items-center 
+                          rounded-lg border-light">
+                        <div className="w-10 flex justify-center items-center">
+                          <img src={Minus} alt="decrease" />
+                        </div>
+                        <p className="text-h flex justify-center items center w-[2.7rem]">{item.qty}</p>
+                        <div className="w-10 flex justify-center items-center">
+                          <img src={Plus} alt="increase" />
+                        </div>
                       </div>
-                      <p className="text-h flex justify-center items center w-[2.7rem]">2</p>
-                      <div className="w-10 flex justify-center items-center">
-                        <img src={Plus} alt="increase" />
-                      </div>
+                      <button className="flex items-center gap-2 cursor-pointer">
+                        <img 
+                          className="w-3 h-3"
+                          src={Wishlist} alt="wishlist" />
+                        <p className="text-xs">Simpan ke wishlist</p>
+                      </button>
                     </div>
-                    <button className="flex items-center gap-2 cursor-pointer">
-                      <img 
-                        className="w-3 h-3"
-                        src={Wishlist} alt="wishlist" />
-                      <p className="text-xs">Simpan ke wishlist</p>
-                    </button>
                   </div>
-                </div>
 
-                <div className="flex flex-col h-26 items-end">
-                  <button>
-                    <img src={Delete} alt="delete product" />
-                  </button>
-                  <h4 className="text-(--text-high) font-medium flex mt-[30%]">
-                  Rp 450.000
-                  </h4>
-                </div>
+                  <div className="flex flex-col h-26 items-end">
+                    <button 
+                      className="cursor-pointer"
+                      onClick={() => {handleDelete(item.cartId)}}>
+                      <img src={Delete} alt="delete product" />
+                    </button>
+                    <h4 className="text-(--text-high) font-medium flex mt-[50%]">
+                      {item.price}
+                    </h4>
+                  </div>
 
-              </section> 
+                </section> 
+
+              ))}
 
               <section className="w-full h-36.25 py-5 px-6 bg-white rounded-xl border-light flex
             gap-2 flex-col">
@@ -88,12 +119,12 @@ export default function Cart(){
             </main>
 
             <aside className="w-98.75 h-77.25 bg-white border-light 
-          p-5 rounded-xl flex flex-col">
+               p-5 rounded-xl flex flex-col">
               <h4 className="text-h font-semibold">Ringkasan Pesananan</h4>
               <div className="flex flex-col border-b-light mt-2 text-sm gap-2 py-2">
                 <ul className="flex justify-between items-center">
-                  <li>Subtotal ({cart?.length} item)</li>
-                  <li>Rp 450.000</li>
+                  <li>Subtotal ({globalCart.reduce((acc, item) =>  acc + parseInt(item.qty), 0)} item)</li>
+                  <li>{moneyFormat(globalCart.reduce((acc, item) =>  acc + item.price * item.qty, 0))[0]}</li>
                 </ul>
                 <ul className="flex justify-between items-center">
                   <li>Ongkos Kirim</li>
@@ -102,11 +133,12 @@ export default function Cart(){
               </div>
               <ul className="flex justify-between items-center py-2">
                 <li className="text-h">Total</li>
-                <li className="text-(--text-high)">Rp 450.000</li>
+                <li className="text-(--text-high)">{moneyFormat(globalCart.reduce((acc, item) =>  acc + item.price * item.qty, 0))[0]}</li>
               </ul>
               <button 
+                onClick={handleCheckout}
                 className="w-full cursor-pointer mt-2 h-12 rounded-xl flex justify-center items-center 
-            bg-(--action-bg) text-(--text-light)">
+                bg-(--action-bg) text-(--text-light)">
                 <p>Chekout Aman</p>
               </button>
               <div className="flex mt-3 flex-col items-center">

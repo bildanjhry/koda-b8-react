@@ -53,15 +53,19 @@ export default function ProductDetails(){
   }
 
   function addToCart(){
-    if(!user.id) {
-      navigate("/login")
-    }
+    try{
+      if(!user.id) throw new Error("Anda harus login dahulu")
+      if(!prodVariant) throw new Error("Silahkan pilih varian")
 
-    setterCart({
-      ...data,
-      variants: prodVariant,
-      qty:quantity
-    })
+      setterCart({
+        ...data,
+        variants: prodVariant,
+        cartId:data.id+prodVariant+quantity,
+        qty:quantity
+      })
+    } catch(err){
+      alert(err.message)
+    }
   }
 
   function addToWishlist(){

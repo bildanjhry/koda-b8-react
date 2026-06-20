@@ -15,8 +15,9 @@ export default function useUser(){
   const [initial, setInitial] = useState("")
   const [cart, setCart] = useState(user.cart || [])
   const [checkout, setCheckout] = useState(user.checkout || [])
+  const [wishlist, setWishlist] = useState(user.wishlist || [])
+  const [address, setAddress] = useState(user.address || [])
   const [error, setError] = useState("")
-  const [wishlist, setWishlist] = useState([])
   const [userName, setUserName] = useState("")
   const [ , setGlobalCart] = useContext(UserContext)
 
@@ -25,7 +26,6 @@ export default function useUser(){
       try{
         setInitial(user?.fullname?.charAt(0)?.toUpperCase())
         setUserName(user?.fullname?.split(" ")[0])
-        setWishlist(user?.wishlist)
         setGlobalCart(user?.cart)
       } catch(err){
         console.error(err.message)
@@ -37,33 +37,67 @@ export default function useUser(){
 
   function setterAccounts(data) {
     setAccouts(prev => {
-      const prevAcc = [...prev]
-      prevAcc.push(data)
-      window.localStorage.setItem("accounts", JSON.stringify(prevAcc))
-      return prevAcc
+      const prevAccounts = [...prev]
+      prevAccounts.push(data)
+      window.localStorage.setItem("accounts", JSON.stringify(prevAccounts))
+
+      return prevAccounts
     })
   }
 
   function setterCart(data){
     setCart(prev => {
-      setUser({...user, cart:[...prev, data]}) // update user's data
-      return [...prev, data]
+      let found = false
+      prev.forEach((item) => {
+        if(item.id === data.id && item.variants === data.variants){
+          found = true
+          item.qty += data.qty
+        }
+      })
+      
+      const rest = accounts.filter((item) => item.id !== user.id)
+   
+      if(found) {
+        setUser({...user, cart:[...prev]}) // update user's data
+        
+        // updating localstorage
+        window.localStorage.setItem("user", JSON.stringify({...user, cart:[...prev]})) 
+        window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, cart:[...prev]}]))
+      }
+      else {
+        setUser({...user, cart:[...prev, data]})
+        
+        // updating localstorage
+        window.localStorage.setItem("user", JSON.stringify({...user, cart:[...prev, data]}))
+        window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, cart:[...prev, data]}]))
+      }  
+      
+      return found? prev : [...prev, data]
     })
   }
   
   useEffect(() => {
     function updateUser(){
       const rest = accounts.filter((item) => item.id !== user.id)
-      // updating accounts
       window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, cart}]))
       window.localStorage.setItem("user", JSON.stringify({...user, cart}))
     }
-    updateUser()
+    if(cart.length !== 0){
+      updateUser()
+    }
   },[user, accounts, cart])
 
   function setterUser(data) {
     setUser(data)
     window.localStorage.setItem("user", JSON.stringify(data))
+  }
+
+  function setterAddress(data){
+    setAddress(prev => {
+      return [...prev, data]
+    })
+    window.localStorage.setItem("accounts", JSON.stringify([...accounts, {...user, address:[...address, data]}]))
+    window.localStorage.setItem("user", JSON.stringify({...user, address:[...address, data]}))
   }
   
   return {
@@ -72,8 +106,12 @@ export default function useUser(){
     setterAccounts,
     setterUser, 
     setterCart,
+    setterAddress,
+    setCart,
+    setUser,
     userName, 
-    initial, 
+    address,
+    initial,
     cart, 
     wishlist, 
     checkout, 

@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router";
+import { useNavigate } from "react-router";
 
 // component
 import MainLayout from "./MainLayout";
@@ -12,7 +13,6 @@ import useUser from "@/hooks/useUser";
 export default function ProfileLayout(){
   const {data: menus} = useFetch("/data/sidemenu-profiles.json")
   const {user, initial, checkout, wishlist} = useUser("user")
-
   const location = useLocation()
   const path = location.pathname
 
@@ -61,9 +61,14 @@ export default function ProfileLayout(){
 }
 
 function ListSideMenu({dataMenu, path}){
+  const navigate = useNavigate()
+  const { setUser, setCart } = useUser()
   
   function handleLogout(){
-    window.location.href ="/login"
+    setUser({})
+    setCart([])
+    window.localStorage.removeItem("user")
+    navigate("/login")
   }
 
   return(
