@@ -2,7 +2,36 @@
 import Delivery from "@/assets/icons/delivery-blue.svg"
 import ArrowRight from "@/assets/icons/bc-arrow-right-white.svg"
 
+import useUser from "@/hooks/useUser"
+import { useLocation, useNavigate } from "react-router"
+import { useEffect, useState } from "react"
+
 export default function Deliver(){
+  const { user, address } = useUser()
+  const navigate = useNavigate()
+  const [delivery, setDelivery] = useState()
+  const userAddress = address.filter((item) => item.isMain)[0]
+  const location = useLocation()
+
+  useEffect(() => {
+    function getState(){
+      if(location.state){
+        console.log(location.state)
+        setDelivery(location.state.deliveryMethod)
+      }
+    }
+    getState()
+  },[location])
+
+  console.log(delivery)
+
+  function handleSubmit(e){
+    e.preventDefault()
+    const data = new FormData(e.target)
+    const objData = Object.fromEntries(data.entries())
+    navigate("/checkout/payment", { state:objData })
+  }
+
   return(
     <div>
       <header className="flex items-center gap-2">
@@ -13,57 +42,70 @@ export default function Deliver(){
       </header>
       <main className="mt-10 flex flex-col">
         <form 
+          onSubmit={handleSubmit}
           className="flex flex-col gap-5 text-sm"
           action="">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="name">Nama Penerima *</label>
-              <input 
+              <input
+                readOnly
                 placeholder="Masukan Nama Penerima"
+                name="fullname"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="text" id="name" value={null} 
+                type="text" id="name" value={user.fullname} 
               />
             </div>
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="phone">Nomor Telepon *</label>
               <input 
+                readOnly
+                name="phone"
                 placeholder="Masukan Nomor Telpon Penerima"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="text" id="phone" value={null} 
+                type="text" id="phone" value={userAddress.phone} 
               />
             </div>							
           </div>
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="email">Email *</label>
             <input 
+              readOnly
+              name="email"
               placeholder="Masukan Email Penerima"
               className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-              type="email" id="email" value={null} 
+              type="email" id="email" value={user.email} 
             />
           </div>	
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="address">Alamat Lengkap *</label>
             <input 
-              placeholder="Masukan Email Penerima"
+              name="fulladdress"
+              placeholder="Alamat kamu"
+              readOnly
               className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-              type="text" id="address" value={null} 
+              type="text" id="address" value={userAddress.fulladdress} 
             />
           </div>
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="city">Kota *</label>
               <input 
+                readOnly
+                name="city"
                 placeholder="Kota"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="text" id="city" value={null} 
+                type="text" id="city" value={userAddress.city} 
               />
             </div>
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="province">Provinsi *</label>
               <input 
                 placeholder="Provinsi"
+                readOnly
+                name="province"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="text" id="province" value={null} 
+                type="text" id="province" value={userAddress.province} 
               />
             </div>							
           </div>
@@ -71,17 +113,20 @@ export default function Deliver(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="post-code">Kode Pos *</label>
               <input 
+                readOnly
+                name="postCode"
                 placeholder="Kode Pos Penerima"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="number" id="post-code" value={null} 
+                type="number" id="post-code" value={userAddress.postCode} 
               />
             </div>
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="optional">Catatan (optional)</label>
               <input 
+                name="optional"
                 placeholder="Warna Pagar, dll."
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="text" id="optional" value={null} 
+                type="text" id="optional"
               />
             </div>							
           </div>		
@@ -91,8 +136,9 @@ export default function Deliver(){
               <ul className="flex flex-col gap-4">
                 <li className="relative">
                   <input
+                    defaultChecked={delivery == 'JNE Reguler,3-5 Hari Kerja'}
                     className="absolute top-7.5 left-4 peer/jne-reg" 
-                    type="radio" id="jne-reg" name="delivery-method" value={["JNE Reguler", "3-5 Hari Kerja"]} />
+                    type="radio" id="jne-reg" name="deliveryMethod" value={["JNE Reguler", "3-5 Hari Kerja"]} />
                   <label
                     className="w-full items-center rounded-xl border-2 h-[72px] 
 										cursor-pointer peer-checked/jne-reg:border-(--main-border) border-(--border) flex justify-between pl-12 pr-6" 
@@ -107,8 +153,9 @@ export default function Deliver(){
 
                 <li className="relative">
                   <input
+                    defaultChecked={delivery === 'JNE Express,1-2 Hari Kerja'}
                     className="absolute top-7.5 left-4 peer/jne-exp" 
-                    type="radio" id="jne-exp" name="delivery-method" value={["JNE Express", "1-2 Hari Kerja"]} />
+                    type="radio" id="jne-exp" name="deliveryMethod" value={["JNE Express", "1-2 Hari Kerja"]} />
                   <label
                     className="w-full items-center rounded-xl border-2 h-[72px] 
 										cursor-pointer peer-checked/jne-exp:border-(--main-border) border-(--border) flex justify-between pl-12 pr-6" 
@@ -123,8 +170,9 @@ export default function Deliver(){
 
                 <li className="relative">
                   <input
+                    defaultChecked={delivery === "Same Day,Hari ini (sebelum 16:00)"}
                     className="absolute top-7.5 left-4 peer/same-day" 
-                    type="radio" id="same-day" name="delivery-method" value={["Same Day", "Hari ini (sebelum 16:00)"]} />
+                    type="radio" id="same-day" name="deliveryMethod" value={["Same Day", "Hari ini (sebelum 16:00)"]} />
                   <label
                     className="w-full items-center rounded-xl border-2 h-[72px] 
 										cursor-pointer peer-checked/same-day:border-(--main-border) border-(--border) flex justify-between pl-12 pr-6" 
