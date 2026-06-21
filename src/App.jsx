@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider} from "react-router";
 
 // hook
 import UserProvider from "@/hooks/context/UserProvider";
+import CheckoutProvider from "./hooks/context/CheckoutProvider";
 
 //auth
 import Login from "@/pages/auth/Login.jsx";
@@ -28,6 +29,7 @@ import CheckoutDelivery from "@/pages/core/checkout/Deliver.jsx";
 import Payment from "@/pages/core/checkout/Payment";
 import Confirm from "@/pages/core/checkout/Confirm";
 import Landing from "@/pages/Landing.jsx";
+import CompleteCheckout from "./components/ui/CompleteCheckout";
 
 // admin
 import Dashboard from "@/pages/admin/Dashboard.jsx";
@@ -39,7 +41,6 @@ import CustomersOrders from "@/pages/admin/Orders.jsx"
 
 // protected route
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import CompleteCheckout from "./components/ui/CompleteCheckout";
 
 
 const router = createBrowserRouter([
@@ -112,7 +113,9 @@ const router = createBrowserRouter([
     path:"/checkout",
     element: (
      <ProtectedRoute>
-      <CheckoutLayout/>
+      <CheckoutProvider>
+        <CheckoutLayout/>
+      </CheckoutProvider>
      </ProtectedRoute> 
     ),
     children: [{

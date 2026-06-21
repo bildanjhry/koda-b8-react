@@ -1,9 +1,12 @@
-import { Outlet } from "react-router"
+import { Outlet, useLocation } from "react-router"
 import useUser from "@/hooks/useUser"
 import moneyFormat from "@/utils/money-format.js"
+import classNames from "classnames"
 
 // component
 import MainLayout from "@/components/layouts/MainLayout.jsx"
+import { useContext, useState } from "react"
+import { CheckoutContext } from "@/hooks/context/UserContext"
 
 export default function CheckoutLayout(){
   return(
@@ -23,22 +26,47 @@ export default function CheckoutLayout(){
 }
 
 function Header() {
+ // const [step, setStep] = useContext(CheckoutContext)
+  const location = useLocation()
+  const [step, setStep] = useState(location?.state?.step || 1)
+  console.log(location.state)
+  console.log(step)
+
   return(
     <header className="flex items-center gap-2 h-30">
       <div className="flex flex-col items-center gap-2">
-        <div className="w-10 h-10 rounded-full flex justify-center items-center bg-(--main-bg) 
-				text-white">
-          <p>1</p>
+        <div className={classNames(
+          `w-10 h-10 rounded-full flex justify-center items-center bg-(--main-bg)`,
+          {'bg-(--text-success)' : step > 1},
+        )}>
+          <p className={classNames(
+            "text-white",
+          )}>1</p>
         </div>
-        <p className="text-(--text-high) text-xs">Pengiriman</p>
+        <p className={classNames(
+          "text-(--text-high) text-xs",
+          {"text-gray-500": step > 1 }
+        )}>Pengiriman</p>
       </div>
-      <span className="w-37 border border-slate-300 relative bottom-3"></span>
+      <span className={classNames(
+        {"border w-37 relative bottom-3 border-(--text-success)": step > 1 },
+        "w-37 border relative bottom-3",
+      )}></span>
       <div className="flex flex-col items-center gap-2">
-        <div className="w-10 h-10 rounded-full text-sm flex justify-center items-center 
-				bg-(--content-deep-bg)">
-          <p>2</p>
+        <div className={classNames(
+          "w-10 h-10 rounded-full text-sm flex justify-center items-center bg-(--content-deep-bg)",
+          {"bg-(--main-bg)": step === 2},
+          {"bg-(--text-success)": step > 2},
+        )}>
+          <p className={classNames(
+            {"text-white" : step === 2},
+            {"text-white" : step > 2},
+          )}>2</p>
         </div>
-        <p className=" text-xs">Pembayaran</p>
+        <p className={classNames(
+          "text-xs",
+          {"text-(--text-high)" : step == 2}
+        )}>Pembayaran</p>
       </div>
       <span className="w-37 border border-slate-300 relative bottom-3"></span>
       <div className="flex flex-col items-center gap-2">

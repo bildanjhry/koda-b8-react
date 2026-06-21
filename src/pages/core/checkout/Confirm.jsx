@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import useUser from "@/hooks/useUser";
 import moneyFormat from "@/utils/money-format.js"
+import { useContext } from "react";
+import { CheckoutContext } from "@/hooks/context/UserContext";
 
 // component
 import CompleteCheckout from "@/components/ui/CompleteCheckout";
@@ -12,6 +14,7 @@ import Lock from "@/assets/icons/lock-white.svg"
 
 export default function Confirm(){
   const [complete, setComplete] = useState(false)
+  const [step] = useContext(CheckoutContext)
   const location = useLocation()
   const navigate = useNavigate()
   const [formCheckout, setFormCheckout] = useState()
@@ -19,10 +22,13 @@ export default function Confirm(){
 
   useEffect(() => {
     function getState(){
-      setFormCheckout(location.state)
+      setFormCheckout(location.state.data)
     }
     getState()
   },[location])
+  console.log(step)
+
+  console.log(location.state)
 
   function handleCheckout(){
     const formCheckoutProcess = {
@@ -57,10 +63,10 @@ export default function Confirm(){
             <div className="w-full h-fit p-5 flex flex-col gap-1 bg-(--input-bg) rounded-xl">
               <p className="text-h">Alamat Pengiriman</p>
               <div className="flex items-center gap-2 text-sm mt-1">
-                <p>{user.fullname}.</p>
-                <p>{address[1].phone}</p>
+                <p>{formCheckout?.fullname}.</p>
+                <p>{formCheckout?.phone}</p>
               </div>
-              <p className="text-sm">{address[1].fulladdress}</p>
+              <p className="text-sm">{formCheckout?.fullAddress}</p>
             </div>
 
             <div className="w-full h-fit p-5 flex flex-col gap-1 bg-(--input-bg) rounded-xl">

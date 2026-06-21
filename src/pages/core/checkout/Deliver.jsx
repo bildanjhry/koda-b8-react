@@ -1,17 +1,31 @@
+
+import useUser from "@/hooks/useUser"
+import { useLocation, useNavigate } from "react-router"
+import { useEffect, useState, useContext } from "react"
+import { useForm } from "react-hook-form"
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { CheckoutContext } from "@/hooks/context/UserContext"
+
 // assets
 import Delivery from "@/assets/icons/delivery-blue.svg"
 import ArrowRight from "@/assets/icons/bc-arrow-right-white.svg"
 
-import useUser from "@/hooks/useUser"
-import { useLocation, useNavigate } from "react-router"
-import { useEffect, useState } from "react"
+const schema = yup.object({
+  deliveryMethod:yup.string().required("Silahkan pilih metode pengiriman")
+})
 
 export default function Deliver(){
+  const [step, setStep] = useContext(CheckoutContext)
   const { user, address } = useUser()
   const navigate = useNavigate()
   const [delivery, setDelivery] = useState()
   const userAddress = address.filter((item) => item.isMain)[0]
   const location = useLocation()
+
+  const { register, formState:{ errors }, handleSubmit } = useForm({
+    resolver:yupResolver(schema)
+  })
 
   useEffect(() => {
     function getState(){
@@ -23,13 +37,9 @@ export default function Deliver(){
     getState()
   },[location])
 
-  console.log(delivery)
-
-  function handleSubmit(e){
-    e.preventDefault()
-    const data = new FormData(e.target)
-    const objData = Object.fromEntries(data.entries())
-    navigate("/checkout/payment", { state:objData })
+  function onSubmit(data){
+    setStep(2)
+    navigate("/checkout/payment", {state:{ step:2, data:data }})
   }
 
   return(
@@ -42,7 +52,7 @@ export default function Deliver(){
       </header>
       <main className="mt-10 flex flex-col">
         <form 
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-5 text-sm"
           action="">
           <div className="flex items-center justify-between">
@@ -50,6 +60,7 @@ export default function Deliver(){
               <label htmlFor="name">Nama Penerima *</label>
               <input
                 readOnly
+                {...register("fullname")}
                 placeholder="Masukan Nama Penerima"
                 name="fullname"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
@@ -59,7 +70,7 @@ export default function Deliver(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="phone">Nomor Telepon *</label>
               <input 
-                readOnly
+                {...register("phone")}
                 name="phone"
                 placeholder="Masukan Nomor Telpon Penerima"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
@@ -71,6 +82,7 @@ export default function Deliver(){
             <label htmlFor="email">Email *</label>
             <input 
               readOnly
+              {...register("email")}
               name="email"
               placeholder="Masukan Email Penerima"
               className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
@@ -80,6 +92,7 @@ export default function Deliver(){
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="address">Alamat Lengkap *</label>
             <input 
+              {...register("fullAddress")}
               name="fulladdress"
               placeholder="Alamat kamu"
               readOnly
@@ -92,6 +105,7 @@ export default function Deliver(){
               <label htmlFor="city">Kota *</label>
               <input 
                 readOnly
+                {...register("city")}
                 name="city"
                 placeholder="Kota"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
@@ -101,6 +115,7 @@ export default function Deliver(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="province">Provinsi *</label>
               <input 
+                {...register("province")}
                 placeholder="Provinsi"
                 readOnly
                 name="province"
@@ -114,6 +129,7 @@ export default function Deliver(){
               <label htmlFor="post-code">Kode Pos *</label>
               <input 
                 readOnly
+                {...register("postCode")}
                 name="postCode"
                 placeholder="Kode Pos Penerima"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
@@ -123,6 +139,7 @@ export default function Deliver(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="optional">Catatan (optional)</label>
               <input 
+                {...register("optional")}
                 name="optional"
                 placeholder="Warna Pagar, dll."
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
@@ -136,6 +153,7 @@ export default function Deliver(){
               <ul className="flex flex-col gap-4">
                 <li className="relative">
                   <input
+                    {...register("deliveryMethod")}
                     defaultChecked={delivery == 'JNE Reguler,3-5 Hari Kerja'}
                     className="absolute top-7.5 left-4 peer/jne-reg" 
                     type="radio" id="jne-reg" name="deliveryMethod" value={["JNE Reguler", "3-5 Hari Kerja"]} />
@@ -153,6 +171,7 @@ export default function Deliver(){
 
                 <li className="relative">
                   <input
+                    {...register("deliveryMethod")}
                     defaultChecked={delivery === 'JNE Express,1-2 Hari Kerja'}
                     className="absolute top-7.5 left-4 peer/jne-exp" 
                     type="radio" id="jne-exp" name="deliveryMethod" value={["JNE Express", "1-2 Hari Kerja"]} />
@@ -170,6 +189,7 @@ export default function Deliver(){
 
                 <li className="relative">
                   <input
+                    {...register("deliveryMethod")}
                     defaultChecked={delivery === "Same Day,Hari ini (sebelum 16:00)"}
                     className="absolute top-7.5 left-4 peer/same-day" 
                     type="radio" id="same-day" name="deliveryMethod" value={["Same Day", "Hari ini (sebelum 16:00)"]} />
@@ -186,6 +206,7 @@ export default function Deliver(){
                 </li>
 
               </ul>
+              {errors.deliveryMethod && <p className="relative top-2 text-red-500 text-sm">*{errors.deliveryMethod?.message}</p>}
             </div>
             <button 
               type="submit"

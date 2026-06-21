@@ -1,14 +1,31 @@
 import { useLocation, useNavigate } from "react-router"
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+import { useContext } from "react"
+import { CheckoutContext } from "@/hooks/context/UserContext"
 
 // asset
 import PaymentCard from "@/assets/icons/payment-blue.svg"
 import ArrowRight from "@/assets/icons/bc-arrow-right-white.svg"
 import Safe from "@/assets/icons/lock-blue.svg"
 
+const schema = yup.object({
+  paymentMethod:yup.string().required("Silahkan pilih methode pembayaran")
+})
+
 export default function Payment(){
   const location = useLocation()
   const navigate = useNavigate()
+  const [step, setStep] = useContext(CheckoutContext)
+
   console.log(location.state)
+  setStep(location.state.step)
+  console.log(step)
+
+  const { handleSubmit, formState: { errors }, register} = useForm({
+    resolver:yupResolver(schema)
+  })
 
   const paymetMetod = [
     {
@@ -49,12 +66,9 @@ export default function Payment(){
     },							
   ]
 
-  function handleAddPayment(e){
-    e.preventDefault()
-    const data = new FormData(e.target)
-    const objData = Object.fromEntries(data.entries())
-    console.log(objData)
-    navigate("/checkout/confirmation", {state: {...location.state, ...objData}})
+  function handleAddPayment(data){
+    setStep(3)
+    navigate("/checkout/confirmation", { state: {step:location.state.step+1, data:{...location.state.data, ...data}}})
   }
 
   return(
@@ -66,7 +80,7 @@ export default function Payment(){
         <h3>Metode Pengiriman</h3>
       </header>
       <form 
-        onSubmit={handleAddPayment}
+        onSubmit={handleSubmit(handleAddPayment)}
         action="">
         <main className="flex flex-col gap-4">
           <div className="flex flex-col w-full mt-9">
@@ -76,10 +90,11 @@ export default function Payment(){
                   key={item?.id}
                   className="relative">
                   <input
+                    {...register("paymentMethod")}
                     className={`absolute top-6 left-4 w-4 h-4 peer/paymet`} 
                     type="radio" id={item.inputName} name="paymentMethod" value={item.value} />
                   <label
-                    className={`w-full items-center rounded-xl border-2 h-[65px] cursor-pointer border-(--border)
+                    className={`w-full items-center rounded-xl border-2 h-16.25 cursor-pointer border-(--border)
 											flex justify-between pl-10 pr-6 peer-checked/paymet:border-(--main-border) peer-checked/paymet:bg-(--accent-bg)`} 
                     htmlFor={item.inputName}>
                     <div className="flex flex-col justify-center">
@@ -90,8 +105,8 @@ export default function Payment(){
               ))}
             </ul>
           </div>
-					
-          <div className="w-full bg-(--accent-bg) mt-3 rounded-xl h-[42px] flex 
+          { errors.paymentMethod && <p className="text-red-500 text-sm mt-3">*{errors.paymentMethod?.message}</p>}
+          <div className="w-full bg-(--accent-bg) mt-3 rounded-xl h-10.5 flex 
 					text-xs items-center px-4 gap-3">
             <img 
               className="w-4"
