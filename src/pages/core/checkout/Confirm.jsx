@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import useUser from "@/hooks/useUser";
 import moneyFormat from "@/utils/money-format.js"
 
@@ -13,8 +13,9 @@ import Lock from "@/assets/icons/lock-white.svg"
 export default function Confirm(){
   const [complete, setComplete] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
   const [formCheckout, setFormCheckout] = useState()
-  const {address, cart, user} = useUser()
+  const {address, cart, setCart, user, setterCheckout} = useUser()
 
   useEffect(() => {
     function getState(){
@@ -22,6 +23,25 @@ export default function Confirm(){
     }
     getState()
   },[location])
+
+  function handleCheckout(){
+    const formCheckoutProcess = {
+      ...formCheckout,
+      idCheckout:user.id.slice(0,4)+cart.length+Date.now().toString(35),
+      checkoutDate: new Date().toLocaleString(),
+      products:cart,
+      status:{
+        STEP:1,
+        message:"Pesanan Diterima",
+        duration: new Date().toLocaleString(),
+        merchantStatus:"Diterima"
+      },
+    }
+    setterCheckout(formCheckoutProcess)
+    setCart([])
+    navigate("/checkout-complete", {state:{ data: formCheckoutProcess}})
+    window.scrollTo({ top:0 })
+  }
 
   return(
     <>
@@ -88,10 +108,7 @@ export default function Confirm(){
               </button>
               <button 
                 type="submit"
-                onClick={() => {
-                  setComplete(true)
-                  window.scrollTo({ top:0 })
-                }}
+                onClick={() => {handleCheckout()}}
                 className="flex gap-2 text-sm text-white bg-(--action-bg) rounded-xl h-13 items-center
 									justify-center w-[85%] cursor-pointer">
                 <img 

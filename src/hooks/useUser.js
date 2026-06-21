@@ -75,16 +75,18 @@ export default function useUser(){
       return found? prev : [...prev, data]
     })
   }
+  console.log(cart)
   
   useEffect(() => {
     function updateUser(){
       const rest = accounts.filter((item) => item.id !== user.id)
-      window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, cart}]))
-      window.localStorage.setItem("user", JSON.stringify({...user, cart}))
+      if(user.id !== undefined){
+        console.log(user)
+        window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, cart}]))
+        window.localStorage.setItem("user", JSON.stringify({...user, cart}))
+      }
     }
-    if(cart.length !== 0){
-      updateUser()
-    }
+    updateUser()
   },[user, accounts, cart])
 
   function setterUser(data) {
@@ -99,6 +101,17 @@ export default function useUser(){
     window.localStorage.setItem("accounts", JSON.stringify([...accounts, {...user, address:[...address, data]}]))
     window.localStorage.setItem("user", JSON.stringify({...user, address:[...address, data]}))
   }
+
+  function setterCheckout(data){
+    setCheckout(prev => {
+      const rest = accounts.filter((item) => item.id !== user.id)
+      window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, checkout:[...prev, data]}]))
+      window.localStorage.setItem("user", JSON.stringify({...user, checkout:[...prev, data]}))
+      return [...prev, data]
+    
+    })
+    
+  }
   
   return {
     user, 
@@ -107,6 +120,7 @@ export default function useUser(){
     setterUser, 
     setterCart,
     setterAddress,
+    setterCheckout,
     setCart,
     setUser,
     userName, 

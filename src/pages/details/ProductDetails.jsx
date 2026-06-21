@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 import moneyFormat from "@/utils/money-format";
 
@@ -8,14 +8,13 @@ import MainLayout from "@/components/layouts/MainLayout";
 import SubmitButton from "@/components/ui/SubmitButton.jsx"
 import ActionButton from "@/components/ui/ActionButton.jsx"
 import ProductsCard from "@/components/features/ProductsCard.jsx"
+import RenderStars from "@/components/ui/RenderStars";
 
 // hook
 import useFetch from "@/hooks/useFetch";
 import useUser from "@/hooks/useUser";
 
 // asset
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 import Plus from "@/assets/icons/plus-black.svg"
 import ArrowRight from "@/assets/icons/bc-arrow-right-mute.svg"
 import Minus from "@/assets/icons/minus-black.svg"
@@ -28,21 +27,16 @@ import Safe from "@/assets/icons/safe-blue.svg"
 export default function ProductDetails(){
   const [prodVariant, setProdVariant] = useState("")
   const [quantity, setQuantity] = useState(1)
+  const [errorData, setErrorData] = useState({
+    error:false,
+    code:"",
+    message:""
+  })
   const { category, slugs } = useParams()
-  const { user, cart: userCart, setterCart } = useUser()
+  const { user, setterCart } = useUser()
   const { dataBySlugs : data, dataByCategory} = 
   useFetch("/data/products.json", category || '', slugs || '')
   const navigate = useNavigate()
-
-  function handleRatingStars(rating){
-    return Array.from({ length: 5 }).map((_, index) => (
-      <FontAwesomeIcon
-        key={index}
-        icon={solidStar}
-        className={`${index < Math.round(rating) ? 'text-(--text-star)' : 'text-(--text-light)'}`}
-      />  
-    ))
-  }
 
   function handleDecreastQty(){
     if(quantity > 1) setQuantity(quantity-1)
@@ -52,38 +46,71 @@ export default function ProductDetails(){
     setQuantity(quantity+1)
   }
 
-  function addToCart(){
+  function buttonActions(code){
     try{
-      if(!user.id) throw new Error("Anda harus login dahulu")
-      if(!prodVariant) throw new Error("Silahkan pilih varian")
+      // guard clause
+      if(!user.id) {
+        const err = new Error("Unauthorized")
+        err.code = "AUTH_REQUIRED"
+        err.status = 401
 
-      setterCart({
+        throw err
+      }
+      if(!prodVariant) {
+        const err = new Error("Silahkan Pilih Varian")
+        err.code = "EMPTY_REQUIRED_VALUE"
+        err.status = 401
+
+        throw err
+      }
+
+      const dataProduct = {
         ...data,
         variants: prodVariant,
         cartId:data.id+prodVariant+quantity,
         qty:quantity
-      })
+      }
+
+      switch(code) {
+      case "ADD_TO_CART":
+        setterCart(dataProduct)
+        break;
+      case "BUY_NOW":
+        navigate("/orders", {state:{ prod:dataProduct }})
+        break;
+      case"ADD_TO_WISHLIST":
+        break;
+      default:
+        return
+      }
+
     } catch(err){
-      alert(err.message)
+      if(err.code === "AUTH_REQUIRED"){
+        navigate("/login", { state:{origin: location.pathname}})
+      }
+      if(err.code === "EMPTY_REQUIRED_VALUE"){
+        setErrorData({
+          error:true,
+          code:err.code,
+          message:err.message
+        })
+      }
+      console.error(err.message)
     }
-  }
-
-  function addToWishlist(){
-
   }
 
   return(
     <MainLayout>
       <div className="w-[83%] flex flex-col mt-3">
         <div className="h-[4.2rem] w-full flex items-center">
-          <ul className="h-full flex items-center gap-1">
+          <ul className="h-full flex items-center gap-1 text-sm">
             <li>
               <Link to={"/"}>
                 Beranda
               </Link>
             </li>
             <li>
-              <img src={ArrowRight} alt="breadcrum" className="top-[1px] relative" />
+              <img src={ArrowRight} alt="breadcrum" className="top-xp relative" />
             </li>
             <li>
               <Link to={"/browse-product/all"}>
@@ -91,7 +118,7 @@ export default function ProductDetails(){
               </Link>
             </li>
             <li>
-              <img src={ArrowRight} alt="breadcrum" className="top-[1px] relative" />
+              <img src={ArrowRight} alt="breadcrum" className="top-xp relative" />
             </li>
             <li>
               <Link to={"/browse-product/all"}>
@@ -99,13 +126,13 @@ export default function ProductDetails(){
               </Link>
             </li>
             <li>
-              <img src={ArrowRight} alt="breadcrum" className="top-[1px] relative" />
+              <img src={ArrowRight} alt="breadcrum" className="top-xp relative" />
             </li>                        
           </ul>
         </div>
         <div className="flex flex-row h-fit">
           <section className="w-[48%] flex flex-col">
-            <div className="rounded-xl overflow-hidden h-[604px] relative">
+            <div className="rounded-xl overflow-hidden h-151 relative">
               { data.discount &&
                 <div className="px-4 py-1 rounded-full bg-(--info-bg) text-light flex absolute 
                 justify-center left-2 top-2">
@@ -140,7 +167,7 @@ export default function ProductDetails(){
 
           <section className="w-[52%] flex justify-end">
             <div className="w-[96%] h-full flex flex-col gap-3">
-              <div className="flex gap-1 items-center m-0">
+              <div className="flex gap-1 items-center m-0 text-sm">
                 <p>{data.brand}</p>
                 <p>·</p>
                 <p>{data?.cat?.name}</p>
@@ -150,7 +177,7 @@ export default function ProductDetails(){
 
               <div className="flex flex-row items-center gap-2">
                 <div className="flex flex-row">
-                  { handleRatingStars(data.rating) }
+                  <RenderStars rating={data.rating}/>
                 </div>
                 <p>{data.rating}</p>
                 <p>({data.ratingTotal})</p>
@@ -161,7 +188,7 @@ export default function ProductDetails(){
                 </div>
               </div>
 
-              <div className="w-full h-[120px] bg-(--accent-bg) rounded-lg mt-2 px-3 flex flex-col justify-center">
+              <div className="w-full h-30 bg-(--accent-bg) rounded-lg mt-2 px-3 flex flex-col justify-center">
                 <div className="flex flex-row gap-3 items-center">
                   <h1 className="text-(--text-high)">{moneyFormat(data?.price)[0]}</h1>
                   <p className="text-lg"><s>{moneyFormat(data?.discountPrice)[0]}</s></p>
@@ -179,13 +206,22 @@ export default function ProductDetails(){
                   <p 
                     className="text-(--text-high)">{prodVariant.charAt(0).toUpperCase() + prodVariant.slice(1)}</p>
                 </div>
-                <div className="flex flex-row gap-3 w-[50%] mt-2 text-sm">
+                <div className="flex flex-row gap-3 w-[100%] mt-2 text-sm items-center">
                   {data?.variants?.map((item, index) => (
                     <div className="relative" key={index}>
                       <input 
                         className="absolute hidden top-4 left-3 peer"
                         type="radio" name={`color`} 
-                        onChange={(e) => setProdVariant(e.target.value)}
+                        onChange={(e) => {
+                          if(e.target.checked && errorData.error){
+                            setErrorData({
+                              error:false,
+                              code:"",
+                              message:""
+                            })
+                          }
+                          setProdVariant(e.target.value)
+                        }}
                         id={`${item.toLowerCase()}`} 
                         value={`${item.toLowerCase()}`} 
                       />
@@ -196,13 +232,18 @@ export default function ProductDetails(){
                         htmlFor={`${item.toLowerCase()}`}>{item}</label>
                     </div>
                   ))}
+                  { errorData.error &&
+                  <div className="w-full text-sm">
+                    <p className="text-red-500">*{errorData.message}</p>
+                  </div>
+                  }
                 </div>
               </div>
 
               <div className="flex flex-col gap-2 mt-4">
                 <p className="text-h">Jumlah</p>
                 <div className="flex items-center gap-3">
-                  <div className="flex w-fit h-[38px] justify-center items-center rounded-xl border-light">
+                  <div className="flex w-fit h-9.5 justify-center items-center rounded-xl border-light">
                     <button
                       className="w-[3.7rem] flex cursor-pointer justify-center items-center"
                       onClick={handleDecreastQty}
@@ -227,17 +268,22 @@ export default function ProductDetails(){
                   buttonText={"Tambah ke keranjang"} 
                   color={`text-(--text-action)`} 
                   bg={"bg-[transparent]"} 
-                  handleOnclick={addToCart}
+                  handleOnclick={() => {buttonActions("ADD_TO_CART")}}
                   order={"left-to-right"}
                   border={"border-(--action-border)"}
                 />
-                <SubmitButton img={null} buttonText={"Beli Sekarang"} order={"right-to-left"}/>
+                <SubmitButton 
+                  img={null} 
+                  handleOnclick={() => {buttonActions("BUY_NOW")}}
+                  buttonText={"Beli Sekarang"} 
+                  order={"right-to-left"}
+                />
                 <ActionButton 
                   img={Wishlist} 
                   buttonText={""}
                   color={""}
                   bg={"bg-[transparent]"}
-                  handleOnclick={addToWishlist}
+                  handleOnclick={() => {buttonActions("ADD_TO_WISHLIST")}}
                   order={""}
                   border={"border-light"}
                 />
@@ -245,13 +291,13 @@ export default function ProductDetails(){
 
               <div className="flex  mt-3 w-full justify-between">
                 <div className="flex flex-col items-center justify-center gap-1 h-[73px] 
-                w-[195px] bg-(--content-deep-bg) rounded-lg text-xs">
+                w-48.75 bg-(--content-deep-bg) rounded-lg text-xs">
                   <img src={Delivery} alt="delivery" />
                   <p className="text-h">Gratis Ongkir</p>
                   <p>Min. Rp 100.000</p>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-1 h-[73px] 
-                w-[195px] bg-(--content-deep-bg) rounded-lg text-xs">
+                w-48.75 bg-(--content-deep-bg) rounded-lg text-xs">
                   <img src={Safe} alt="delivery" />
                   <p className="text-h">Pembayaran Aman</p>
                   <p>SSL Terenkripsi</p>

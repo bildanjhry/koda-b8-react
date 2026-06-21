@@ -65,8 +65,6 @@ function ListSideMenu({dataMenu, path}){
   const { setUser, setCart } = useUser()
   
   function handleLogout(){
-    setUser({})
-    setCart([])
     window.localStorage.removeItem("user")
     navigate("/login")
   }

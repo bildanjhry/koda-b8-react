@@ -1,29 +1,13 @@
 import { Link } from "react-router"
 import classNames from "classnames";
 import moneyFormat from "@/utils/money-format.js"
-
 import useFetch from "@/hooks/useFetch";
 
-// asset
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
+// componets
+import RenderStars from "@/components/ui/RenderStars";
 
 export default function Card({count = 4, width = "large"}){
   const {data : products} = useFetch("/data/products.json")
-
-  function handleRatingStars(rating){
-    return Array.from({ length: 5 }).map((_, index) => (
-      <FontAwesomeIcon
-        key={index}
-        icon={solidStar}
-        className={classNames(
-          {'text-xs': width === "small"},
-          {'text-(--text-star)': index < Math.round(rating) },
-          {'text-(--text-light)': index >= Math.round(rating)}
-        )}
-      />  
-    ))
-  }
 
   return(
     <div className={classNames(
@@ -31,6 +15,7 @@ export default function Card({count = 4, width = "large"}){
       {'grid-cols-2' : count === 2},
       {'grid-cols-4': count === 4}
     )}>
+
       {products?.map((item, index) => (
         <Link
           key={index}
@@ -51,13 +36,13 @@ export default function Card({count = 4, width = "large"}){
               {"text-[14px]": width === "small"}
             )}>{item.name}</p>
             <div className="flex items-center text-sm">
-              { handleRatingStars(item.rating)}
+              <RenderStars rating={item.rating} width={width}/>
               <p className="pl-2">{item.rating}</p>
               <p className="pl-1">({item.ratingTotal})</p>
             </div>
             <div className="flex flex-row gap-2 mt-1 items-center">
               <p className="text-(--text-high) text-lg font-semibold">{moneyFormat(item?.price)[0]}</p>
-              <p className="text-xs"><s>{moneyFormat(item?.discountPrice)[0]}</s></p>
+              <p className="text-xs relative top-px"><s>{moneyFormat(item?.discountPrice)[0]}</s></p>
             </div>
           </main>
         </Link>

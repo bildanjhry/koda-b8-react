@@ -25,9 +25,7 @@ export default function Cart(){
   function handleDelete(id){
     const filteredItem = globalCart.filter((item) => item.cartId !== id)
     setCart(filteredItem)
-    setGlobalCart(() => {
-      return filteredItem
-    })
+    setGlobalCart(() => filteredItem)
   }
 
 

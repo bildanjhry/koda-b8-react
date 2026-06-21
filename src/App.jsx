@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { createBrowserRouter, RouterProvider} from "react-router";
 
 // hook
@@ -38,6 +39,7 @@ import CustomersOrders from "@/pages/admin/Orders.jsx"
 
 // protected route
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import CompleteCheckout from "./components/ui/CompleteCheckout";
 
 
 const router = createBrowserRouter([
@@ -67,7 +69,11 @@ const router = createBrowserRouter([
   },
   {
     path:"/cart",
-    element: <Cart/>
+    element:(
+      <ProtectedRoute>
+        <Cart/>
+      </ProtectedRoute>
+    )
   },
   
   // my profiles family trees
@@ -104,7 +110,11 @@ const router = createBrowserRouter([
   // checkout family tress
   {
     path:"/checkout",
-    element: <CheckoutLayout/>,
+    element: (
+     <ProtectedRoute>
+      <CheckoutLayout/>
+     </ProtectedRoute> 
+    ),
     children: [{
       index: true,
       element: <CheckoutDelivery/> // first child
@@ -118,7 +128,12 @@ const router = createBrowserRouter([
       element: <Confirm/>
     },
     ]
-  },  
+  },
+  
+  {
+    path:"/checkout-complete",
+    element: <CompleteCheckout/>
+  },
 
   // admin family trees
   {

@@ -81,8 +81,8 @@ function FormLogin(){
       const user = accounts.filter((item) => {
       	return item.email === data.email && atob(item.password) === data.password
       })[0]
-      if(!user.length) throw new Error("Akun tidak ditemukan")
-      setterUser(user[0])
+      if(!user.id) throw new Error("Akun tidak ditemukan")
+      setterUser(user)
       
       navigate("/", {}) // navigate to landing
     } catch(err){
@@ -186,7 +186,7 @@ function FormRegister(){
   const { accounts, setterAccounts } = useUser()
 
   function handleIdUser(name){
-    return `${Math.round(Math.random() * 100)}${name.slice(0, 3)}${Date.now().toString(35)}`
+    return `${Math.round(Math.random() * 100)}${name.slice(0, 3)}${Date.now().toString(32)}`
   }
 
   const schema = yup.object({
