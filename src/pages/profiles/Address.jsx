@@ -11,18 +11,21 @@ import useUser from "@/hooks/useUser";
 import { useState } from "react";
 
 import Alert from "@/components/ui/Alert";
+import { useLocation, useNavigate } from "react-router";
 
 const schema = yup.object({
   fulladdress:yup.string().required("Alamat kamu masih kosong"),
   city:yup.string().required("Kota kamu masih kosong"),
   province:yup.string().required("Provinsi kamu masih kosong"),
   postCode:yup.string().required("Kode pos kamu masih kosong"),
-  phone:yup.string().required("Nomer Telepon kamu masih kosong")
 })
 
 export default function Address(){
-  const {address: userAddress, userName, user, setterAddress } = useUser()
+  const {address: userAddress, bio, user, setterAddress } = useUser()
   const [addAddress, setAddAddress] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const [eventAdd, setEventAdd] = useState({
     status:"",
     message:""
@@ -35,11 +38,11 @@ export default function Address(){
       city:"",
       province:"",
       optional:"",
-      phone:"",
       isMain:true
     }
   })
 
+  console.log(location)
 
   function onSubmit(data){
     try{
@@ -52,6 +55,7 @@ export default function Address(){
       reset()
       window.setTimeout(() => {
         setEventAdd(prev => {return {...prev, event:false}})
+        if(location.state) navigate(location.state)
       },2000)
       setAddAddress(false)
     } catch(err){
@@ -109,7 +113,7 @@ export default function Address(){
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2 text-h">
                         <p>{user.fullname}</p>
-                        <p>{item.phone}</p>
+                        <p>{bio.phone}</p>
                       </div>
                       <p>{item.fulladdress}</p>
                       <p>{item.city}, <span>{item.province}</span><span> {item.postCode}</span></p>
@@ -139,17 +143,6 @@ export default function Address(){
             <p>{eventAdd.message}</p>
           </Alert>
           }
-          <div className="flex flex-col gap-2 full">
-            <label htmlFor="phone">Nomor Telepon *</label>
-            <input 
-              {...register("phone")}
-              placeholder="Masukan Nomor Telpon Penerima"
-              name="phone"
-              className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-              type="number" id="phone" value={null} 
-            />
-            {errors?.phone && <p className="text-xs text-red-500 mt-1">{errors.phone?.message}</p>}
-          </div>
           							
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="fulladdress">Alamat Lengkap *</label>

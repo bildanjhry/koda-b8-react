@@ -26,9 +26,6 @@ export default function Confirm(){
     }
     getState()
   },[location])
-  console.log(step)
-
-  console.log(location.state)
 
   function handleCheckout(){
     const formCheckoutProcess = {
@@ -43,7 +40,6 @@ export default function Confirm(){
         merchantStatus:"Diterima"
       },
     }
-    console.log(formCheckoutProcess)
     setterCheckout(formCheckoutProcess)
     setCart([])
     navigate("/checkout-complete", {state:{ data: formCheckoutProcess}})
@@ -109,7 +105,7 @@ export default function Confirm(){
             <div className="flex row gap-2 justify-between items-center mt-2">
               <button
                 type="button"
-                onClick={() => window.location.href = "/checkout-payment" }
+                onClick={() =>   navigate("/checkout/payment", {state:{ step:2, data:formCheckout }}) }
                 className="rounded-xl cursor-pointer
 							text-sm w-[15%] h-13 flex justify-center items-center border-light">
 								Kembali

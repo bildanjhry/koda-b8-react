@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { CheckoutContext } from "@/hooks/context/UserContext"
 
 // asset
@@ -19,9 +19,10 @@ export default function Payment(){
   const navigate = useNavigate()
   const [step, setStep] = useContext(CheckoutContext)
 
-  console.log(location.state)
-  setStep(location.state.step)
-  console.log(step)
+  useEffect(() => {
+    window.scrollTo(0,0)
+    setStep(location.state.step)
+  },[location, setStep])
 
   const { handleSubmit, formState: { errors }, register} = useForm({
     resolver:yupResolver(schema)
@@ -116,7 +117,7 @@ export default function Payment(){
           <div className="flex row gap-2 justify-between items-center mt-2">
             <button
 						 type="button"
-						 onClick={() => window.location.href = "/checkout" }
+						 onClick={() => navigate("/checkout", {state:{ step:1, data:location.state.data}}) }
 						 className="rounded-xl cursor-pointer
 						 text-sm w-[15%] h-13 flex justify-center items-center border-light">
 							Kembali

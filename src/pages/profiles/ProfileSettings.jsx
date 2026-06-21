@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { useLocation, useNavigate } from "react-router"
 
 // hooks
 import useUser from "@/hooks/useUser"
@@ -22,6 +23,8 @@ const schema = yup.object({
 
 export default function ProfileSettings(){
   const {initial, bio, setBio} = useUser("user")  
+  const location = useLocation()
+  const navigate = useNavigate()
   const [eventForm, setEventForm] = useState({
     event:false,
     status:"",
@@ -91,6 +94,7 @@ export default function ProfileSettings(){
         status:"",
         message:"",
       })
+      if(location.state) navigate(location.state)
     },2000)
   }
 

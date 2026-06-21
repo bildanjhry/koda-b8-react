@@ -15,7 +15,7 @@ export default function Wishlist(){
         <ProductsCard count={2} params={"WISHLIST"}/>
       </div>
       <div className="w-full border-light rounded-xl flex flex-col h-88 gap-3 items-center justify-center">
-        <MdOutlineFavoriteBorder size={77}/>
+        <MdOutlineFavoriteBorder size={66}/>
         <h2>Kamu belum punya wishlist produk</h2>
       </div>
 	  </div>

@@ -38,7 +38,7 @@ function Header() {
 
   return(
     <header className="flex items-center gap-2 h-30">
-      <div className="flex flex-col items-center gap-2 text-gray-200">
+      <div className="flex flex-col items-center gap-2 ">
         <div className={classNames(
           `w-10 h-10 rounded-full flex justify-center items-center bg-(--main-bg)`,
           {'bg-green-500' : step > 1},
@@ -54,7 +54,7 @@ function Header() {
       </div>
       <span className={classNames(
         {"border w-37 relative bottom-3 border-green-600": step > 1 },
-        "w-37 border relative bottom-3",
+        "w-37 border border-(--border) relative bottom-3",
       )}></span>
       <div className="flex flex-col items-center gap-2 ">
         <div className={classNames(
@@ -73,7 +73,7 @@ function Header() {
         )}>Pembayaran</p>
       </div>
       <span className={classNames(
-        "w-37 border border-(--text) relative bottom-3",
+        "w-37 border border-(--border) relative bottom-3",
         {"border-green-600" : step > 2}
 
       )}></span>

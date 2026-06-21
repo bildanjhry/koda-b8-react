@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { LuShoppingBag } from "react-icons/lu";
 import useUser from "@/hooks/useUser";
 import moneyFormat from "@/utils/money-format.js"
 
@@ -50,8 +51,11 @@ export default function Orders(){
             </footer>
           </div>
         ))
-
         }
+        <div className="w-full rounded-xl border-light h-88 mt-2 flex flex-col gap-3 justify-center items-center">
+          <LuShoppingBag size={66}/>
+          <h2>Kamu tidak punya pesanan apa-apa</h2>
+        </div>
       </div>
     </div>
   )

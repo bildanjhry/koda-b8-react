@@ -15,12 +15,13 @@ import Plus from "@/assets/icons/plus-black.svg"
 import Wishlist from "@/assets/icons/wishlist-mute.svg"
 import Delete from "@/assets/icons/delete-mute.svg"
 import Promo from "@/assets/icons/promo-code-blue.svg"
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 export default function Cart(){
   const {cart, setCart, bio, address} = useUser()
   const [globalCart, setGlobalCart] = useContext(UserContext)
   const navigate = useNavigate()
+  const location = useLocation()
 
   function handleDelete(id){
     const filteredItem = globalCart.filter((item) => item.cartId !== id)
@@ -39,7 +40,7 @@ export default function Cart(){
       navigate("/checkout")
 
     }catch(err){
-      navigate(err.message)
+      navigate(err.message, {state:location.pathname})
     }
   }
 
@@ -145,8 +146,9 @@ export default function Cart(){
                 bg-(--action-bg) text-(--text-light)">
                 <p>Chekout Aman</p>
               </button>
-              <div className="flex mt-3 flex-col items-center">
-                <p className="text-xs">Pembayaran 100% Aman</p>
+              <div className="flex mt-4 flex-col items-center text-center gap-2">
+                <p className="text-xs">🔒 Pembayaran 100% Aman</p>
+                <p className="text-xs">Metode: Transfer Bank · Virtual Account · Kartu Kredit · e- Wallet</p>
               </div>
             </aside>
           </div> :

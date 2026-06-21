@@ -198,7 +198,6 @@ function FormRegister(){
       .min(8, "Minimal password 8 Karakter"),
   })
 
-
   const { register, formState: { errors }, watch, handleSubmit,
     setError, clearErrors} = useForm({
     resolver:yupResolver(schema),
@@ -210,23 +209,15 @@ function FormRegister(){
       email:"",
       password:"",
       bio:{
-        fullname:this?.fullname,
-        email:this?.email,
+        fullname:"",
+        email:"",
         phone:"",
         age:"",
         dateBirth:"",
-        address:[],
         picture:""
       },
       wishlist:[],
-      checkout:[{
-        checkoutId:"",
-        paymentMetod:"",
-        paymentStatus:"",
-        orderStatus:"",
-        product:[],
-        promo:""
-      }]
+      checkout:[]
     }
   })
 
@@ -242,6 +233,7 @@ function FormRegister(){
 
 
   function onSubmit(data){
+    // guard clause
     if(confirmPass !== password){
       setError("confirmPassword", 
         { type:"custom", message:"Password tidak sesuai"})

@@ -17,7 +17,7 @@ const schema = yup.object({
 
 export default function Deliver(){
   const [step, setStep] = useContext(CheckoutContext)
-  const { user, address } = useUser()
+  const { user, address, bio } = useUser()
   const navigate = useNavigate()
   const [delivery, setDelivery] = useState()
   const userAddress = address.filter((item) => item.isMain)[0]
@@ -63,7 +63,7 @@ export default function Deliver(){
                 {...register("fullname")}
                 placeholder="Masukan Nama Penerima"
                 name="fullname"
-                className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
+                className="w-full h-11.5 bg-(--input-bg) rounded-xl pl-4 border-light"
                 type="text" id="name" value={user.fullname} 
               />
             </div>
@@ -73,8 +73,8 @@ export default function Deliver(){
                 {...register("phone")}
                 name="phone"
                 placeholder="Masukan Nomor Telpon Penerima"
-                className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="text" id="phone" value={userAddress.phone} 
+                className="w-full h-11.5 bg-(--input-bg) rounded-xl pl-4 border-light"
+                type="text" id="phone" value={bio.phone} 
               />
             </div>							
           </div>
@@ -85,7 +85,7 @@ export default function Deliver(){
               {...register("email")}
               name="email"
               placeholder="Masukan Email Penerima"
-              className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
+              className="w-full h-11.5 bg-(--input-bg) rounded-xl pl-4 border-light"
               type="email" id="email" value={user.email} 
             />
           </div>	
@@ -96,7 +96,7 @@ export default function Deliver(){
               name="fulladdress"
               placeholder="Alamat kamu"
               readOnly
-              className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
+              className="w-full h-11.5 bg-(--input-bg) rounded-xl pl-4 border-light"
               type="text" id="address" value={userAddress.fulladdress} 
             />
           </div>
