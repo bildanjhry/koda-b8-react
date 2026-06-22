@@ -65,7 +65,7 @@ function ListSideMenu({dataMenu, path}){
   
   function handleLogout(){
     window.localStorage.removeItem("user")
-   // navigate("/login")
+    navigate("/")
   }
 
   return(

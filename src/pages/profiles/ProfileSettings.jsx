@@ -105,7 +105,7 @@ export default function ProfileSettings(){
         <button 
           onClick={() => {onSubmit()}}
           className="w-28 justify-center rounded-xl flex items-center gap-2 text-sm 
-          h-9.5 text-(--text-high) border border-(--main-border)">
+          h-9.5 text-(--text-high) border border-(--main-border) cursor-pointer">
           <img src={Edit} alt="edit profiles" />
           <p>Simpan</p>
         </button>

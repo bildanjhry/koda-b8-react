@@ -26,7 +26,7 @@
     {
         "id":"4me",
         "name":"Metode Pembayaran",
-        "path":"/my-profiles/payment-method",
+        "path":"/my-profiles/",
         "icon":"/images/profilesMenu/payment-mute.svg",
         "alt":"payment method",
         "activeIcon":"/images/profilesMenu/payment-mute.svg"        
