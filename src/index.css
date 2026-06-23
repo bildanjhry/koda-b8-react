@@ -23,6 +23,7 @@
   --text-action:#F97316;
   --text-accent:#99A1AF;
   --text-light:#ffff;
+  --text-footer-bottom:#6A7282;
   --border: #0000001A;
   --main-border:#1A73E8;
   --action-border:#F97316;
@@ -35,6 +36,8 @@
   --content-bg:#F3F4F6;
   --input-bg:#F3F4F6;
   --success-bg:#F0FDF4;
+  --input-footer-bg:#4A5565;
+  --secondary-bg:#1E2939;
   --info-bg:#DC2626;
   --action-bg: #F97316;
   --accent-bg: #1A73E833;

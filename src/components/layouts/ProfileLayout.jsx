@@ -25,21 +25,21 @@ export default function ProfileLayout(){
             <div className="rounded-xl bg-white items-center py-3 border-light flex 
                 gap-2 flex-col">
               <div className="flex border-b-light w-[90%] py-4 flex-col gap-0 items-center">
-                <div className="w-[64px] h-[64px] bg-(--accent-bg) rounded-full flex justify-center
+                <div className="w-16 h-16 bg-(--accent-bg) rounded-full flex justify-center
                     items-center mb-3">
                   <h2 className="text-(--text-high) ">{initial}</h2>
                 </div>
-                <h4 className="text-h font-[700] text-lg">{user?.fullname}</h4>
+                <h4 className="text-h font-bold text-lg">{user?.fullname}</h4>
                 <p className="text-xs">{user?.email}</p>
               </div>
 
               <div className="flex flex-row gap-4 pb-2">
                 <div className="flex flex-col gap-0 items-center">
-                  <h5 className="text-h font-[600]">{checkout.length}</h5>
+                  <h5 className="text-h font-semibold">{checkout.length}</h5>
                   <p className="text-sm">Pesanan</p>
                 </div>
                 <div className="flex flex-col gap-0 items-center">
-                  <h5 className="text-h font-[600]">{wishlist.length}</h5>
+                  <h5 className="text-h font-semibold">{wishlist.length}</h5>
                   <p className="text-sm">Wishlist</p>
                 </div>
               </div>

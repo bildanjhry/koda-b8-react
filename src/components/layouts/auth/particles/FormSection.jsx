@@ -154,7 +154,7 @@ function FormLogin(){
             <img className="absolute p-4" src={Password} alt="" />
             <input 
               {...register("password")}
-              className="w-full h-[46px] text-sm px-12 border-light input-bg rounded-xl"
+              className="w-full h-11.5 text-sm px-12 border-light input-bg rounded-xl"
               placeholder="Masukan kata sandi"
               type="password" name="password" id="password" />
           </div>
