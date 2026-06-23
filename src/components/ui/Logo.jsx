@@ -10,7 +10,7 @@ export default function Logo({scheme}) {
 						B
         </div>
         <p className={classNames(
-          'text-sm',
+          'text-sm hidden md:visible',
           {'text-light' : scheme == "dark:"},
           {'text-h' : scheme !== "dark"}
         )}>BeliMudah</p>
