@@ -8,6 +8,7 @@ const  ProductsCard = lazy(() => import("@/components/features/ProductsCard.jsx"
 import ArrowRightButton from "@/components/ui/ArrowLeftButton.jsx"
 import InfoCards from "@/components/ui/InfoCards"
 import SkeletonCard from "@/components/ui/skeleton/SkeletonCards"
+import Reason from "@/components/ui/Reason"
 
 // asset
 import Flash from "@/assets/icons/flash-white.svg"
@@ -100,6 +101,10 @@ export default function Landing(){
               <ProductsCard/>
             </Suspense>
           </div>            
+
+          <div className="w-full mb-26">
+            <Reason/>
+          </div>
 
         </div>
       </div>
