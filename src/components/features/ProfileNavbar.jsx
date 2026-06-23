@@ -22,7 +22,7 @@ export default function ProfileNavbar(){
           <AuthNavbar/>
         </div>
         :
-        <ul className="h-full w-full justify-between md:justify-start px-4 md:px-0 md:w-fit flex gap-2 items-center">
+        <ul className="h-full w-full justify-between md:justify-start px-6 md:px-0 md:w-fit flex gap-2 items-center">
           <li>
             <Link to={""} className="w-10 h-10 cursor-pointer 
                   flex justify-center items-center">
@@ -33,14 +33,14 @@ export default function ProfileNavbar(){
             <Link to={"/my-profiles"} className="h-10 min-w-10 justify-center 
                   cursor-pointer flex items-center gap-1">
               <img src={profile} alt="profile" />
-              <p className="text-h text-sm hidden md:visible">{userName}</p>
+              <p className="text-h text-sm hidden md:flex">{userName}</p>
             </Link>
           </li>
-					<li>
+          <li className="visible md:hidden">
             <Link to={"/"} className="h-12 w-12  justify-center 
             cursor-pointer flex items-center gap-1">
-            <HiOutlineHome size={30}/>
-						</Link>
+              <HiOutlineHome size={30}/>
+            </Link>
           </li>
           <li>
             <Link to={"/my-profiles/wishlist"} className="h-10 w-10 cursor-pointer 
@@ -50,7 +50,7 @@ export default function ProfileNavbar(){
           </li>
           <li>
             <Link to={"/cart"} className="h-10 w-10 cursor-pointer flex items-center 
-								  justify-center relative">
+							justify-center relative">
               {globalCart?.length >= 1 && 
 									<div className="rounded-full bg-(--info-bg) flex items-center justify-center text-light 
 									text-[11px] absolute top-0 left-7 z-2 px-1.5 py-px">

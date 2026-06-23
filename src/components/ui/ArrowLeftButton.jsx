@@ -9,7 +9,7 @@ export default function ArrowRightButton(){
       <Link 
         className="flex gap-2"
         to={"/browse-product/all"}>
-        <p className="text-sm text-(--text-high)">Lihat Semua</p>
+        <p className="text-sm text-(--text-high) hidden md:flex">Lihat Semua</p>
         <img src={ArrowRight} alt="see all" />
       </Link>
     </>

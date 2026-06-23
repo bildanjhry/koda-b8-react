@@ -37,7 +37,7 @@ export default function Landing(){
     <MainLayout>
       <div className="w-full flex flex-col items-center">
         <Herro/>
-        <div className="w-[83%] flex flex-col justify-center items-center ">
+        <div className="w-[95%] md:w-[83%] flex flex-col  justify-center items-center ">
 
           <Suspense fallback={<><h1>Loading...</h1></>}>
             <CategoriesCard/>

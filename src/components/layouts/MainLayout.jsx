@@ -17,7 +17,7 @@ export default function MainLayout({children}){
         {children}
       </main>
       {/* <Footer/> */}
-      <div className="h-15 flex fixed z-10 bottom-0 bg-white w-full">
+      <div className="h-15 flex md:hidden fixed z-10 bottom-0 bg-white w-full">
         <ProfileNavbar/>
       </div>
     </div>
