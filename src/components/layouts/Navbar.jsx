@@ -58,14 +58,14 @@ export default function Navbar() {
         </div>
       </section>
 
-      <section className="w-full h-16 flex justify-center border-b-light ">
-        <div className="w-[95%] md:w-[83%] h-full flex gap-3 border-b-light items-center 
-				justify-self-center large:w-315">
+      <section className="w-full h-16 flex justify-center border-b-light items-center ">
+        <div className="w-[95%] md:w-[83%] h-full large:w-315 flex gap-3  items-center 
+				justify-self-center">
           <Logo />
-          <div id="search" className="w-full md:w-[45%]">
+          <div id="search" className="w-full md:w-[45%] ">
             <form id="search-input" 
               onSubmit={(e) => handleSearch(e)}
-              action="" className="h-11 md:h-10 flex">
+              action="" className="h-11 md:h-10 flex w-full">
               <input 
                 id="search"
                 type="search" 
@@ -75,7 +75,7 @@ export default function Navbar() {
                 input-bg pl-4 text-sm md:border-light"/>
               <button 
                 type="submit"
-                className="md:main-bg flex justify-center items-center rounded-r-lg 
+                className="md:bg-(--main-bg) flex justify-center items-center rounded-r-lg 
                 h-full w-[15%] md:w-[10%] bg-(--input-bg)">
                 <img src={search} alt="search" />
               </button>

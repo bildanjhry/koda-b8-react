@@ -4,7 +4,8 @@ import ElectronicsSale from "@/assets/bg/electronics-sale.png"
 
 export default function InfoCards(){
   return(
-    <div className="w-full grid mt-5 md:mt-7 shrink-0 md:grid-cols-2 grid-cols-1 mb-10 gap-3 overflow-hidden justify-between text-light">
+    <div className="w-full grid mt-5 md:mt-7 shrink-0 md:grid-cols-2 
+      grid-cols-1 mb-10 gap-3 overflow-hidden justify-between text-light">
       <section className="flex flex-col justify-center shrink-0 overflow-hidden relative h-44 rounded-xl">
         <img 
           className="absolute h-full w-full bg-cover shrink-0 bg-center rounded-xl"

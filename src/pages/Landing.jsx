@@ -43,7 +43,7 @@ export default function Landing(){
             <CategoriesCard/>
           </Suspense>
 
-          <div className="mb-8 w-full">
+          <div className="mb-8 md:w-full w-[95%] ">
             <header className="flex items-center justify-between mt-4">
               <section className="h-20 flex flex-row items-center gap-3">
                 <div className="rounded-lg bg-(--info-bg) text-light flex jusity-center 
