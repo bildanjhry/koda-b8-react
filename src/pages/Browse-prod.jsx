@@ -50,10 +50,10 @@ export default function BrowseProduct() {
 
   return (
     <MainLayout>
-      <div className="flex flex-col mt-3 w-[83%]">
+      <div className="flex flex-col md:mt-3 w-[95%] md:w-[83%]">
         <header className="w-full flex flex-col">
-          <div className="h-[6.2rem] w-full flex  flex-col">
-            <ul className="h-full flex items-center gap-1">
+          <div className="h-14 md:h-[6.2rem] w-full flex  flex-col">
+            <ul className="h-full flex items-center gap-1 text-sm md:text-md">
               <li>
                 <Link to={"/"}>
                 Beranda
@@ -67,14 +67,22 @@ export default function BrowseProduct() {
                 Toko
                 </Link>
               </li>
+              <li>
+                <img src={ArrowRight} alt="breadcrum" className="top-[1px] relative" />
+              </li>
+              <li className="text-h">
+                <Link to={"/browse-product/all"}>
+                Semua Produk
+                </Link>
+              </li>
             </ul>
-            <h2 className="text-h">Semua Produk</h2>
+            <h2 className="text-h hidden md:flex">Semua Produk</h2>
           </div>
         </header>
         
-        <main className="flex flex-row">
-          <aside className="flex flex-col gap-4 w-[25%]">
-            <div className="h-[5.5rem] my-4 flex flex-col justify-between">
+        <main className="flex flex-row mt-2 md:mt-0">
+          <aside className="hidden md:flex flex-col gap-4 w-[25%]">
+            <div className="h-22 my-4 flex flex-col justify-between">
               <h4 className="text-h font-[500]">Harga</h4>
               <div className="text-sm w-full flex items-center justify-between">
                 <p>Rp 0</p>
@@ -146,11 +154,12 @@ export default function BrowseProduct() {
             </div>
 
           </aside>
-          <div className="flex flex-col w-full pl-4">
-            <div className="flex justify-between items-center h-[3rem]">
-              <p>{18} Produk Ditemukan</p>
+
+          <div className="flex flex-col w-full md:pl-4">
+            <div className="flex justify-between items-center h-9 md:h-12">
+              <p>{18} Produk <span className="hidden md:flex">Ditemukan</span></p>
               <div className="flex items-center gap-3">
-                <p>Urutkan:</p>
+                <p className="hidden md:flex">Urutkan:</p>
                 <select name="sorting" id="" className="rounded-lg border-none bg-white text-sm pr-5 pl-2 py-2 
                 flex items-center justify-center text-h ">
                   <option value="populer">Paling Populer</option>
@@ -162,11 +171,11 @@ export default function BrowseProduct() {
 
             <div className="mt-5">
               <Suspense fallback={<SkeletonCard count={4} total={8}/>}>
-                <ProductsCard width={"small"}/>
+                <ProductsCard width={"small"} scroll={"NO_SCROLL"}/>
               </Suspense>
             </div>
 
-            <div className="w-[20rem] my-10 grid mx-auto">
+            <div className="w-70 md:w-[20rem] my-10 grid mx-auto text-sm md:text-md">
               <ActionButton
                 img={false}
                 buttonText={'Muat Lebih Banyak (6 Produk lagi)'}
