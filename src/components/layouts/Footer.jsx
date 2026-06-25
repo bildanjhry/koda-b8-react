@@ -16,9 +16,9 @@ import { LuYoutube } from "react-icons/lu";
 export default function Footer() {
   return (
     <div className="w-full primary-bg h-123 flex mt-auto flex-col items-center">
-      <section className="w-full h-26.25 border-b-accent flex justify-center ">
-        <ul className="w-[83%] flex justify-between large:w-315">
-          <li className="flex gap-2 items-center">
+      <section className="w-full py-3 md:py-0 md:h-26.25 border-b-accent flex justify-center ">
+        <ul className="w-[95%] md:w-[83%] grid grid-cols-1 gap-3  md:flex justify-between large:w-315">
+          <li className="flex gap-2 items-center shrink-0">
             <div className="accent-bg rounded-full flex justify-center items-center h-10 w-10">
               <img src={Delivery} alt="" />
             </div>
@@ -57,7 +57,7 @@ export default function Footer() {
         </ul>
       </section>
 
-      <section className="w-full h-84.5 border-b-accent flex justify-center">
+      {/* <section className="w-full h-84.5 border-b-accent flex justify-center">
         <ul className="flex w-[83%] large:w-315 gap-2 justify-between items-center">
           <li className="w-60 h-60.5 flex flex-col gap-5">
             <Logo scheme={"dark"}/>
@@ -159,9 +159,9 @@ export default function Footer() {
             </div>
           </li>
         </ul>
-      </section>
+      </section> */}
 
-      <section className="flex items-center justify-between h-12 w-[90%] md:w-[83%] justify-self-center">
+      <section className="flex flex-col md:flex-row py-3 md:py-0 md:items-center gap-1 md:justify-between h-8 md:h-12 w-[90%] md:w-[83%] justify-self-center">
         <p className="text-(--text-footer-bottom) text-xs">© 2026 BeliMudah. Seluruh hak cipta dilindungi.</p>
         <ul className="flex items-center gap-3 text-xs">
           <li>Kebijakan Privasi</li>
