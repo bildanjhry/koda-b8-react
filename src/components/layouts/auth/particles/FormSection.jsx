@@ -7,9 +7,8 @@ import { useLocation, useNavigate } from "react-router"
 import { useDispatch, useSelector } from "react-redux"
 import { createAccount } from "@/redux/reducer/accounts"
 
-
 // hook
-import useSession from "@/hooks/useSession"
+import useAuth from "@/hooks/useAuth.js"
 import useUser from "@/hooks/useUser"
 
 // component
@@ -22,7 +21,6 @@ import Email from "@/assets/icons/email-mute.svg"
 import Person from "@/assets/icons/person-mute.svg"
 import Password from "@/assets/icons/password-mute.svg"
 import Inside from "@/assets/icons/inside-white.svg"
-import Back from "@/assets/icons/arrow-left-mute.svg"
 import ShowPass from "@/assets/icons/watch-mute.svg"
 import HidePass from "@/assets/icons/watch-hide-mute.png"
 import { LuArrowLeft } from "react-icons/lu";
@@ -30,7 +28,6 @@ import { FaRegPaperPlane } from "react-icons/fa6";
 
 export default function FormSection({type}){
   const accounts = useSelector(state => state.accounts.accounts)
-  console.log(accounts)
 
   function chooseForm(){
     switch(type){
@@ -53,10 +50,8 @@ export default function FormSection({type}){
 }
 
 function FormLogin(){
-
   const location = useLocation()
-  const { setterUser, accounts } = useUser()
-  const { loginRes, setUserData } = useSession()
+  const { loginRes, setUserData } = useAuth()
   const navigate = useNavigate()
   const [errorLogin, setErrorLogin] = useState({
     error:false,
@@ -87,7 +82,6 @@ function FormLogin(){
   function onSubmit(data){
     try{
       setUserData(data)
-      console.log(loginRes)
       if(loginRes.error) throw new Error(loginRes.message)
 
       navigate("/") // navigate to landing
@@ -184,11 +178,10 @@ function FormRegister(){
     status:"",
     message:""
   })
-  const dispath = useDispatch()
+  const { authRes, setNewAccount } = useAuth()
   const passwordConRef = useRef()
   const passwordRef = useRef()
   const navigate = useNavigate()
-  const { accounts, setterAccounts } = useUser()
 
   function handleIdUser(name){
     return `${Math.round(Math.random() * 100)}${name.slice(0, 3)}${Date.now().toString(32)}`
@@ -238,10 +231,10 @@ function FormRegister(){
 
 
   function onSubmit(data){
+
     // guard clause
-    if(confirmPass !== password){
-      setError("confirmPassword", 
-        { type:"custom", message:"Password tidak sesuai"})
+    if(confirmPass !== password){ 
+      setError("confirmPassword", { type:"custom", message:"Password tidak sesuai"})
     } else clearErrors("confirmPassword")
     
     try{
@@ -256,31 +249,16 @@ function FormRegister(){
       userDatas.bio.email = data.email
       userDatas.password = btoa(data.password)
 
-      // setterAccounts(userDatas) // updating hooks
-
-      dispath(createAccount(userDatas))
-
-      // validation email
-      if(accounts.find((item) => item.email === userDatas.email)){
-        throw new Error("Email sudah digunakan")
+      setNewAccount(userDatas)
+      if(!authRes.error){
+        window.setTimeout(() => {
+          navigate("/login", { state: { email: data.email}})
+        },2000)
       }
 
-      setRegisterEvent({
-        event:true,
-        status:"success",
-        message:"Sukses Membuat Akun"
-      })
-
-      window.setTimeout(() => {
-        navigate("/login", { state: { email: data.email}})
-      },2000)
     } catch(err){
       // error handling
-      setRegisterEvent({
-        event:true,
-        status:"error",
-        message:err.message
-      })
+      console.log(err.message)
     } 
   }
 
@@ -314,9 +292,9 @@ function FormRegister(){
       <p className="relative bottom-4 text-sm">Sudah punya akun?
         <Link to={"/login"} className="text-(--text-high)"> Masuk disini</Link>
       </p>
-      { registerEvent.event && 
-        <Alert variant={registerEvent.status}>
-          <p>{registerEvent.message}</p>
+      { authRes.event && 
+        <Alert variant={authRes.error ? "error" : "success"}>
+          <p>{authRes.message}</p>
         </Alert>
       }
       <div className="grid grid-cols-2 gap-2 md:flex md:justify-between">

@@ -6,7 +6,7 @@ import AuthNavbar from "@/components/ui/Auth"
 import { useSelector } from "react-redux";
 
 // hook
-import useSession from "@/hooks/useSession";
+import useUserDetails from "@/hooks/useUserDetails";
 
 // asset
 import notif from "@/assets/icons/notif-mute.svg"
@@ -15,7 +15,7 @@ import wishlist from "@/assets/icons/wishlist-mute.svg"
 import Cart from "@/assets/icons/cart-mute.svg"
 
 export default function ProfileNavbar(){
-  const { userName } = useSession()
+  const { userName } = useUserDetails()
   const sessionUser = useSelector(state => state.session.session)
   const [ globalCart ] = useContext(UserContext)
   
