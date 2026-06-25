@@ -5,6 +5,9 @@ import useUser from "@/hooks/useUser"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useLocation, useNavigate } from "react-router"
+import { useDispatch, useSelector } from "react-redux"
+import { createAccount } from "@/redux/reducer/accounts"
+import { createSessionUser } from "@/redux/reducer/session"
 
 // component
 import AuthButton from "@/components/ui/AuthButton.jsx"
@@ -23,6 +26,9 @@ import { LuArrowLeft } from "react-icons/lu";
 import { FaRegPaperPlane } from "react-icons/fa6";
 
 export default function FormSection({type}){
+  const accounts = useSelector(state => state.accounts.accounts)
+
+  console.log(accounts)
 
   function chooseForm(){
     switch(type){
@@ -45,6 +51,7 @@ export default function FormSection({type}){
 }
 
 function FormLogin(){
+
   const location = useLocation()
   const { setterUser, accounts } = useUser()
   const navigate = useNavigate()
@@ -59,7 +66,7 @@ function FormLogin(){
       .min(8, "Minimal password 8 Karakter"),
   })
   
-  const { register, handleSubmit, setValues, watch, formState: {errors} } = useForm({
+  const { register, handleSubmit, setValues, formState: {errors} } = useForm({
     resolver:yupResolver(schema),
     defaultValues: {
       email:"",
@@ -67,8 +74,7 @@ function FormLogin(){
     }
   })
 
-  useEffect(() => {
-  },[watch])
+
 
   // set manually email after success register
   useEffect(() => {
@@ -184,6 +190,7 @@ function FormRegister(){
     status:"",
     message:""
   })
+  const dispath = useDispatch()
   const passwordConRef = useRef()
   const passwordRef = useRef()
   const navigate = useNavigate()
@@ -221,7 +228,7 @@ function FormRegister(){
         picture:""
       },
       wishlist:[],
-      checkout:[]
+      orders:[]
     }
   })
 
@@ -255,7 +262,9 @@ function FormRegister(){
       userDatas.bio.email = data.email
       userDatas.password = btoa(data.password)
 
-      setterAccounts(userDatas) // updating hooks
+      // setterAccounts(userDatas) // updating hooks
+
+      dispath(createAccount(userDatas))
 
       // validation email
       if(accounts.find((item) => item.email === userDatas.email)){

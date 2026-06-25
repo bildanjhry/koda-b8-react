@@ -75,37 +75,6 @@ export default function useUser(){
     });
   }
 
-  // function setterCart(data){
-  //   setCart(prev => {
-  //     let found = false
-  //     prev.forEach((item,index) => {
-  //       if(item.id === data.id && item.variants === data.variants){
-  //         found = true
-  //         item.qty += (data.qty)
-  //       } 
-  //     })
-      
-  //     // const rest = accounts.filter((item) => item.id !== user.id)
-   
-  //     // if(found) {
-  //     //  // setUser({...user, cart:[...prev]}) // update user's data
-        
-  //     //   // updating localstorage
-  //     //   window.localStorage.setItem("user", JSON.stringify({...user, cart:[...prev]})) 
-  //     //   window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, cart:[...prev]}]))
-  //     // }
-  //     // else {
-  //     // //  setUser({...user, cart:[...prev, data]})
-        
-  //     //   // updating localstorage
-  //     //   window.localStorage.setItem("user", JSON.stringify({...user, cart:[...prev, data]}))
-  //     //   window.localStorage.setItem("accounts", JSON.stringify([...rest, {...user, cart:[...prev, data]}]))
-  //     // }  
-      
-  //     return found ? [...prev] : [...prev, data]
-  //   })
-  // }
-
   function setterUser(data) {
     window.localStorage.setItem("user", JSON.stringify(data))
   }

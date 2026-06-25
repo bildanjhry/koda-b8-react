@@ -1,5 +1,8 @@
 /* eslint-disable indent */
 import { createBrowserRouter, RouterProvider} from "react-router";
+import { persistor, store} from "@/redux/store.js"
+import { Provider } from "react-redux"
+import { PersistGate } from "redux-persist/integration/react";
 
 // hook
 import UserProvider from "@/hooks/context/UserProvider";
@@ -42,7 +45,6 @@ import CustomersOrders from "@/pages/admin/Orders.jsx"
 // protected route
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import BackHome from "./routes/BackHome";
-
 
 const router = createBrowserRouter([
   {
@@ -170,9 +172,13 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <UserProvider>
-      <RouterProvider router={router}/>
-    </UserProvider>
+    <PersistGate persistor={persistor}>
+     <Provider store={store}>
+      <UserProvider>
+        <RouterProvider router={router}/>
+      </UserProvider>
+      </Provider>
+    </PersistGate>
   )
 }
 
