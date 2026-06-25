@@ -47,8 +47,8 @@ export default function Card({
         <Link
           key={index}
           to={`/details/${item.cat?.id}/${item.slugs}`} 
-          className="bg-(--container-bg) border-light md:w-full rounded-xl h-90 md:h-105 shrink-0 overflow-hidden">
-          <header className="w-full h-[66%] md:h-[70%] md:overflow-hidden relative">
+          className="bg-(--container-bg) border-light md:w-full rounded-xl h-90 md:h-109 shrink-0 overflow-hidden">
+          <header className="w-full h-[66%] md:h-[68%] md:overflow-hidden relative">
             <img 
               className="h-full w-full object-cover relative"
               src={item.image?.path} alt={item.image?.alt} />
@@ -72,7 +72,7 @@ export default function Card({
             )}>{item.brand}</p>
             <p className={classNames(
               "text-h font-semibold pb-1 text-sm md:text-[15px]",
-              {"text-[15px] md:text-[10px] pb-1.5 leading-4 w-[95%]": width === "SMALL"}
+              {"text-[15px] md:text-[10px] pb-1.5 leading-[18px] w-[95%]": width === "SMALL"}
             )}>{item.name}</p>
             <div className="flex items-center md:text-sm text-xs">
               <RenderStars rating={item.rating} width={width}/>

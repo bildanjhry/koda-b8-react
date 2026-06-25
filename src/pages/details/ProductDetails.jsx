@@ -167,7 +167,7 @@ export default function ProductDetails(){
           </section>
 
           <section className="w-full md:w-[52%] md:mt-0 mt-10 flex justify-end">
-            <div className="md:w-[96%] w-full h-full flex flex-col gap-3">
+            <div className="md:w-[96%] w-full h-full flex flex-col gap-0">
               <div className="flex gap-1 items-center m-0 text-sm">
                 <p>{data.brand}</p>
                 <p>·</p>
@@ -189,7 +189,7 @@ export default function ProductDetails(){
                 </div>
               </div>
 
-              <div className="w-full h-30 bg-(--accent-bg) rounded-lg mt-2 px-3 flex flex-col justify-center">
+              <div className="w-full h-30 bg-(--accent-bg) rounded-lg mt-6 px-3 flex flex-col justify-center">
                 <div className="flex flex-col items-start md:flex-row md:gap-3 md:items-center relative">
                   <h1 className="text-(--text-high)">{moneyFormat(data?.price)[0]}</h1>
                   { data?.discountPrice > 0 && 
@@ -202,7 +202,7 @@ export default function ProductDetails(){
                   Kamu hemat {moneyFormat(data?.discountPrice - data?.price)[0]}</p>
               </div>
 
-              <div className="flex flex-col mt-3">
+              <div className="flex flex-col mt-5">
                 <div className="flex flex-row gap-2 ">
                   <p className="text-h">Warna:</p>
                   <p 
@@ -242,7 +242,7 @@ export default function ProductDetails(){
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2 mt-4">
+              <div className="flex flex-col gap-2 mt-6">
                 <p className="text-h">Jumlah</p>
                 <div className="flex items-center gap-3">
                   <div className="flex w-fit h-9.5 justify-center items-center rounded-xl border-light">
@@ -264,7 +264,7 @@ export default function ProductDetails(){
                 </div>
               </div>
 
-              <div className="mt-3 hidden md:grid grid-cols-[43%_43%_9%] w-full justify-between">
+              <div className="mt-7 hidden md:grid grid-cols-[43%_43%_9%] w-full justify-between">
                 <ActionButton 
                   img={Cart} 
                   buttonText={"Tambah ke keranjang"} 
@@ -294,7 +294,7 @@ export default function ProductDetails(){
                 />
               </div>
 
-              <div className="flex flex-col md:flex-row gap-2 mt-3 w-full justify-between">
+              <div className="flex flex-col md:flex-row gap-2 mt-5 w-full justify-between">
                 <div className="flex gap-4 md:flex-col items-center justify-center md:gap-1 h-18.25 
                 w-full md:w-48.75 bg-(--content-deep-bg) rounded-lg text-xs">
                   <img src={Delivery} alt="delivery" />

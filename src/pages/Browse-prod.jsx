@@ -157,7 +157,7 @@ export default function BrowseProduct() {
 
           <div className="flex flex-col w-full md:pl-4">
             <div className="flex justify-between items-center h-9 md:h-12">
-              <p>{18} Produk <span className="hidden md:flex">Ditemukan</span></p>
+              <p>{18} Produk <span className="hidden md:inline">Ditemukan</span></p>
               <div className="flex items-center gap-3">
                 <p className="hidden md:flex">Urutkan:</p>
                 <select name="sorting" id="" 

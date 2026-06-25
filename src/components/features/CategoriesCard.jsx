@@ -10,9 +10,9 @@ export default function CategoriesCard(){
   const {data: categories} = useFetch("/data/categories.json")
 
   return(
-    <div className="w-full flex flex-col gap-0 md:gap-3 mt-2 md:mt-4 mb-5 md:mb-12">
+    <div className="w-full flex flex-col gap-0 md:gap-3 mt-2 md:mt-4 mb-5 md:mb-8">
       <header className="flex gap-5 md:gap-0 md:justify-between w-full h-20 items-center">
-        <h3 className="hidden md:visible">Belanja Berdasarkan Kategori</h3>
+        <h3 className="hidden md:flex">Belanja Berdasarkan Kategori</h3>
         <p className="visible md:hidden text-h text-md">Belanja Berdasarkan Kategori</p>
         <ArrowRightButton/>
       </header>
