@@ -8,9 +8,9 @@ import useUser from "@/hooks/useUser";
 import ArrowRight from "@/assets/icons/bc-arrow-right-mute.svg"
 import ArrowRightBlue from "@/assets/icons/bc-arrow-right-blue.svg"
 
-export default function Content({isMobile}){
+export default function Content({isMobile, initial, user}){
   const {data: menus} = useFetch("/data/sidemenu-profiles.json")
-  const {user, initial, checkout, wishlist} = useUser("user")
+  const {checkout, wishlist} = useUser("user")
   const location = useLocation()
   const path = location.pathname
 

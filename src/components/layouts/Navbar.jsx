@@ -6,14 +6,13 @@ import useFetch from "@/hooks/useFetch.js"
 // assets
 import location from "@/assets/icons/location-white.svg"
 import hamMenu from "@/assets/icons/ham-menu-black.svg"
-import search from "@/assets/icons/search-white.svg"
+import { CiSearch } from "react-icons/ci";
 
 // component
 import Logo from "@/components/ui/Logo"
 import ProfileNavbar from "@/components/features/ProfileNavbar"
 
 export default function Navbar() {
-
   const {data: categories} = useFetch("/data/categories.json")
 
   function handleSearch(e){
@@ -65,9 +64,9 @@ export default function Navbar() {
                 input-bg pl-4 text-sm md:border-light"/>
               <button 
                 type="submit"
-                className="md:bg-(--main-bg) flex justify-center items-center rounded-r-lg 
+                className=" flex justify-center items-center rounded-r-lg 
                 h-full w-[15%] md:w-[10%] bg-(--input-bg)">
-                <img src={search} alt="search" />
+                <CiSearch className="font-bold text-h text-xl"/>
               </button>
             </form>
           </div>

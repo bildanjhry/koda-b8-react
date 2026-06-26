@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router";
-import useUser from "@/hooks/useUser";
+import { useSelector } from "react-redux";
 
 export default function ProtectedRoute({children}){
-  const { user } = useUser()
+  const sessionUser = useSelector(state => state.session.session)
   const location = useLocation()
   const navigate = useNavigate()
 
-  if(!user?.id){
+  if(!sessionUser?.id){
     navigate("/login", {state:{origin: location.pathname}})	
   }
 

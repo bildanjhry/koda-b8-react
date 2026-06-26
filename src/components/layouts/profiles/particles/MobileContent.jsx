@@ -2,9 +2,9 @@ import { Outlet, useLocation, useNavigate, Link } from "react-router";
 
 // hook
 import useFetch from "@/hooks/useFetch";
-import useUser from "@/hooks/useUser";
 
-import ProfileNavbar from "../../../features/ProfileNavbar";
+// component
+import ProfileNavbar from "@/components/features/ProfileNavbar";
 
 // asset
 import ArrowRight from "@/assets/icons/bc-arrow-right-mute.svg"
@@ -14,9 +14,8 @@ import { LiaTruckSolid } from "react-icons/lia";
 import { SlStar } from "react-icons/sl";
 import { BiEditAlt } from "react-icons/bi";
 
-export default function Content({isMobile}){
+export default function Content({initial, user}){
   const {data: menus} = useFetch("/data/sidemenu-profiles.json")
-  const {user, initial, checkout, wishlist} = useUser("user")
   const location = useLocation()
   const path = location.pathname
 

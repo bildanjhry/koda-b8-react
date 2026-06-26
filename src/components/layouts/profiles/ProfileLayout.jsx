@@ -7,9 +7,13 @@ import useMediaQuery from "@/hooks/useMediaQuery";
 import MainLayout from "@/components/layouts/MainLayout";
 import Content from "./particles/Content";
 import MobileContent from "./particles/MobileContent"
+import useUserDetails from "@/hooks/useUserDetails";
+import { useSelector } from "react-redux";
 
 export default function ProfileLayout(){
   const width = useMediaQuery("(max-width:768px)")
+  const user = useSelector(state => state.session.session)
+  const { initial } = useUserDetails()
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -20,11 +24,11 @@ export default function ProfileLayout(){
   },[width])
 
   return isMobile ? 
-    ( <MobileContent/> )
+    ( <MobileContent initial={initial} user={user}/> )
     :  
     ( 
       <MainLayout>
-        <Content/>
+        <Content initial={initial} user={user}/>
       </MainLayout>
     )
   

@@ -8,11 +8,17 @@ export default function useUserDetails(){
 
   useEffect(() => {
     function getUserDetail(){
-      const userName = sessionUser.fullname.split("")[0]
-      setUserName(userName)
-      setInitial(userName.charAt(0).toUpperCase())
+      const fullname = sessionUser.fullname
+      if(/s/.test(fullname)){
+        const username = fullname.split("")[0]
+        setUserName(username)
+        setInitial(username.charAt(0).toUpperCase())
+      } else {
+        setUserName(fullname)
+        setInitial(fullname.charAt(0).toUpperCase())
+      }
     }
-    if(sessionUser.id !== undefined) getUserDetail()
+    if(sessionUser.id) getUserDetail()
   },[sessionUser])
 
   return {userName, initial}
