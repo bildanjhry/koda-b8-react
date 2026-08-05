@@ -72,6 +72,9 @@ jobs:
           port: ${{secrets.SSH_PORT}}
           key: ${{secrets.SSH_KEY}}
           script: |
-            docker pull ghcr.io/${{github.repository}}/andromeda:latest
-            docker rm -f andromeda
-            docker run -d -p 9302:80 --name andromeda ghcr.io/${{github.repository}}/andromeda:latest
+            cd app
+            docker compose pull frontend
+            docker compose up frontend -d
+            # docker pull ghcr.io/${{github.repository}}/andromeda:latest
+            # docker rm -f andromeda
+            # docker run -d -p 9302:80 --name andromeda ghcr.io/${{github.repository}}/andromeda:latest
