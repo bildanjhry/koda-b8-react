@@ -73,8 +73,8 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           script: |
             cd app
-            docker compose pull frontend
-            docker compose up frontend -d
+            sudo docker compose pull frontend
+            sudo docker compose up frontend -d
             # docker pull ghcr.io/${{github.repository}}/andromeda:latest
             # docker rm -f andromeda
             # docker run -d -p 9302:80 --name andromeda ghcr.io/${{github.repository}}/andromeda:latest
