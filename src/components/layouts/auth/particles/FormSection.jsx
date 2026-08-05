@@ -1,11 +1,12 @@
 import { Link } from "react-router"
 import { useEffect, useRef, useState } from "react"
-import { useForm  } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useLocation, useNavigate } from "react-router"
 import { useDispatch, useSelector } from "react-redux"
 import { createAccount } from "@/redux/reducer/accounts"
+import { createSessionUser } from "@/redux/reducer/session"
 
 // hook
 import useAuth from "@/hooks/useAuth.js"
@@ -26,69 +27,79 @@ import HidePass from "@/assets/icons/watch-hide-mute.png"
 import { LuArrowLeft } from "react-icons/lu";
 import { FaRegPaperPlane } from "react-icons/fa6";
 
-export default function FormSection({type}){
+export default function FormSection({ type }) {
   const accounts = useSelector(state => state.accounts.accounts)
 
-  function chooseForm(){
-    switch(type){
-    case "LOGIN":
-      return FormLogin()
-    case "REGISTER" :
-      return FormRegister()
-    case "FORGOT_PASS" :
-      return FormForgotPass()
-    default :
-      return FormLogin()	
+  function chooseForm() {
+    switch (type) {
+      case "LOGIN":
+        return FormLogin()
+      case "REGISTER":
+        return FormRegister()
+      case "FORGOT_PASS":
+        return FormForgotPass()
+      default:
+        return FormLogin()
     }
   }
 
-  return(
+  return (
     <>
-      { chooseForm() }
+      {chooseForm()}
     </>
   )
 }
 
-function FormLogin(){
+function FormLogin() {
   const location = useLocation()
   const { loginRes, setUserData } = useAuth()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [errorLogin, setErrorLogin] = useState({
-    error:false,
-    message:""
+    error: false,
+    message: ""
   })
-  
+
   const schema = yup.object({
-    email:yup.string().required("Silahkan masukan email anda"),
-    password:yup.string().required("Masukan Password anda")
+    email: yup.string().required("Silahkan masukan email anda"),
+    password: yup.string().required("Masukan Password anda")
       .min(8, "Minimal password 8 Karakter"),
   })
-  
-  const { register, handleSubmit, setValues, formState: {errors} } = useForm({
-    resolver:yupResolver(schema),
+
+  const { register, handleSubmit, setValues, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
     defaultValues: {
-      email:"",
-      password:""
+      email: "",
+      password: ""
     }
   })
 
   // set manually email after success register
   useEffect(() => {
-    if(location.pathname === "/login" && location.state){
-      setValues({email:location.state.email})
+    if (location.pathname === "/login" && location.state) {
+      setValues({ email: location.state.email })
     }
-  },[setValues, location])
+  }, [setValues, location])
 
-  function onSubmit(data){
-    try{
-      setUserData(data)
-      if(loginRes.error) throw new Error(loginRes.message)
-
+  async function onSubmit(data) {
+    try {
+      const formated = new URLSearchParams(data)
+      const response = await fetch('http://localhost:8081/auth/login', {
+        method:"POST",
+        headers: {
+          "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body: formated.toString()
+      })
+      const dataResponse = await response.json()
+      if (!dataResponse.success) throw new Error(dataResponse.message)
+      
+      dispatch(createSessionUser(dataResponse.results))
       navigate("/") // navigate to landing
-    } catch(err){
+    } catch (err) {
       setErrorLogin({ // error handling
-        error:true,
-        message:err.message
+        error: true,
+        message: err.message
       })
     }
   }
@@ -96,12 +107,12 @@ function FormLogin(){
   return (
     <form
       className="w-[85%] md:w-[53%] flex flex-col gap-3"
-      onSubmit={handleSubmit(onSubmit)} 
-      onFocus={() => { 
-        if(errorLogin.error){
+      onSubmit={handleSubmit(onSubmit)}
+      onFocus={() => {
+        if (errorLogin.error) {
           setErrorLogin({
-            error:false,
-            message:"",
+            error: false,
+            message: "",
           })
         }
       }} >
@@ -111,9 +122,9 @@ function FormLogin(){
       </p>
 
       {errorLogin.error &&
-      <Alert variant={"error"}>
-        <p>{errorLogin.message}</p>
-      </Alert>
+        <Alert variant={"error"}>
+          <p>{errorLogin.message}</p>
+        </Alert>
       }
       <div className="grid grid-cols-2 gap-3 md:flex md:justify-between md:gap-0">
         <AuthButton buttonText={"Google"} />
@@ -122,7 +133,7 @@ function FormLogin(){
       <div className="flex items-center gap-4 my-4">
         <div className="h-px flex-1 bg-gray-300"></div>
         <span className="text-gray-500 text-sm">
-            atau masuk dengan email
+          atau masuk dengan email
         </span>
         <div className="h-px flex-1 bg-gray-300"></div>
       </div>
@@ -132,7 +143,7 @@ function FormLogin(){
           <label htmlFor="email" className="text-h text-sm font-(--font-medium)">Email</label>
           <div className="relative">
             <img className="absolute p-4" src={Email} alt="" />
-            <input 
+            <input
               {...register("email")}
               className="w-full h-11.5 text-sm pl-12 border-light input-bg rounded-xl"
               placeholder="email@contoh.com"
@@ -147,7 +158,7 @@ function FormLogin(){
           </div>
           <div className="relative">
             <img className="absolute p-4" src={Password} alt="" />
-            <input 
+            <input
               {...register("password")}
               className="w-full h-11.5 text-sm px-12 border-light input-bg rounded-xl"
               placeholder="Masukan kata sandi"
@@ -156,110 +167,130 @@ function FormLogin(){
           {errors?.password && <p className="text-xs text-red-500">{errors.password?.message}</p>}
         </div>
         <div className="flex items-center gap-2">
-          <input type="checkbox" name="remember-me" id="remember-me" value={"remember-me"}/>
+          <input type="checkbox" name="remember-me" id="remember-me" value={"remember-me"} />
           <label htmlFor="remember-me" className="cursor-pointer text-sm">Ingatkan saya dalam 30 hari</label>
         </div>
         <SubmitButton img={Inside} buttonText={"Masuk"}>
         </SubmitButton>
         <div className="w-full flex flex-col justify-center items-center gap-7 mt-3">
           <p className="text-center text-xs">🔒 Login aman dengan enkripsi SSL 256-bit</p>
-          <p className="text-center text-xs flex w-full">Dengan masuk, kamu menyetujui Syarat & Ketentuan dan Kebijakan Privasi kami.</p>            
+          <p className="text-center text-xs flex w-full">Dengan masuk, kamu menyetujui Syarat & Ketentuan dan Kebijakan Privasi kami.</p>
         </div>
       </div>
-    </form>		
+    </form>
   )
 }
 
-function FormRegister(){
+function FormRegister() {
   const [hidePass, setHidePass] = useState(true)
   const [hidePassCon, setHidePassCon] = useState(true)
   const [registerEvent, setRegisterEvent] = useState({
-    event:false,
-    status:"",
-    message:""
+    event: false,
+    error: false,
+    status: "",
+    message: "",
+
   })
   const { authRes, setNewAccount } = useAuth()
   const passwordConRef = useRef()
   const passwordRef = useRef()
   const navigate = useNavigate()
 
-  function handleIdUser(name){
+  function handleIdUser(name) {
     return `${Math.round(Math.random() * 100)}${name.slice(0, 3)}${Date.now().toString(32)}`
   }
 
   const schema = yup.object({
     fullname: yup.string().required("Silahkan masukan nama anda").min(3),
-    email:yup.string().required("Silahkan masukan email anda"),
-    password:yup.string().required("Buat Password anda")
+    email: yup.string().required("Silahkan masukan email anda"),
+    password: yup.string().required("Buat Password anda")
       .min(8, "Minimal password 8 Karakter"),
-    confirmPassword:yup.string().required("Konfirmasi password anda")
+    confirmPassword: yup.string().required("Konfirmasi password anda")
       .min(8, "Minimal password 8 Karakter"),
   })
 
   const { register, formState: { errors }, watch, handleSubmit,
-    setError, clearErrors} = useForm({
-    resolver:yupResolver(schema),
-    defaultValues: {
-      id:"",
-      cart:[],
-      address:[],
-      fullname:"",
-      email:"",
-      password:"",
-      bio:{
-        fullname:"",
-        email:"",
-        phone:"",
-        age:"",
-        dateBirth:"",
-        picture:""
-      },
-      wishlist:[],
-      orders:[]
-    }
-  })
+    setError, clearErrors } = useForm({
+      resolver: yupResolver(schema),
+      defaultValues: {
+        id: "",
+        cart: [],
+        address: [],
+        fullname: "",
+        email: "",
+        password: "",
+        bio: {
+          fullname: "",
+          email: "",
+          phone: "",
+          age: "",
+          dateBirth: "",
+          picture: ""
+        },
+        wishlist: [],
+        orders: []
+      }
+    })
 
   // watching password syncs
   const confirmPass = watch("confirmPassword")
   const password = watch("password")
   useEffect(() => {
-    if(confirmPass !== password){
-      setError("confirmPassword", 
-        { type:"custom", message:"Password tidak sesuai"})
+    if (confirmPass !== password) {
+      setError("confirmPassword",
+        { type: "custom", message: "Password tidak sesuai" })
     } else { clearErrors("confirmPassword") }
-  },[watch, setError, clearErrors, password, confirmPass])
+  }, [watch, setError, clearErrors, password, confirmPass])
 
 
-  function onSubmit(data){
+  async function onSubmit(data) {
 
     // guard clause
-    if(confirmPass !== password){ 
-      setError("confirmPassword", { type:"custom", message:"Password tidak sesuai"})
+    if (confirmPass !== password) {
+      setError("confirmPassword", { type: "custom", message: "Password tidak sesuai" })
     } else clearErrors("confirmPassword")
-    
-    try{
+
+    try {
       let userDatas = {}
-      for(const props in data){
-        if(props !== "confirmPassword") userDatas[props] = data[props]
+      for (const props in data) {
+        if (props !== "confirmPassword") userDatas[props] = data[props]
       }
-      
-      // manually create user's id
-      userDatas.id = handleIdUser(data.fullname)
+
       userDatas.bio.fullname = data.fullname
       userDatas.bio.email = data.email
-      userDatas.password = btoa(data.password)
+      userDatas.password = data.password
+      const formated = new URLSearchParams(userDatas)
 
-      setNewAccount(userDatas)
-      if(!authRes.error){
-        window.setTimeout(() => {
-          navigate("/login", { state: { email: data.email}})
-        },2000)
+      const response = await fetch('http://localhost:8081/auth/register', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formated.toString()
+      })
+      const dataRes = await response.json()
+      if (!dataRes.success) {
+        throw new Error(dataRes.message)
       }
+      setRegisterEvent({
+        event: true,
+        error: false,
+        message: dataRes.message,
+      })
 
-    } catch(err){
+      window.setTimeout(() => {
+          navigate("/login", { state: { email: data.email}})
+      },2000)
+
+    } catch (err) {
       // error handling
-      console.log(err.message)
-    } 
+      setRegisterEvent({
+        event: true,
+        error: true,
+        message: err.message,
+      })
+      console.error(err.message)
+    }
   }
 
   // function handleWatchPass(name){
@@ -277,13 +308,14 @@ function FormRegister(){
   return (
     <form
       className="w-[85%] pt-10 md:pt-0 md:w-[53%] flex flex-col gap-2"
-      onSubmit={handleSubmit(onSubmit)} 
+      onSubmit={handleSubmit(onSubmit)}
       onFocus={() => {
-        if(registerEvent.event){
+        if (registerEvent.event) {
           setRegisterEvent({
-            event:false,
-            status:"",
-            message:""
+            event: false,
+            error: false,
+            status: "",
+            message: ""
           })
         }
       }}
@@ -292,9 +324,9 @@ function FormRegister(){
       <p className="relative bottom-4 text-sm">Sudah punya akun?
         <Link to={"/login"} className="text-(--text-high)"> Masuk disini</Link>
       </p>
-      { authRes.event && 
-        <Alert variant={authRes.error ? "error" : "success"}>
-          <p>{authRes.message}</p>
+      {registerEvent.event &&
+        <Alert variant={registerEvent.error ? "error" : "success"}>
+          <p>{registerEvent.message}</p>
         </Alert>
       }
       <div className="grid grid-cols-2 gap-2 md:flex md:justify-between">
@@ -305,7 +337,7 @@ function FormRegister(){
       <div className="flex items-center gap-4 my-5">
         <div className="h-px flex-1 bg-gray-300"></div>
         <span className="text-gray-500 text-sm">
-            atau daftar dengan email
+          atau daftar dengan email
         </span>
         <div className="h-px flex-1 bg-gray-300"></div>
       </div>
@@ -322,12 +354,12 @@ function FormRegister(){
               type="text" name="fullname" id="fullname" />
           </div>
           {errors?.fullname && <p className="text-xs text-red-500">{errors.fullname?.message}</p>}
-        </div>				
+        </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="email" className="text-h font-(--font-medium)">Email</label>
           <div className="relative">
             <img className="absolute p-4" src={Email} alt="" />
-            <input 
+            <input
               {...register("email")}
               className="w-full h-[46px] text-sm pl-12 border-light input-bg rounded-xl"
               placeholder="email@contoh.com"
@@ -341,15 +373,15 @@ function FormRegister(){
           </div>
           <div className="relative">
             <img className="absolute p-4" src={Password} alt="password lock" />
-            <button 
+            <button
               type="button"
               // onClick={() =>{handleWatchPass("password")}}
               className="absolute right-0 p-4 cursor-pointer box">
               <img
-							 className="w-[16px] h-[16px]"
-							 src={hidePass ? ShowPass : HidePass} alt="show password" id="show-pass"/>
-            </button>						
-            <input 
+                className="w-[16px] h-[16px]"
+                src={hidePass ? ShowPass : HidePass} alt="show password" id="show-pass" />
+            </button>
+            <input
               {...register("password")}
               className="w-full h-[46px] text-sm px-12 border-light input-bg rounded-xl"
               placeholder="Minimal 8 karakter"
@@ -363,51 +395,51 @@ function FormRegister(){
           </div>
           <div className="relative">
             <img className="absolute p-4" src={Password} alt="password lock" />
-            <button 
+            <button
               type="button"
               // onClick={() => {handleWatchPass("confirmPassword")}}
               className="absolute right-0 p-4 cursor-pointer">
-              <img 
+              <img
                 className="w-4 h-4"
-                src={hidePassCon ? ShowPass : HidePass} alt="show password" id="show-pass"/>
+                src={hidePassCon ? ShowPass : HidePass} alt="show password" id="show-pass" />
             </button>
             <input
-              {...register("confirmPassword")} 
+              {...register("confirmPassword")}
               className="w-full h-[46px] text-sm px-12 border-light input-bg rounded-xl"
               placeholder="Minimal 8 karakter"
               type={`${hidePassCon ? 'password' : 'text'}`} name="confirmPassword" id="confrimPassword" />
           </div>
           {errors?.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>}
-        </div>				
+        </div>
         <div className="flex items-start gap-2 mt-2">
-          <input 
+          <input
             className="relative top-1"
-            required type="checkbox" name="remember-me" id="remember-me" value={"remember-me"}/>
+            required type="checkbox" name="remember-me" id="remember-me" value={"remember-me"} />
           <label htmlFor="remember-me" className="cursor-pointer text-xs relative">
             Saya menyetujui Syarat & Ketentuan dan Kebijakan Privasi BeliMudah
           </label>
         </div>
-        <SubmitButton 
-          img={Inside} 
-          buttonText={"Daftar Sekarang"} 
+        <SubmitButton
+          img={Inside}
+          buttonText={"Daftar Sekarang"}
           order={"right-to-left"}
         />
         <div className="w-full flex flex-col justify-center items-center mt-2">
           <p className="text-center text-xs">🔒 Data kamu aman terenkripsi</p>
         </div>
       </div>
-    </form>		
+    </form>
   )
 }
 
-function FormForgotPass(){
+function FormForgotPass() {
 
-  function handleSubmit(e){
+  function handleSubmit(e) {
     e.preventDefault()
-    try{
+    try {
       const data = new FormData(e.target)
 
-    } catch({message}){
+    } catch ({ message }) {
       // handling if error happend
       console.log(message)
     }
@@ -416,24 +448,24 @@ function FormForgotPass(){
   return (
     <form
       className="w-[85%] md:w-[53%] flex flex-col gap-3"
-      onSubmit={(e) => {handleSubmit(e)}} 
+      onSubmit={(e) => { handleSubmit(e) }}
       action="">
-      <Link to={"/login"} className="flex items-center gap-2"> 
+      <Link to={"/login"} className="flex items-center gap-2">
         <LuArrowLeft className="text-(--text-high)" />
         <p className="text-[14px] text-(--text-high)">Kembali ke login</p>
       </Link>
       <h1>Lupa Kata sandi?</h1>
       <p className="text-sm md:text-md">
-				Tidak perlu khawatir. Masukkan email yang terdaftar dan
-				kami akan mengirimkan tautan untuk membuat kata sandi
-				baru.
+        Tidak perlu khawatir. Masukkan email yang terdaftar dan
+        kami akan mengirimkan tautan untuk membuat kata sandi
+        baru.
       </p>
       <div className="flex flex-col gap-3 mt-3">
         <div className="flex flex-col gap-1">
           <label htmlFor="email" className="text-h font-(--font-medium)">Alamat Email</label>
           <div className="relative">
             <img className="absolute p-4" src={Email} alt="" />
-            <input 
+            <input
               className="w-full h-[46px] text-sm pl-12 border-light input-bg rounded-xl"
               placeholder="email@contoh.com"
               type="email" name="email" id="email" />
@@ -442,9 +474,9 @@ function FormForgotPass(){
         <SubmitButton img={Inside} buttonText={"Kirim Tautan Reset"} />
         <div className="w-full flex flex-col justify-center items-center gap-6">
           <p className="text-center text-sm">🔒 Login aman dengan enkripsi SSL 256-bit</p>
-          <p className="text-center text-sm flex w-[85%]">Dengan masuk, kamu menyetujui Syarat & Ketentuan dan Kebijakan Privasi kami.</p>            
+          <p className="text-center text-sm flex w-[85%]">Dengan masuk, kamu menyetujui Syarat & Ketentuan dan Kebijakan Privasi kami.</p>
         </div>
       </div>
-    </form>		
+    </form>
   )
 }
