@@ -83,8 +83,9 @@ function FormLogin() {
 
   async function onSubmit(data) {
     try {
+      const API = import.meta.env.VITE_API_URL
       const formated = new URLSearchParams(data)
-      const response = await fetch('http://localhost:8081/auth/login', {
+      const response = await fetch(`${API}/auth/login`, {
         method:"POST",
         headers: {
           "Content-Type":"application/x-www-form-urlencoded"
@@ -191,7 +192,7 @@ function FormRegister() {
     message: "",
 
   })
-  const { authRes, setNewAccount } = useAuth()
+  // const { authRes, setNewAccount } = useAuth()
   const passwordConRef = useRef()
   const passwordRef = useRef()
   const navigate = useNavigate()
@@ -260,8 +261,8 @@ function FormRegister() {
       userDatas.bio.email = data.email
       userDatas.password = data.password
       const formated = new URLSearchParams(userDatas)
-
-      const response = await fetch('http://localhost:8081/auth/register', {
+      const API = import.meta.env.VITE_API_URL
+      const response = await fetch(`${API}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"

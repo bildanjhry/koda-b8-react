@@ -7,6 +7,8 @@ FROM node:alpine AS builder
 WORKDIR /build
 COPY --from=project /source/ .
 RUN npm install
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 FROM nginx:alpine
