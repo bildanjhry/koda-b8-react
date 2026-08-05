@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name : Checkout Source Code
-          uses: actions/checkout@v6
+          uses: actions/checkout@v4
 
         - name : Login to Container Registry
           uses: docker/login-action@v4
@@ -19,15 +19,12 @@ jobs:
             password: ${{ secrets.GITHUB_TOKEN }}
 
         - name: Push Docker App to Container Registry
-          uses : docker/build-push-action@v7
+          uses : docker/build-push-action@v6
           with:
             context: .
             push: true
             tags: ghcr.io/${{ github.repository }}/andromeda:latest
         
-        - name: Re Build App
-          uses: actions/checkout@v4
-
         - name: Install All Deps
           run: npm i
 
@@ -35,7 +32,7 @@ jobs:
           run: npm run build
 
         - name: Upload Artefact
-          uses: actions/upload-artifact@v7
+          uses: actions/upload-artifact@v4
           with: 
             name: build-app-result
             id: upload-dist
@@ -47,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name: Download Artifact
-          uses: actions/download-artifact@v8
+          uses: actions/download-artifact@v4
           with:
             name: build-app-result
             path: dist/
@@ -58,6 +55,7 @@ jobs:
         - name: Realese
           uses: softprops/action-gh-release@v3
           with: 
+            tag_name: ${{ github.ref_name }}
             files: | 
               andromeda.zip
   
