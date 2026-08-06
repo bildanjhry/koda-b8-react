@@ -84,17 +84,18 @@ function FormLogin() {
   async function onSubmit(data) {
     try {
       const API = import.meta.env.VITE_API_URL
+      // const API = "http://localhost:8081"
       const formated = new URLSearchParams(data)
       const response = await fetch(`${API}/auth/login`, {
-        method:"POST",
+        method: "POST",
         headers: {
-          "Content-Type":"application/x-www-form-urlencoded"
+          "Content-Type": "application/x-www-form-urlencoded"
         },
         body: formated.toString()
       })
       const dataResponse = await response.json()
       if (!dataResponse.success) throw new Error(dataResponse.message)
-      
+
       dispatch(createSessionUser(dataResponse.results))
       navigate("/") // navigate to landing
     } catch (err) {
@@ -262,6 +263,7 @@ function FormRegister() {
       userDatas.password = data.password
       const formated = new URLSearchParams(userDatas)
       const API = import.meta.env.VITE_API_URL
+      // const API = "http://localhost:8081"
       const response = await fetch(`${API}/auth/register`, {
         method: "POST",
         headers: {
@@ -280,8 +282,8 @@ function FormRegister() {
       })
 
       window.setTimeout(() => {
-          navigate("/login", { state: { email: data.email}})
-      },2000)
+        navigate("/login", { state: { email: data.email } })
+      }, 2000)
 
     } catch (err) {
       // error handling

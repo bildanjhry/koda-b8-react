@@ -1,5 +1,5 @@
 import useUser from "@/hooks/useUser";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import moneyFormat from "@/utils/money-format.js"
 
 import { UserContext } from "@/hooks/context/UserContext";
@@ -16,18 +16,75 @@ import Wishlist from "@/assets/icons/wishlist-mute.svg"
 import Delete from "@/assets/icons/delete-mute.svg"
 import Promo from "@/assets/icons/promo-code-blue.svg"
 import { useLocation, useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 export default function Cart(){
-  const {cart, setCart, bio, address} = useUser()
+  const {cart, setCart} = useUser()
   const [globalCart, setGlobalCart] = useContext(UserContext)
+  const [cartProps, setCartProps] = useState({})
+  const session = useSelector(state => state.session.session)
   const navigate = useNavigate()
+  const [address, setAddress] = useState()
   const location = useLocation()
 
   function handleDelete(id){
-    const filteredItem = globalCart.filter((item) => item.cartId !== id)
-    setCart(filteredItem)
-    setGlobalCart(() => filteredItem)
+    // const filteredItem = globalCart.filter((item) => item.cartId !== id)
+    // setCart(filteredItem)
+    // setGlobalCart(() => filteredItem)
   }
+
+  useEffect(() => {
+    async function getDataCart(){
+      try{
+        // const API = 'http://localhost:8081'
+        const API = import.meta.env.VITE_API_URL
+        const response = await fetch(`${API}/carts/user/${session.id}`, {
+          headers:{
+            "Authorization":`Bearer ${session.token}`
+          }
+        })
+        const data = await response.json()
+        if(!data.success){
+          throw new Error(data.message)
+        }
+        console.log(data.result)
+        setCartProps({
+          subtotal: data.result?.subtotal,
+          total: data.result?.total
+        })
+        setCart(data.result?.order_items)
+
+      } catch(err){
+        console.error(err.message)
+      }
+    }
+    getDataCart()
+  },[])
+
+    useEffect(() => {
+    async function getDataAddress(){
+      try{
+        // const API = 'http://localhost:8081'
+        const API = import.meta.env.VITE_API_URL
+        const response = await fetch(`${API}/address/user/${session.id}`, {
+          headers:{
+            "Authorization":`Bearer ${session.token}`
+          }
+        })
+        const data = await response.json()
+        if(!data.success){
+          throw new Error(data.message)
+        }
+        console.log(data.result)
+        setAddress(data.result)
+
+      } catch(err){
+        setAddress([])
+        console.error(err.message)
+      }
+    }
+    getDataAddress()
+  },[])
 
   function handleCheckout(){
     try{
@@ -66,13 +123,13 @@ export default function Cart(){
                       src={item.image?.path} alt={item.image?.alt} />
                     <div className="flex flex-col justify-between h-full ">
                       <p className="text-h font-medium text-xm">{item.name}</p>
-                      <p className="text-xs">{item?.variants?.charAt(0).toUpperCase() + item?.variants?.slice(1)}</p>
+                      <p className="text-xs">{item?.color?.charAt(0).toUpperCase() + item?.color?.slice(1)}</p>
                       <div className="flex felx-col h-[1.9rem] text-sm w-fit items-center 
                           rounded-lg border-light">
                         <div className="w-10 flex justify-center items-center">
                           <img src={Minus} alt="decrease" />
                         </div>
-                        <p className="text-h flex justify-center items center w-[2.7rem]">{item.qty}</p>
+                        <p className="text-h flex justify-center items center w-[2.7rem]">{item.quantity_prod}</p>
                         <div className="w-10 flex justify-center items-center">
                           <img src={Plus} alt="increase" />
                         </div>
@@ -128,8 +185,8 @@ export default function Cart(){
               <h4 className="text-h font-semibold">Ringkasan Pesananan</h4>
               <div className="flex flex-col border-b-light mt-2 text-sm gap-2 py-2">
                 <ul className="flex justify-between items-center">
-                  <li>Subtotal ({globalCart.reduce((acc, item) =>  acc + parseInt(item.qty), 0)} item)</li>
-                  <li>{moneyFormat(globalCart.reduce((acc, item) =>  acc + item.price * item.qty, 0))[0]}</li>
+                  <li>Subtotal ({cart.length} item)</li>
+                  <li>{moneyFormat(cartProps.subtotal)[0]}</li>
                 </ul>
                 <ul className="flex justify-between items-center">
                   <li>Ongkos Kirim</li>
@@ -138,7 +195,7 @@ export default function Cart(){
               </div>
               <ul className="flex justify-between items-center py-2">
                 <li className="text-h">Total</li>
-                <li className="text-(--text-high)">{moneyFormat(globalCart.reduce((acc, item) =>  acc + item.price * item.qty, 0))[0]}</li>
+                <li className="text-(--text-high)">{moneyFormat(cartProps.total)[0]}</li>
               </ul>
               <button 
                 onClick={handleCheckout}

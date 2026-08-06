@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 export default function ProfileLayout(){
   const width = useMediaQuery("(max-width:768px)")
   const user = useSelector(state => state.session.session)
-  const { initial } = useUserDetails()
+  const { initial, userProfile } = useUserDetails()
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -24,11 +24,11 @@ export default function ProfileLayout(){
   },[width])
 
   return isMobile ? 
-    ( <MobileContent initial={initial} user={user}/> )
+    ( <MobileContent initial={initial} user={userProfile}/> )
     :  
     ( 
       <MainLayout>
-        <Content initial={initial} user={user}/>
+        <Content initial={initial} user={userProfile}/>
       </MainLayout>
     )
   

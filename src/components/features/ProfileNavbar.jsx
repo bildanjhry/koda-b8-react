@@ -1,5 +1,5 @@
 import { Link } from "react-router"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { UserContext } from "@/hooks/context/UserContext"
 import { HiOutlineHome } from "react-icons/hi2";
 import AuthNavbar from "@/components/ui/Auth"
@@ -15,9 +15,32 @@ import wishlist from "@/assets/icons/wishlist-mute.svg"
 import Cart from "@/assets/icons/cart-mute.svg"
 
 export default function ProfileNavbar(){
-  const { userName } = useUserDetails()
+  const { userProfile } = useUserDetails()
   const sessionUser = useSelector(state => state.session.session)
-  const [ globalCart ] = useContext(UserContext)
+  const [ globalCart, setGlobalCart ] = useContext(UserContext)
+
+  useEffect(() => {
+      async function getDataCart(){
+      try{
+        // const API = 'http://localhost:8081'
+        const API = import.meta.env.VITE_API_URL
+        const response = await fetch(`${API}/carts/user/${sessionUser.id}`, {
+          headers:{
+            "Authorization":`Bearer ${sessionUser.token}`
+          }
+        })
+        const data = await response.json()
+        if(!data.success){
+          throw new Error(data.message)
+        }
+        setGlobalCart(data.result?.order_items)
+
+      } catch(err){
+        console.error(err.message)
+      }
+    }
+    getDataCart()
+  },[])
   
   return(
     <div className="h-full w-full md:w-fit flex items-center ">
@@ -37,7 +60,7 @@ export default function ProfileNavbar(){
             <Link to={"/my-profiles"} className="h-10 min-w-10 justify-center 
                   cursor-pointer flex items-center gap-1">
               <img src={profile} alt="profile" />
-              <p className="text-h text-sm hidden md:flex">{userName}</p>
+              <p className="text-h text-sm hidden md:flex">{userProfile.username}</p>
             </Link>
           </li>
           <li className="visible md:hidden">

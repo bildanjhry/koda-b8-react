@@ -1,17 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  accounts:[],
+  accounts:{},
 }
 
 const reducers = {
   createAccount:function(state, action){
-    console.log(action.payload)
-    state.accounts.push(action.payload)
+    state.accounts = {...action.payload}
   },
-  updateAccount:function(state, action){
-    const userIndex = state.accounts.filter((item) => item.id !== action.payload.id)
-    state.accounts.splice(userIndex, 1, action.payload.user)
+  clearAccount:function(state, action){
+    state.accounts = {}
   }
 }
 
@@ -22,4 +20,4 @@ const accounts = createSlice({
 })
 
 export default accounts.reducer
-export const {createAccount, createUser, updateAccount} = accounts.actions
+export const {createAccount, clearAccount} = accounts.actions

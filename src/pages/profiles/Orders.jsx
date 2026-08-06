@@ -4,7 +4,7 @@ import moneyFormat from "@/utils/money-format.js"
 
 export default function Orders(){
   const {checkout} = useUser()
-  const data = checkout.filter((item) => item.idCheckout !== undefined)
+  const data = [].filter((item) => item.idCheckout !== undefined)
 
   return(
     <div className="w-[95%] pt-1 h-full">

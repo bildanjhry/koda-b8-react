@@ -6,7 +6,6 @@ const initialState = {
 
 const reducers = {
   createSessionUser:function(state, action){
-    console.log(action.payload)
     state.session = {...action.payload}
   },
   updateSessionUser:function(state, action){

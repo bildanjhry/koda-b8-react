@@ -12,17 +12,19 @@ import { useEffect, useState } from "react"
 
 // components
 import Alert from "@/components/ui/Alert"
+import { useSelector } from "react-redux"
 
-// const schema = yup.object({
-//   fullName:yup.string().required("Nama lengkap kamu masih kosong"),
-//   email:yup.string().required("Email kamu masih kosong"),
-//   phone:yup.number().required("Nomor Telepon kamu masih kosong").positive("Ini bukan format yang benar"),
-//   date:yup.string().required("Tanggal lahir kamu masih kosong"),
-//   gender:yup.string().required("Kelamin kamu masih konsong")
-// })
+const schema = yup.object({
+  fullname:yup.string().required("Nama lengkap kamu masih kosong"),
+  email:yup.string().required("Email kamu masih kosong"),
+  phone:yup.number().required("Nomor Telepon kamu masih kosong").positive("Ini bukan format yang benar"),
+  date:yup.string().required("Tanggal lahir kamu masih kosong"),
+  gender:yup.string().required("Kelamin kamu masih konsong")
+})
 
 export default function ProfileSettings(){
   const {initial, bio, setBio} = useUser("user")  
+  const session = useSelector(state => state.session.session)
   const location = useLocation()
   const navigate = useNavigate()
   const [eventForm, setEventForm] = useState({
@@ -30,19 +32,49 @@ export default function ProfileSettings(){
     status:"",
     message:""
   })
-  const {getValues, clearErrors, setError, watch, register, formState:{ errors }} = useForm({
+  const {getValues, setValue, clearErrors, setError, watch, register, formState:{ errors }} = useForm({
     resolver:yupResolver(yup)
   })
 
   const email = watch("email")
   const dateBirth = watch("date")
-  const fullName = watch("fullName")
+  const fullname = watch("fullname")
   const gender = watch("gender")
   const phone = watch("phone")
 
   useEffect(() => {
+    async function getDataProfile() {
+      try{
+        // const API = "http://localhost:8081"
+        const API = import.meta.env.VITE_API_URL
+        const response = await fetch(`${API}/profiles/${session.id}`, {
+          headers: {
+            "Authorization": `Bearer ${session.token}`
+          }
+        })
+        const data = await response.json()
+        console.log(data)
+        if(!data.success){
+          throw new Error(data.message)
+        }
+        const profiles = data.results
+        for (const key in profiles){
+          setValue(
+            key, profiles[key]
+          )
+        }
+      } catch(err){
+        console.error(err.message)
+      }
+
+    }
+    getDataProfile()
+  },[])
+
+
+  useEffect(() => {
     const formData = {
-      fullname :fullName,
+      fullname :fullname,
       email:email,
       phone:phone,
       date:dateBirth,
@@ -55,7 +87,7 @@ export default function ProfileSettings(){
         clearErrors(props)
       }
     }
-  },[fullName, email, phone, dateBirth, gender])
+  },[fullname, email, phone, dateBirth, gender])
 
   function onSubmit(){
     const formated = new Date(getValues("date")).toLocaleDateString("id-ID", {
@@ -65,7 +97,7 @@ export default function ProfileSettings(){
     })
 
     const formData = {
-      fullname :getValues("fullName"),
+      fullname :getValues("fullname"),
       email:getValues("email"),
       phone:getValues("phone"),
       date:formated,
@@ -130,12 +162,11 @@ export default function ProfileSettings(){
           <div className="flex flex-col gap-1 text-sm">
             <label htmlFor="name">Nama Lengkap</label>
             <input 
-              {...register("fullName")}
-              defaultValue={bio.fullname}
+              {...register("fullname")}
               placeholder="Nama Lengkap Anda"
               className="w-full h-[46px] text-sm pl-4 bg-(--input-bg) rounded-xl"
               type="text" id="name" />
-            { errors.fullName && <p className="text-red-500 text-sm mt-2">*{errors.fullName?.message}</p>}
+            { errors.fullname && <p className="text-red-500 text-sm mt-2">*{errors.fullname?.message}</p>}
           </div>
           
           <div className="flex flex-col gap-1 text-sm">
@@ -143,7 +174,6 @@ export default function ProfileSettings(){
             <input 
               placeholder="Email Anda"
               {...register("email")}
-              defaultValue={bio.email}
               className="w-full h-[46px] text-sm pl-4 bg-(--input-bg) rounded-xl"
               type="email" id="email" />
             { errors.email && <p className="text-red-500 text-sm mt-2">*{errors.email?.message}</p>}
@@ -152,7 +182,6 @@ export default function ProfileSettings(){
             <label htmlFor="phone">Nomor Telepon</label>
             <input 
               {...register("phone")}
-              defaultValue={bio?.phone}
               placeholder="Nomor Telepon anda"
               className="w-full h-[46px] text-sm pl-4 bg-(--input-bg) rounded-xl"
               type="number" id="phone" />
@@ -163,7 +192,6 @@ export default function ProfileSettings(){
             <label htmlFor="date">Tanggal Lahir</label>
             <input
               {...register("date")}
-              defaultValue={bio?.dateBirth} 
               placeholder="dd/mm/yyy"
               name="date"
               className="w-full h-11.5 text-sm px-4 bg-(--input-bg) rounded-xl"
@@ -175,7 +203,6 @@ export default function ProfileSettings(){
             <label htmlFor="gender">Jenis Kelamin</label>
             <select
               {...register("gender")}
-              defaultValue={bio.gender}
               placeholder=""
               className="w-full h-[46px] text-sm px-4 bg-(--input-bg) rounded-xl"
               type="date" id="date">

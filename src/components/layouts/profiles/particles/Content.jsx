@@ -1,4 +1,7 @@
 import { Outlet, useLocation, useNavigate, Link } from "react-router";
+import { useDispatch } from "react-redux";
+import { clearSessionUser } from "@/redux/reducer/session";
+import { clearAccount } from "@/redux/reducer/accounts"
 
 // hook
 import useFetch from "@/hooks/useFetch";
@@ -26,17 +29,17 @@ export default function Content({isMobile, initial, user}){
                     items-center mb-3">
                 <h2 className="text-(--text-high) ">{initial}</h2>
               </div>
-              <h4 className="text-h font-bold text-lg">{user?.fullname}</h4>
+              <h4 className="text-h font-bold text-lg">{user?.username}</h4>
               <p className="text-xs">{user?.email}</p>
             </div>
 
             <div className="flex flex-row gap-4 pb-2">
               <div className="flex flex-col gap-0 items-center">
-                <h5 className="text-h font-semibold">{checkout.length}</h5>
+                <h5 className="text-h font-semibold">{0}</h5>
                 <p className="text-sm">Pesanan</p>
               </div>
               <div className="flex flex-col gap-0 items-center">
-                <h5 className="text-h font-semibold">{wishlist.length}</h5>
+                <h5 className="text-h font-semibold">{0}</h5>
                 <p className="text-sm">Wishlist</p>
               </div>
             </div>
@@ -59,9 +62,11 @@ export default function Content({isMobile, initial, user}){
 
 function ListSideMenu({dataMenu, path}){
   const navigate = useNavigate()
-  
+  const dispatch = useDispatch()
+
   function handleLogout(){
-    window.localStorage.removeItem("user")
+    dispatch(clearAccount())
+    dispatch(clearSessionUser())
     navigate("/")
   }
 
