@@ -22,6 +22,7 @@ import Wishlist from "@/assets/icons/wishlist-mute.svg"
 import Delivery from "@/assets/icons/delivery-blue.svg"
 import Return from "@/assets/icons/return.svg"
 import Safe from "@/assets/icons/safe-blue.svg"
+import { useSelector } from "react-redux";
 
 export default function ProductDetails(){
   const [prodVariant, setProdVariant] = useState("")
@@ -32,7 +33,7 @@ export default function ProductDetails(){
     message:""
   })
   const { category, slugs } = useParams()
-  const { user, setterCart } = useUser()
+  const user = useSelector(state => state.session.session)
   const { dataBySlugs : data } = 
   useFetch("/data/products.json", category || '', slugs || '')
   const navigate = useNavigate()
