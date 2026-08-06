@@ -53,7 +53,6 @@ export default function ProfileSettings(){
           }
         })
         const data = await response.json()
-        console.log(data)
         if(!data.success){
           throw new Error(data.message)
         }

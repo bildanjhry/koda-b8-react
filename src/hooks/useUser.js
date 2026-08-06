@@ -22,11 +22,6 @@ export default function useUser(){
   const [cart, setCart] = useState([])
   const [ , setGlobalCart] = useContext(UserContext)
 
-  useEffect(() => {
-    console.log("Run")
-  },[])
-
-  
   // useEffect(() => {
   //   setGlobalCart(cart) // global state management
   // },[cart, setGlobalCart])

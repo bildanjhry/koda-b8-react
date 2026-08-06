@@ -20,7 +20,7 @@ export default function useUserDetails() {
         }
         const id = sessionUser.id
         const token = sessionUser.token
-        const API = "http://localhost:8081"
+        const API = import.meta.env.VITE_API_URL
         const response = await fetch(`${API}/profiles/${id}`, {
           headers: {
             "Authorization": `Bearer ${token}`
