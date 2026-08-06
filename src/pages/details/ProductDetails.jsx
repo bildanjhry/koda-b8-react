@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import moneyFormat from "@/utils/money-format";
 
@@ -27,16 +27,34 @@ import { useSelector } from "react-redux";
 export default function ProductDetails(){
   const [prodVariant, setProdVariant] = useState("")
   const [quantity, setQuantity] = useState(1)
+  const [data, setData] = useState()
+  const [colors, setColors] = useState([])
   const [errorData, setErrorData] = useState({
     error:false,
     code:"",
     message:""
   })
-  const { category, slugs } = useParams()
+  const { slugs } = useParams()
   const user = useSelector(state => state.session.session)
-  const { dataBySlugs : data } = 
-  useFetch("/data/products.json", category || '', slugs || '')
+  // const { dataBySlugs : data } = 
+  // useFetch("/data/products.json", category || '', slugs || '')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    async function getProductDetail() {
+      try{
+        const API = import.meta.env.VITE_API_URL
+        const res = await fetch(`${API}/products/${slugs}`)
+        const data = await res.json()
+        const arr = data.results.avail_colors
+        setColors([...new Map(arr.map(item => [item.id, item])).values()])
+        setData(data.results)
+      } catch(err){
+        console.error(err.message)
+      }
+    }
+    getProductDetail()
+  },[slugs])
 
   function handleDecreastQty(){
     if(quantity > 1) setQuantity(quantity-1)
@@ -135,15 +153,15 @@ export default function ProductDetails(){
         <div className="flex flex-col md:flex-row h-fit">
           <section className="w-full md:w-[48%] flex flex-col">
             <div className="rounded-xl overflow-hidden md:h-151 w-full relative">
-              { data.discount &&
+              { data?.discount &&
                 <div className="px-4 py-1 rounded-full bg-(--info-bg) text-light flex absolute 
                 justify-center left-2 top-2">
-                  {data.discount}
+                  {data?.discount}
                 </div>
               }
               <img 
-                className="w-full h-full bg-cover bg-center"
-                src={data.image?.path} alt={data.image?.alt} />
+                className="w-full h-full object-cover"
+                src={`${import.meta.env.VITE_API_URL}/${data?.image}`} alt={data?.alt} />
             </div>
             <div className="mt-4">
               <ul className="flex flex-row gap-3">
@@ -152,7 +170,7 @@ export default function ProductDetails(){
                     type="button"
                     onClick={null}
                     className="h-full w-full">
-                    <img src={data.image?.path} alt={data.image?.alt} />
+                    <img src={`${import.meta.env.VITE_API_URL}/${data?.image}`} alt={data?.alt} />
                   </button>
                 </li>
                 <li className="w-16 h-16 rounded-lg overflow-hidden">
@@ -160,7 +178,7 @@ export default function ProductDetails(){
                     type="button"
                     onClick={null}
                     className="h-full w-full">
-                    <img src={data.image?.path} alt={data.image?.alt} />
+                    <img src={`${import.meta.env.VITE_API_URL}/${data?.image}`} alt={data?.alt} />
                   </button>
                 </li>
               </ul>
@@ -170,23 +188,23 @@ export default function ProductDetails(){
           <section className="w-full md:w-[52%] md:mt-0 mt-10 flex justify-end">
             <div className="md:w-[96%] w-full h-full flex flex-col gap-0">
               <div className="flex gap-1 items-center m-0 text-sm">
-                <p>{data.brand}</p>
+                <p>{data?.brand}</p>
                 <p>·</p>
                 <p>{data?.cat?.name}</p>
               </div>
 
-              <h2 className="leading-8 m-0 text-h">{data.name}</h2>
+              <h2 className="leading-8 m-0 text-h">{data?.title}</h2>
 
               <div className="flex flex-row items-center gap-2">
                 <div className="flex flex-row">
-                  <RenderStars rating={data.rating}/>
+                  <RenderStars rating={data?.rating}/>
                 </div>
-                <p>{data.rating}</p>
-                <p>({data.ratingTotal})</p>
+                <p>{data?.rating}</p>
+                <p>({data?.ratingTotal})</p>
                 <div className="bg-(--success-bg) ml-4 w-130px h-20px px-3 py-1 flex flex-row 
                 text-sm text-(--text-success) gap-1">
                   <p className="">Stok tersedia</p>
-                  <p>({data.stocks})</p>
+                  <p>({data?.stocks})</p>
                 </div>
               </div>
 
@@ -196,7 +214,7 @@ export default function ProductDetails(){
                   { data?.discountPrice > 0 && 
                    <p className="text-lg relative bottom-2 md:bottom-0"><s>{moneyFormat(data?.discountPrice)[0]}</s></p> }
                   <div className="text-light absolute md:static right-0 top-3 text-sm bg-(--info-bg) rounded-full md:flex px-3 py-1">
-                    <p>Hemat {data?.discount?.slice(1,(data.discount.length))}</p>
+                    <p>Hemat {data?.discount?.slice(1,(data?.discount.length))}</p>
                   </div>
                 </div>
                 <p className="text-sm text-(--text-success)">
@@ -210,7 +228,7 @@ export default function ProductDetails(){
                     className="text-(--text-high)">{prodVariant.charAt(0).toUpperCase() + prodVariant.slice(1)}</p>
                 </div>
                 <div className="flex flex-row gap-3 w-full mt-2 text-sm items-center">
-                  {data?.variants?.map((item, index) => (
+                  {colors.map((item, index) => (
                     <div className="relative" key={index}>
                       <input 
                         className="absolute hidden top-4 left-3 peer"
@@ -225,14 +243,14 @@ export default function ProductDetails(){
                           }
                           setProdVariant(e.target.value)
                         }}
-                        id={`${item.toLowerCase()}`} 
-                        value={`${item.toLowerCase()}`} 
+                        id={`${item.name.toLowerCase()}`} 
+                        value={`${item.name.toLowerCase()}`} 
                       />
                       <label 
                         className="border-(--border) border rounded-lg cursor-pointer 
                         h-[2.2rem] flex justify-center peer-checked:border-(--text-high)
                         peer-checked:text-(--text-high) items-center px-3"
-                        htmlFor={`${item.toLowerCase()}`}>{item}</label>
+                        htmlFor={`${item.name.toLowerCase()}`}>{item.name}</label>
                     </div>
                   ))}
                   { errorData.error &&
@@ -261,7 +279,7 @@ export default function ProductDetails(){
                       <img src={Plus} alt="increase qty" />
                     </button>
                   </div>
-                  <p className="text-sm">Stok: {data.stocks} pcs</p>
+                  <p className="text-sm">Stok: {data?.items[0]?.stock} pcs</p>
                 </div>
               </div>
 
