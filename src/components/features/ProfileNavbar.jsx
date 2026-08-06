@@ -39,7 +39,7 @@ export default function ProfileNavbar(){
         console.error(err.message)
       }
     }
-    getDataCart()
+    if(sessionUser.token) getDataCart()
   },[])
   
   return(

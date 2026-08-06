@@ -47,7 +47,6 @@ export default function Cart(){
         if(!data.success){
           throw new Error(data.message)
         }
-        console.log(data.result)
         setCartProps({
           subtotal: data.result?.subtotal,
           total: data.result?.total
@@ -58,7 +57,7 @@ export default function Cart(){
         console.error(err.message)
       }
     }
-    getDataCart()
+    if(session.token) getDataCart()
   },[])
 
     useEffect(() => {

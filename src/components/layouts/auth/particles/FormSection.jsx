@@ -84,7 +84,6 @@ function FormLogin() {
   async function onSubmit(data) {
     try {
       const API = import.meta.env.VITE_API_URL
-      // const API = "http://localhost:8081"
       const formated = new URLSearchParams(data)
       const response = await fetch(`${API}/auth/login`, {
         method: "POST",
