@@ -46,7 +46,7 @@ export default function useAuth(){
         })
       }
     }
-    sessionUser()
+   // sessionUser()
   },[userData, accounts, dispatch])
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export default function useAuth(){
         })        
       }
     }
-    addNewAccount()
+   // addNewAccount()
   },[accounts, newAccount, dispatch])
 
   return { authRes, setUserData, setNewAccount }
