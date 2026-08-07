@@ -23,7 +23,7 @@ export default function Card({
       try {
 
         const params = new URLSearchParams({
-          page: 3,
+          page: 1,
           limit: 5,
         });
         const API = import.meta.env.VITE_API_URL
