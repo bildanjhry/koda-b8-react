@@ -62,7 +62,7 @@ export default function Confirm(){
                 <p>{formCheckout?.fullname}.</p>
                 <p>{formCheckout?.phone}</p>
               </div>
-              <p className="text-sm">{formCheckout?.fullAddress}</p>
+              <p className="text-sm">{formCheckout?.fulladdress}</p>
             </div>
 
             <div className="w-full h-fit p-5 flex flex-col gap-1 bg-(--input-bg) rounded-xl">

@@ -59,7 +59,6 @@ export default function Deliver(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="name">Nama Penerima *</label>
               <input
-                readOnly
                 {...register("fullname")}
                 placeholder="Masukan Nama Penerima"
                 name="fullname"
@@ -81,7 +80,6 @@ export default function Deliver(){
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="email">Email *</label>
             <input 
-              readOnly
               {...register("email")}
               name="email"
               placeholder="Masukan Email Penerima"
@@ -92,10 +90,9 @@ export default function Deliver(){
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="address">Alamat Lengkap *</label>
             <input 
-              {...register("fullAddress")}
+              {...register("fulladdress")}
               name="fulladdress"
               placeholder="Alamat kamu"
-              readOnly
               className="w-full h-11.5 bg-(--input-bg) rounded-xl pl-4 border-light"
               type="text" id="address" value={userAddress?.fulladdress} 
             />
@@ -104,7 +101,6 @@ export default function Deliver(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="city">Kota *</label>
               <input 
-                readOnly
                 {...register("city")}
                 name="city"
                 placeholder="Kota"
@@ -117,7 +113,6 @@ export default function Deliver(){
               <input 
                 {...register("province")}
                 placeholder="Provinsi"
-                readOnly
                 name="province"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
                 type="text" id="province" value={userAddress?.province} 
@@ -128,7 +123,6 @@ export default function Deliver(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="post-code">Kode Pos *</label>
               <input 
-                readOnly
                 {...register("postCode")}
                 name="postCode"
                 placeholder="Kode Pos Penerima"

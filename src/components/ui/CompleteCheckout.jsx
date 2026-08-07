@@ -65,7 +65,7 @@ export default function CompleteCheckout(){
                     src={Delivery} alt="" />
                   <div className="flex flex-col ">
                     <p className="text-sm text-h">Alamat Pegiriman</p>
-                    <p className="text-xs">{data?.fullAddress}</p>
+                    <p className="text-xs">{data?.fulladdress}</p>
                   </div>
                 </li>								
               </ul>
