@@ -28,14 +28,14 @@ export default function CheckoutLayout(){
 function Header() {
   const location = useLocation()
   const [step, setStep] = useState(location?.state?.step || 1)
-  const {address} = useUser()
+  const [address, setAddress] = ([])
   const navigate = useNavigate()
 
   useEffect(() => {
     function getStep(){
-      if(address.length < 1){
-        navigate("/")
-      }
+      // if(address.length < 1){
+      //   navigate("/")
+      // }
       setStep(location?.state?.step)
     }
     getStep()

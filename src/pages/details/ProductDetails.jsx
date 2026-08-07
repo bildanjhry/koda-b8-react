@@ -83,9 +83,9 @@ export default function ProductDetails(){
       }
 
       const dataProduct = {
-        ...data,
-        variants: prodVariant,
-        cartId:data.id+prodVariant+quantity,
+        title:data.title,
+        price:data.price,
+        color: prodVariant,
         qty:quantity
       }
 

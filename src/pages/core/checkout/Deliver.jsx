@@ -20,7 +20,8 @@ export default function Deliver(){
   const { user, address, bio } = useUser()
   const navigate = useNavigate()
   const [delivery, setDelivery] = useState()
-  const userAddress = address.filter((item) => item.isMain)[0]
+  const [userAddress, setUserAddress] = useState([])
+  // const userAddress = address.filter((item) => item.isMain)[0]
   const location = useLocation()
 
   const { register, formState:{ errors }, handleSubmit } = useForm({
@@ -38,7 +39,7 @@ export default function Deliver(){
 
   function onSubmit(data){
     setStep(2)
-    navigate("/checkout/payment", {state:{ step:2, data:data }})
+    navigate("/checkout/payment", {state:{ step:2, data:{items:[{...location.state.prod}], ...data} }})
   }
 
   return(
@@ -73,7 +74,7 @@ export default function Deliver(){
                 name="phone"
                 placeholder="Masukan Nomor Telpon Penerima"
                 className="w-full h-11.5 bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="text" id="phone" value={bio.phone} 
+                type="text" id="phone" value={bio?.phone} 
               />
             </div>							
           </div>

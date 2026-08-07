@@ -41,7 +41,7 @@ export default function CompleteCheckout(){
             <header className="border-b-light pb-4 flex w-full text-sm justify-between items-center">
               <div className="flex flex-col justify-center">
                 <p>Nomer Pesanan</p>
-                <h5 className="text-(--text-high) font-bold">#{data?.idCheckout.toUpperCase()}</h5>
+                <h5 className="text-(--text-high) font-bold">#{data?.idCheckout}</h5>
               </div>
               <div className="flex flex-col  items-end">
                 <p>Total Pembayaran</p>

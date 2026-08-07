@@ -30,10 +30,10 @@ export default function Confirm(){
   function handleCheckout(){
     const formCheckoutProcess = {
       ...formCheckout,
-      idCheckout:user.id.slice(0,4)+cart.length+Date.now().toString(35),
+      idCheckout:1,
       checkoutDate: new Date().toLocaleString(),
-      products:cart,
-      grandTotal:cart.reduce((acc, item) => acc + (item.price*item.qty), 0),
+      products:location.state.data.items,
+      grandTotal:location.state.data.items.reduce((acc, item) => acc + (item.price*item.qty), 0),
       status:{
         STEP:1,
         message:"Pesanan Diterima",
@@ -41,7 +41,6 @@ export default function Confirm(){
         merchantStatus:"Diterima"
       },
     }
-    setterCheckout(formCheckoutProcess)
     setCart([])
     navigate("/checkout-complete", {state:{ data: formCheckoutProcess}})
     window.scrollTo({ top:0 })
@@ -76,17 +75,17 @@ export default function Confirm(){
             <div className="w-full h-fit p-5 flex flex-col gap-1 bg-(--input-bg) rounded-xl">
               <p className="text-h">Produk yang Dipersan</p>
               <ul className="flex flex-col items-center gap-3 mt-4">
-                {cart.map((item, index) => (
+                {location.state.data.items.map((item, index) => (
                   <li
                     key={index}
                     className="flex w-full justify-between h-12 items-center text-sm">
                     <img
                       className="w-12 rounded-lg" 
-                      src={item.image?.path} alt={item.image?.alt} />
+                      src={item.image?.path} alt={item?.image?.alt} />
                     <div className="flex justify-between items-center w-[91%] h-full">
                       <div className="flex flex-col justify-center h-full">
-                        <p className="text-h">{item.name}</p>
-                        <p>x{item.qty}</p>
+                        <p className="text-h">{item.title}</p>
+                        <p>x{item.quantity}</p>
                       </div>
                       <h4 className="text-(--text-high) text-md">{moneyFormat(item.price)[0]}</h4>
                     </div>
@@ -119,7 +118,7 @@ export default function Confirm(){
                 <img 
                   className="relative bottom-px"
                   src={Lock} alt="payment step" />
-                <p>Bayar {moneyFormat(cart.reduce((acc, item) => acc + (item.price * item.qty), 0))[0]} Sekarang</p>
+                <p>Bayar {moneyFormat(location.state.data.items.reduce((acc, item) => acc + (item.price * item.qty), 0))[0]} Sekarang</p>
               </button>			
             </div>
 
