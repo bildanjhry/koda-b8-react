@@ -112,11 +112,12 @@ function Aside(){
     handleBuyNow()
   },[location])
 
+  console.log(cartProduct)
 
   return (
     <aside className="w-88 min-h-67.75 max-h-fit sticky top-35 border-light bg-white 
       flex flex-col px-6 py-5 rounded-2xl gap-2">
-      <h4>Rinkasan Pesanan</h4>
+      <h4>Ringkasan Pesanan</h4>
       <div className="py-3 flex flex-col gap-2 border-b-light">
         { cartProduct.map((item, index) => (
           <div 
@@ -124,7 +125,7 @@ function Aside(){
             className="flex justify-between">
             <img
               className="w-10 h-10 rounded-xl" 
-              src={item.image?.path} alt={item.image?.path} />
+              src={`${import.meta.env.VITE_API_URL}/${item?.image}`} alt={item.path} />
             <div className="flex w-[82%] justify-between items-center text-xs">
               <p>{item.name}</p>
               <p>x{item.qty}</p>
@@ -145,7 +146,8 @@ function Aside(){
       <div>
         <ul className="flex justify-between items-center mb-5">
           <li className="text-(--text-h)">Total</li>
-          <li className="text-(--text-high) font-semibold">{moneyFormat(cartProduct.reduce((acc, item) => acc + (item.price * item.qty),0))[0]}</li>
+          <li className="text-(--text-high) font-semibold">
+            {moneyFormat(cartProduct.reduce((acc, item) => acc + (item.price * item.qty),0))[0]}</li>
         </ul>
         <p className="text-center relative  text-xs">🔒 Pembayaran aman dan terenkripsi</p>
       </div>
