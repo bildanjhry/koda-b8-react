@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "@/hooks/context/UserContext";
+import { useSelector } from "react-redux";
 
-export default function useUser(){
+export default function useUser() {
 
   // lazy init
   // const [user, setUser] = useState(() => {
@@ -15,12 +16,69 @@ export default function useUser(){
   // const [initial, setInitial] = useState("")
   // const [checkout, setCheckout] = useState(user.checkout || [])
   // const [wishlist, setWishlist] = useState(user.wishlist || [])
-  // const [address, setAddress] = useState(user.address || [])
+  const [address, setAddress] = useState([])
   // const [error, setError] = useState("")
   // const [bio, setBio] = useState(user.bio || {})
   // const [userName, setUserName] = useState("")
+  const [profiles, setProfiles] = useState({})
   const [cart, setCart] = useState([])
-  const [ , setGlobalCart] = useContext(UserContext)
+  const [, setGlobalCart] = useContext(UserContext)
+  const session = useSelector(state => state.session.session)
+
+  useEffect(() => {
+    async function getUserAddress() {
+      try {
+        if (!session.id) {
+          throw new Error("No user detected")
+        }
+        const API = import.meta.env.VITE_API_URL
+        const id = session.id
+        const token = session.token
+        const response = await fetch(`${API}/address/user/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+        if (!data.succes) {
+          throw new Error(data.message)
+        }
+        setAddress(data.results)
+
+      } catch (err) {
+        console.error(err.message)
+      }
+    }
+    getUserAddress()
+  }, [])
+
+  useEffect(() => {
+    async function getUserProfiles() {
+      try {
+        if (!session.id) {
+          throw new Error("No user detected")
+        }
+        const API = import.meta.env.VITE_API_URL
+        const id = session.id
+        const token = session.token
+        const response = await fetch(`${API}/profiles/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }) 
+        const data = await response.json()
+        if (!data.success) {
+          throw new Error(data.message)
+        }
+        setProfiles(data.results)
+        console.log(data.results)
+      } catch (err) {
+        console.error(err.message)
+      }
+    }
+    getUserProfiles()
+  }, [])
+
 
   // useEffect(() => {
   //   setGlobalCart(cart) // global state management
@@ -79,7 +137,7 @@ export default function useUser(){
   //     return [...prev, data]
   //   })
   // }
-  
+
   return {
     // user, 
     // accounts, 
@@ -91,11 +149,12 @@ export default function useUser(){
     setCart,
     // setUser,
     // userName, 
-    // address,
+    address,
+    profiles,
     // bio,
     // setBio,
     // initial,
-    cart, 
+    cart,
     // wishlist, 
     // checkout, 
     // error
