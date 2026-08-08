@@ -24,100 +24,107 @@ import Return from "@/assets/icons/return.svg"
 import Safe from "@/assets/icons/safe-blue.svg"
 import { useSelector } from "react-redux";
 
-export default function ProductDetails(){
+export default function ProductDetails() {
   const [prodVariant, setProdVariant] = useState("")
   const [quantity, setQuantity] = useState(1)
   const [data, setData] = useState()
   const [colors, setColors] = useState([])
   const [errorData, setErrorData] = useState({
-    error:false,
-    code:"",
-    message:""
+    error: false,
+    code: "",
+    message: ""
   })
   const { slugs } = useParams()
   const user = useSelector(state => state.session.session)
+  const { address } = useUser()
   // const { dataBySlugs : data } = 
   // useFetch("/data/products.json", category || '', slugs || '')
   const navigate = useNavigate()
 
   useEffect(() => {
     async function getProductDetail() {
-      try{
+      try {
         const API = import.meta.env.VITE_API_URL
         const res = await fetch(`${API}/products/${slugs}`)
         const data = await res.json()
         const arr = data.results.avail_colors
         setColors([...new Map(arr.map(item => [item.id, item])).values()])
         setData(data.results)
-      } catch(err){
+      } catch (err) {
         console.error(err.message)
       }
     }
     getProductDetail()
-  },[slugs])
+  }, [slugs])
 
-  function handleDecreastQty(){
-    if(quantity > 1) setQuantity(quantity-1)
+  function handleDecreastQty() {
+    if (quantity > 1) setQuantity(quantity - 1)
   }
 
-  function handleIncreastQty(){
-    setQuantity(quantity+1)
+  function handleIncreastQty() {
+    setQuantity(quantity + 1)
   }
 
-  function buttonActions(code){
-    try{
+  function buttonActions(code) {
+    try {
       // guard clause
-      if(!user.id) {
+      if (!user.id) {
         const err = new Error("Unauthorized")
         err.code = "AUTH_REQUIRED"
-        err.status = 401
 
         throw err
       }
-      if(!prodVariant) {
+      if (!prodVariant) {
         const err = new Error("Silahkan Pilih Varian")
         err.code = "EMPTY_REQUIRED_VALUE"
-        err.status = 401
 
+        throw err
+      }
+
+      if (address.length < 1) {
+        const err = new Error("Address is needed")
+        err.code = "EMPTY_REQUIRED_ADDRESS"
         throw err
       }
 
       const dataProduct = {
-        title:data.title,
-        price:data.price,
+        title: data.title,
+        image:data.image,
+        path:data.path,
+        price: data.price,
         color: prodVariant,
-        qty:quantity
+        qty: quantity
       }
 
-      switch(code) {
-      case "ADD_TO_CART":
-        setterCart(dataProduct)
-        break;
-      case "BUY_NOW":
-        navigate("/checkout", {state:{code:"BUY_NOW", prod:dataProduct }})
-        break;
-      case"ADD_TO_WISHLIST":
-        break;
-      default:
-        return
+      switch (code) {
+        case "ADD_TO_CART":
+          setterCart(dataProduct)
+          break;
+        case "BUY_NOW":
+          navigate("/checkout", { state: { code: "BUY_NOW", prod: dataProduct } })
+          break;
+        case "ADD_TO_WISHLIST":
+          break;
+        default:
+          return
       }
 
-    } catch(err){
-      if(err.code === "AUTH_REQUIRED"){
-        navigate("/login", { state:{origin: location.pathname}})
-      }
-      if(err.code === "EMPTY_REQUIRED_VALUE"){
+    } catch (err) {
+      if (err.code === "AUTH_REQUIRED") {
+        navigate("/login", { state: { origin: location.pathname } })
+      } else if (err.code === "EMPTY_REQUIRED_VALUE") {
         setErrorData({
-          error:true,
-          code:err.code,
-          message:err.message
+          error: true,
+          code: err.code,
+          message: err.message
         })
-      }
-      console.error(err.message)
+      } else if (err.code === "EMPTY_REQUIRED_ADDRESS") {
+        navigate("/my-profiles/address")
+      } else console.error(err.message)
     }
   }
 
-  return(
+  return (
     <MainLayout>
       <div className="w-[95%] md:w-[83%] flex flex-col mt-3">
 
@@ -146,20 +153,20 @@ export default function ProductDetails(){
             </li>
             <li>
               <img src={ArrowRight} alt="breadcrum" className="top-xp relative" />
-            </li>                        
+            </li>
           </ul>
         </div>
 
         <div className="flex flex-col md:flex-row h-fit">
           <section className="w-full md:w-[48%] flex flex-col">
             <div className="rounded-xl overflow-hidden md:h-151 w-full relative">
-              { data?.discount &&
+              {data?.discount &&
                 <div className="px-4 py-1 rounded-full bg-(--info-bg) text-light flex absolute 
                 justify-center left-2 top-2">
                   {data?.discount}
                 </div>
               }
-              <img 
+              <img
                 className="w-full h-full object-cover"
                 src={`${import.meta.env.VITE_API_URL}/${data?.image}`} alt={data?.alt} />
             </div>
@@ -197,10 +204,10 @@ export default function ProductDetails(){
 
               <div className="flex flex-row items-center gap-2">
                 <div className="flex flex-row">
-                  <RenderStars rating={data?.rating}/>
+                  <RenderStars rating={data?.rating} />
                 </div>
-                <p>{data?.rating}</p>
-                <p>({data?.ratingTotal})</p>
+                <p>{parseFloat(data?.rating).toFixed(1)}</p>
+                <p>({data?.reviews})</p>
                 <div className="bg-(--success-bg) ml-4 w-130px h-20px px-3 py-1 flex flex-row 
                 text-sm text-(--text-success) gap-1">
                   <p className="">Stok tersedia</p>
@@ -211,10 +218,10 @@ export default function ProductDetails(){
               <div className="w-full h-30 bg-(--accent-bg) rounded-lg mt-6 px-3 flex flex-col justify-center">
                 <div className="flex flex-col items-start md:flex-row md:gap-3 md:items-center relative">
                   <h1 className="text-(--text-high)">{moneyFormat(data?.price)[0]}</h1>
-                  { data?.discountPrice > 0 && 
-                   <p className="text-lg relative bottom-2 md:bottom-0"><s>{moneyFormat(data?.discountPrice)[0]}</s></p> }
+                  {data?.discountPrice > 0 &&
+                    <p className="text-lg relative bottom-2 md:bottom-0"><s>{moneyFormat(data?.discountPrice)[0]}</s></p>}
                   <div className="text-light absolute md:static right-0 top-3 text-sm bg-(--info-bg) rounded-full md:flex px-3 py-1">
-                    <p>Hemat {data?.discount?.slice(1,(data?.discount.length))}</p>
+                    <p>Hemat {data?.discount?.slice(1, (data?.discount.length))}</p>
                   </div>
                 </div>
                 <p className="text-sm text-(--text-success)">
@@ -224,39 +231,39 @@ export default function ProductDetails(){
               <div className="flex flex-col mt-5">
                 <div className="flex flex-row gap-2 ">
                   <p className="text-h">Warna:</p>
-                  <p 
+                  <p
                     className="text-(--text-high)">{prodVariant.charAt(0).toUpperCase() + prodVariant.slice(1)}</p>
                 </div>
                 <div className="flex flex-row gap-3 w-full mt-2 text-sm items-center">
                   {colors.map((item, index) => (
                     <div className="relative" key={index}>
-                      <input 
+                      <input
                         className="absolute hidden top-4 left-3 peer"
-                        type="radio" name={`color`} 
+                        type="radio" name={`color`}
                         onChange={(e) => {
-                          if(e.target.checked && errorData.error){
+                          if (e.target.checked && errorData.error) {
                             setErrorData({
-                              error:false,
-                              code:"",
-                              message:""
+                              error: false,
+                              code: "",
+                              message: ""
                             })
                           }
                           setProdVariant(e.target.value)
                         }}
-                        id={`${item.name.toLowerCase()}`} 
-                        value={`${item.name.toLowerCase()}`} 
+                        id={`${item.name.toLowerCase()}`}
+                        value={`${item.name.toLowerCase()}`}
                       />
-                      <label 
+                      <label
                         className="border-(--border) border rounded-lg cursor-pointer 
                         h-[2.2rem] flex justify-center peer-checked:border-(--text-high)
                         peer-checked:text-(--text-high) items-center px-3"
                         htmlFor={`${item.name.toLowerCase()}`}>{item.name}</label>
                     </div>
                   ))}
-                  { errorData.error &&
-                  <div className="w-full text-sm">
-                    <p className="text-red-500">*{errorData.message}</p>
-                  </div>
+                  {errorData.error &&
+                    <div className="w-full text-sm">
+                      <p className="text-red-500">*{errorData.message}</p>
+                    </div>
                   }
                 </div>
               </div>
@@ -284,30 +291,30 @@ export default function ProductDetails(){
               </div>
 
               <div className="mt-7 hidden md:grid grid-cols-[43%_43%_9%] w-full justify-between">
-                <ActionButton 
-                  img={Cart} 
-                  buttonText={"Tambah ke keranjang"} 
-                  color={`text-(--text-action)`} 
-                  bg={"bg-[transparent]"} 
-                  handleOnclick={() => {buttonActions("ADD_TO_CART")}}
+                <ActionButton
+                  img={Cart}
+                  buttonText={"Tambah ke keranjang"}
+                  color={`text-(--text-action)`}
+                  bg={"bg-[transparent]"}
+                  handleOnclick={() => { buttonActions("ADD_TO_CART") }}
                   order={"left-to-right"}
                   border={"border-(--action-border)"}
                 />
-                <ActionButton 
-                  img={null} 
-                  buttonText={"Beli Sekarang"} 
-                  color={`text-white`} 
-                  bg={"bg-(--action-bg)"} 
-                  handleOnclick={() => {buttonActions("BUY_NOW")}}
+                <ActionButton
+                  img={null}
+                  buttonText={"Beli Sekarang"}
+                  color={`text-white`}
+                  bg={"bg-(--action-bg)"}
+                  handleOnclick={() => { buttonActions("BUY_NOW") }}
                   order={"left-to-right"}
                   border={"border-(--action-border)"}
                 />
-                <ActionButton 
-                  img={Wishlist} 
+                <ActionButton
+                  img={Wishlist}
                   buttonText={""}
                   color={""}
                   bg={"bg-[transparent]"}
-                  handleOnclick={() => {buttonActions("ADD_TO_WISHLIST")}}
+                  handleOnclick={() => { buttonActions("ADD_TO_WISHLIST") }}
                   order={""}
                   border={"border-light"}
                 />
@@ -331,7 +338,7 @@ export default function ProductDetails(){
                   <img src={Return} alt="delivery" />
                   <p className="text-h">Retur 30 Hari</p>
                   <p className="hidden md:flex">Gratis retur</p>
-                </div>                                
+                </div>
               </div>
             </div>
           </section>
@@ -352,11 +359,11 @@ export default function ProductDetails(){
             </nav>
             <div className="min-h-20 w-full flex justify-center md:justify-end items-center">
               <article className="w-[90%] py-5 md:py-2 md:w-[98%]">
-                  Headphone wireless dengan teknologi noise-cancelling terdepan. Nikmati musik favoritmu tanpa gangguan dengan kualitas suara yang memukau.
+                Headphone wireless dengan teknologi noise-cancelling terdepan. Nikmati musik favoritmu tanpa gangguan dengan kualitas suara yang memukau.
               </article>
             </div>
           </div>
-          
+
           <div className="mb-8 w-full mt-10">
             <header className="flex items-center justify-between mt-2">
               <section className="h-20 flex flex-row items-center gap-2">
@@ -367,8 +374,8 @@ export default function ProductDetails(){
               </section>
             </header>
 
-            <ProductsCard/>
-          </div> 
+            <ProductsCard />
+          </div>
 
         </div>
       </div>

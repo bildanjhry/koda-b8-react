@@ -21,7 +21,7 @@ const schema = yup.object({
 })
 
 export default function Address(){
-  const {address: userAddress, bio, user, setterAddress } = useUser()
+  const {address: userAddress, profiles, setterAddress } = useUser()
   const [addAddress, setAddAddress] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
@@ -95,8 +95,8 @@ export default function Address(){
                   <header className="flex w-full justify-between items-center">
                     <div className="flex items-center gap-1">
                       <p className="text-h font-semibold">Rumah</p>
-                      {item.isMain && <p className="text-h font-semibold">(Utama)</p>}
-                      {item.isMain && <p className="py-1 px-2 rounded-full text-white text-sm font-semithin relative left-2 bg-(--main-bg)">Utama</p>}
+                      {item?.isMain && <p className="text-h font-semibold">(Utama)</p>}
+                      {item?.isMain && <p className="py-1 px-2 rounded-full text-white text-sm font-semithin relative left-2 bg-(--main-bg)">Utama</p>}
                     </div>
                     <div className="flex gap-2">
                       <button className="cursor-pointer px-1">
@@ -110,8 +110,8 @@ export default function Address(){
                   <main className="pt-4 pb-1 flex flex-col gap-3">
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2 text-h">
-                        <p>{user.fullname}</p>
-                        <p>{bio.phone}</p>
+                        <p>{profiles.fullname}</p>
+                        <p>{profiles?.phone}</p>
                       </div>
                       <p>{item.fulladdress}</p>
                       <p>{item.city}, <span>{item.province}</span><span> {item.postCode}</span></p>

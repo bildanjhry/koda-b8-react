@@ -46,6 +46,7 @@ export default function Confirm(){
     window.scrollTo({ top:0 })
   }
 
+
   return(
     <>
       { complete ? 
@@ -58,8 +59,8 @@ export default function Confirm(){
           <main className="mt-7 flex flex-col gap-5">
             <div className="w-full h-fit p-5 flex flex-col gap-1 bg-(--input-bg) rounded-xl">
               <p className="text-h">Alamat Pengiriman</p>
-              <div className="flex items-center gap-2 text-sm mt-1">
-                <p>{formCheckout?.fullname}.</p>
+              <div className="flex items-center gap-3 text-sm mt-1">
+                <p>{formCheckout?.fullname}</p>
                 <p>{formCheckout?.phone}</p>
               </div>
               <p className="text-sm">{formCheckout?.fulladdress}</p>
@@ -73,7 +74,7 @@ export default function Confirm(){
             </div>
 
             <div className="w-full h-fit p-5 flex flex-col gap-1 bg-(--input-bg) rounded-xl">
-              <p className="text-h">Produk yang Dipersan</p>
+              <p className="text-h">Produk yang Dipesan</p>
               <ul className="flex flex-col items-center gap-3 mt-4">
                 {location.state.data.items.map((item, index) => (
                   <li
@@ -81,11 +82,11 @@ export default function Confirm(){
                     className="flex w-full justify-between h-12 items-center text-sm">
                     <img
                       className="w-12 rounded-lg" 
-                      src={item.image?.path} alt={item?.image?.alt} />
+                      src={`${import.meta.env.VITE_API_URL}/${item?.image}`} alt={item?.alt} />
                     <div className="flex justify-between items-center w-[91%] h-full">
                       <div className="flex flex-col justify-center h-full">
                         <p className="text-h">{item.title}</p>
-                        <p>x{item.quantity}</p>
+                        <p>x{item.qty}</p>
                       </div>
                       <h4 className="text-(--text-high) text-md">{moneyFormat(item.price)[0]}</h4>
                     </div>
