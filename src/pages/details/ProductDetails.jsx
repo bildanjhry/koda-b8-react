@@ -26,9 +26,12 @@ import { useSelector } from "react-redux";
 
 export default function ProductDetails() {
   const [prodVariant, setProdVariant] = useState("")
+  const [prodSize, setProdSize] = useState("")
   const [quantity, setQuantity] = useState(1)
+  const [sizes, setSizes] = useState([])
   const [data, setData] = useState()
   const [colors, setColors] = useState([])
+  const [dataItems, setDataItems] = useState([])
   const [errorData, setErrorData] = useState({
     error: false,
     code: "",
@@ -48,8 +51,11 @@ export default function ProductDetails() {
         const res = await fetch(`${API}/products/${slugs}`)
         const data = await res.json()
         const arr = data.results.avail_colors
+        const sizesArr = data.results.avail_sizes
+        setSizes([...new Map(sizesArr.map(item => [item.id, item])).values()])
         setColors([...new Map(arr.map(item => [item.id, item])).values()])
         setData(data.results)
+        setDataItems(data.results.items)
       } catch (err) {
         console.error(err.message)
       }
@@ -74,14 +80,20 @@ export default function ProductDetails() {
 
         throw err
       }
-      if (!prodVariant) {
+      else if (!prodVariant) {
         const err = new Error("Silahkan Pilih Varian")
+        err.code = "EMPTY_REQUIRED_VALUE"
+        err.target = "COLOR"
+        throw err
+      }
+      else if (!prodSize) {
+        const err = new Error("Silahkan Pilih Ukuran")
+        err.target = "SIZE"
         err.code = "EMPTY_REQUIRED_VALUE"
 
         throw err
       }
-
-      if (address.length < 1) {
+      else if (address.length < 1) {
         const err = new Error("Address is needed")
         err.code = "EMPTY_REQUIRED_ADDRESS"
         throw err
@@ -89,10 +101,11 @@ export default function ProductDetails() {
 
       const dataProduct = {
         title: data.title,
-        image:data.image,
-        path:data.path,
+        image: data.image,
+        path: data.path,
         price: data.price,
         color: prodVariant,
+        size:prodSize,
         qty: quantity
       }
 
@@ -101,7 +114,9 @@ export default function ProductDetails() {
           setterCart(dataProduct)
           break;
         case "BUY_NOW":
-          navigate("/checkout", { state: { code: "BUY_NOW", prod: dataProduct } })
+          const id = dataItems.filter((item) => item.color === dataProduct.color && item.size === dataProduct.size)[0].id_variant
+          alert(id)
+          navigate("/checkout", { state: { code: "BUY_NOW", prod: {...dataProduct, id_var:id} } })
           break;
         case "ADD_TO_WISHLIST":
           break;
@@ -115,6 +130,7 @@ export default function ProductDetails() {
       } else if (err.code === "EMPTY_REQUIRED_VALUE") {
         setErrorData({
           error: true,
+          target: err.target,
           code: err.code,
           message: err.message
         })
@@ -241,7 +257,7 @@ export default function ProductDetails() {
                         className="absolute hidden top-4 left-3 peer"
                         type="radio" name={`color`}
                         onChange={(e) => {
-                          if (e.target.checked && errorData.error) {
+                          if (e.target.checked && errorData.error && errorData === "COLOR") {
                             setErrorData({
                               error: false,
                               code: "",
@@ -260,14 +276,56 @@ export default function ProductDetails() {
                         htmlFor={`${item.name.toLowerCase()}`}>{item.name}</label>
                     </div>
                   ))}
-                  {errorData.error &&
+                  {errorData.error && errorData.target === "COLOR" &&
                     <div className="w-full text-sm">
                       <p className="text-red-500">*{errorData.message}</p>
                     </div>
                   }
                 </div>
-              </div>
 
+              </div>
+              {sizes.length > 0 &&
+                <div className="flex flex-col mt-5">
+                  <div className="flex flex-row gap-2 ">
+                    <p className="text-h">Ukuran:</p>
+                    <p
+                      className="text-(--text-high)">{prodSize.charAt(0).toUpperCase() + prodSize.slice(1)}</p>
+                  </div>
+                  <div className="flex flex-row gap-3 w-full mt-2 text-sm items-center">
+                    {sizes.map((item, index) => (
+                      <div className="relative" key={index}>
+                        <input
+                          className="absolute hidden top-4 left-3 peer"
+                          type="radio" name={`size`}
+                          onChange={(e) => {
+                            if (e.target.checked && errorData.error && errorData.target === "SIZE") {
+                              setErrorData({
+                                error: false,
+                                code: "",
+                                message: ""
+                              })
+                            }
+                            setProdSize(e.target.value)
+                          }}
+                          id={`${item.name.toLowerCase()}`}
+                          value={`${item.name.toLowerCase()}`}
+                        />
+                        <label
+                          className="border-(--border) border rounded-lg cursor-pointer 
+                        h-[2.2rem] flex justify-center peer-checked:border-(--text-high)
+                        peer-checked:text-(--text-high) items-center px-3 box-border text-nowrap"
+                          htmlFor={`${item.name.toLowerCase()}`}>{item.name}</label>
+                      </div>
+                    ))}
+                    {errorData.error && errorData.target === "SIZE" &&
+                      <div className="w-full text-sm">
+                        <p className="text-red-500">*{errorData.message}</p>
+                      </div>
+                    }
+                  </div>
+
+                </div>
+              }
               <div className="flex flex-col gap-2 mt-6">
                 <p className="text-h">Jumlah</p>
                 <div className="flex items-center gap-3">

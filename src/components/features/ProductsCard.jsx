@@ -23,7 +23,7 @@ export default function Card({
       try {
 
         const params = new URLSearchParams({
-          page: 1,
+          page: 2,
           limit: 10,
         });
         const API = import.meta.env.VITE_API_URL
@@ -100,8 +100,8 @@ export default function Card({
             )}>{item.title}</p>
             <div className="flex items-center md:text-sm text-xs">
               <RenderStars rating={item.rating} width={width} />
-              <p className="pl-2">{item.rating}</p>
-              <p className="pl-1">({item.ratingTotal})</p>
+              <p className="pl-2">{parseFloat(item?.rating).toFixed(1)}</p>
+              <p className="pl-1">({item.reviews})</p>
             </div>
 
             <div className={classNames(

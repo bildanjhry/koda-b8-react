@@ -11,6 +11,7 @@ import CompleteCheckout from "@/components/ui/CompleteCheckout";
 // assets
 import Safe from "@/assets/icons/safe-blue.svg"
 import Lock from "@/assets/icons/lock-white.svg"
+import { useSelector } from "react-redux";
 
 export default function Confirm(){
   const [complete, setComplete] = useState(false)
@@ -19,6 +20,7 @@ export default function Confirm(){
   const navigate = useNavigate()
   const [formCheckout, setFormCheckout] = useState()
   const { cart, setCart, user, setterCheckout} = useUser()
+  const session = useSelector(state => state.session.session)
 
   useEffect(() => {
     function getState(){
@@ -27,12 +29,33 @@ export default function Confirm(){
     getState()
   },[location])
 
-  function handleCheckout(){
+  async function addOrder(data) {
+    try{
+      const API = import.meta.env.VITE_API_URL
+      const token = session.token
+      const res = await fetch(`${API}/orders`, {
+        method:"POST",
+        headers:{
+          "Authorization":`Bearer ${token}`,
+          "Content-Type":"application/json",
+        },
+        body: JSON.stringify(data)
+      })
+      const result = await res.json()
+      return result
+    } catch(err){
+      console.error(err.message)
+    }
+  }
+
+  async function handleCheckout(){
+    console.log(formCheckout)
     const formCheckoutProcess = {
       ...formCheckout,
       idCheckout:1,
       checkoutDate: new Date().toLocaleString(),
       products:location.state.data.items,
+      order_items:location.state.data.order_items,
       grandTotal:location.state.data.items.reduce((acc, item) => acc + (item.price*item.qty), 0),
       status:{
         STEP:1,
@@ -42,8 +65,16 @@ export default function Confirm(){
       },
     }
     setCart([])
-    navigate("/checkout-complete", {state:{ data: formCheckoutProcess}})
-    window.scrollTo({ top:0 })
+    console.log(formCheckout)
+    const res = await addOrder({
+      id_payment_method: parseInt(formCheckout.paymentMethod),
+      id_delivery_method: parseInt(formCheckout.deliveryMethod.split(",")[0]),
+      items: formCheckoutProcess.order_items
+    })
+    if(res.success){
+      navigate("/checkout-complete", {state:{ data: formCheckoutProcess}})
+      window.scrollTo({ top:0 })
+    }
   }
 
 
@@ -69,7 +100,7 @@ export default function Confirm(){
             <div className="w-full h-fit p-5 flex flex-col gap-1 bg-(--input-bg) rounded-xl">
               <p className="text-h">Metode Pengiriman</p>
               <div className="text-sm flex items-center gap-2">
-                <p>{formCheckout?.deliveryMethod}</p>
+                <p>{formCheckout?.deliveryMethod.split(",")[1]}</p>
               </div>
             </div>
 

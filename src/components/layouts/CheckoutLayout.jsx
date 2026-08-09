@@ -112,7 +112,6 @@ function Aside(){
     handleBuyNow()
   },[location])
 
-  console.log(cartProduct)
 
   return (
     <aside className="w-88 min-h-67.75 max-h-fit sticky top-35 border-light bg-white 
