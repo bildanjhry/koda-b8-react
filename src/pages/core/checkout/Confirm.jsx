@@ -65,7 +65,6 @@ export default function Confirm(){
       },
     }
     setCart([])
-    console.log(formCheckout)
     const res = await addOrder({
       id_payment_method: parseInt(formCheckout.paymentMethod),
       id_delivery_method: parseInt(formCheckout.deliveryMethod.split(",")[0]),

@@ -71,7 +71,6 @@ export default function useUser() {
           throw new Error(data.message)
         }
         setProfiles(data.results)
-        console.log(data.results)
       } catch (err) {
         console.error(err.message)
       }
