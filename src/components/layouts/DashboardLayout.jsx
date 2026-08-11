@@ -34,27 +34,27 @@ export default function DashboardLayout(){
       id:"2pr",
       name:"Produk",
       icon:[BoxWhite, Box],
-      path:"/products"
+      path:"/dashboard/products"
     },
     {
       id:"3pe",
       name:"Pesanan",
       icon:[CartWhite, Cart],
-      path:"/orders"
+      path:"/dashboard/orders"
       
     },
     {
       id:"4pe",
       name:"Pelanggan",
       icon:[CustomersWhite, Customers],
-      path:"/customers"
+      path:"/dashboard/customers"
       
     },
     {
       id:"5pe",
       name:"Pengaturan",
       icon:[Settings, Settings],
-      path:"/settings"
+      path:"/dashboard/settings"
     },  
 
   ]
@@ -64,7 +64,7 @@ export default function DashboardLayout(){
       <aside className="flex flex-col w-60 px-2 bg-(--primary-bg) text-(--text-accent)">
         <div className="border-b-(--accent-border) h-16 gap-1 flex items-center">
           <Logo scheme={"dark"}/>
-          <p className="text-white">Admin</p>
+          <p className="text-white pl-2">Admin</p>
         </div>
         <ul className="flex flex-col mt-4">
           {sideMenu.map((item) => (
@@ -72,7 +72,7 @@ export default function DashboardLayout(){
               <Link
                 className={"flex gap-3 items-center h-11 hover:bg-(--accent-bg) rounded-xl pl-4"+ 
                 ` ${item.path === url && 'bg-(--main-bg) hover:bg-(--main-bg)'}`}
-                to={item.path}
+                to={`${item.path}`}
               >
                 <img 
                   className="w-[18px]"
