@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import moneyFormat from "@/utils/money-format";
 
@@ -23,6 +23,7 @@ import Delivery from "@/assets/icons/delivery-blue.svg"
 import Return from "@/assets/icons/return.svg"
 import Safe from "@/assets/icons/safe-blue.svg"
 import { useSelector } from "react-redux";
+import { UserContext } from "@/hooks/context/UserContext";
 
 export default function ProductDetails() {
   const [prodVariant, setProdVariant] = useState("")
@@ -31,7 +32,10 @@ export default function ProductDetails() {
   const [sizes, setSizes] = useState([])
   const [data, setData] = useState()
   const [colors, setColors] = useState([])
+  const [selected, setSelected] = useState(null)
+  const [itemStock, setItemStock] = useState(null)
   const [dataItems, setDataItems] = useState([])
+  const [ , setGlobalCart] = useContext(UserContext)
   const [errorData, setErrorData] = useState({
     error: false,
     code: "",
@@ -52,10 +56,10 @@ export default function ProductDetails() {
         const data = await res.json()
         const arr = data.results?.avail_colors || []
         const sizesArr = data.results?.avail_sizes || []
-        if(arr.length > 0){
+        if (arr.length > 0) {
           setSizes([...new Map(sizesArr.map(item => [item.id, item])).values()])
         }
-        if(sizesArr.length > 0){
+        if (sizesArr.length > 0) {
           setColors([...new Map(arr.map(item => [item.id, item])).values()])
         }
         setData(data.results)
@@ -73,6 +77,40 @@ export default function ProductDetails() {
 
   function handleIncreastQty() {
     setQuantity(quantity + 1)
+  }
+
+  useEffect(() => {
+    if(prodSize && prodVariant){
+      const item = dataItems.filter((item) => item.color === prodVariant && item.size === prodSize)[0]
+      setSelected(item)
+      setItemStock(item.stock)
+    }
+  },[prodSize, prodVariant])
+
+  async function addToCart(data) {
+    try{
+      const API = import.meta.env.VITE_API_URL
+      const token = user.token
+      const id = user.id
+      const formated = new URLSearchParams(data)
+      const response = await fetch(`${API}/carts/${id}`,{
+        method: "POST",
+        headers: {
+          "Authorization":`Bearer ${token}`,
+          "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:formated
+      })
+      const dataResponse = await response.json()
+      if(!dataResponse.success){
+        throw new Error(response.message)
+      }
+      setGlobalCart((prev) => {
+        return [...prev, dataResponse.results]
+      })
+    } catch(err){
+        console.error(err)
+    }
   }
 
   function buttonActions(code) {
@@ -97,11 +135,6 @@ export default function ProductDetails() {
 
         throw err
       }
-      else if (address.length < 1) {
-        const err = new Error("Address is needed")
-        err.code = "EMPTY_REQUIRED_ADDRESS"
-        throw err
-      }
 
       const dataProduct = {
         title: data.title,
@@ -109,18 +142,28 @@ export default function ProductDetails() {
         path: data.path,
         price: data.price,
         color: prodVariant,
-        size:prodSize,
+        size: prodSize,
         qty: quantity
       }
 
       switch (code) {
         case "ADD_TO_CART":
-          setterCart(dataProduct)
+          if(selected){
+            addToCart({
+              id_product: selected.id_variant,
+              quantity: quantity
+            })
+          }
+
           break;
         case "BUY_NOW":
+          if (address.length < 1) {
+            const err = new Error("Address is needed")
+            err.code = "EMPTY_REQUIRED_ADDRESS"
+            throw err
+          }
           const id = dataItems.filter((item) => item.color === dataProduct.color && item.size === dataProduct.size)[0].id_variant
-          alert(id)
-          navigate("/checkout", { state: { code: "BUY_NOW", prod: {...dataProduct, id_var:id} } })
+          navigate("/checkout", { state: { code: "BUY_NOW", prod: { ...dataProduct, id_var: id } } })
           break;
         case "ADD_TO_WISHLIST":
           break;
@@ -348,7 +391,7 @@ export default function ProductDetails() {
                       <img src={Plus} alt="increase qty" />
                     </button>
                   </div>
-                  <p className="text-sm">Stok: {data?.items[0]?.stock} pcs</p>
+                  <p className="text-sm">Stok: { itemStock? itemStock : data?.items[0]?.stock} pcs</p>
                 </div>
               </div>
 
