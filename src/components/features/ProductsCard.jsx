@@ -23,8 +23,8 @@ export default function Card({
       try {
 
         const params = new URLSearchParams({
-          page: 2,
-          limit: 10,
+          page: 1,
+          limit: 40,
         });
         const API = import.meta.env.VITE_API_URL
         const res = await fetch(`${API}/products?${params}`)

@@ -50,10 +50,14 @@ export default function ProductDetails() {
         const API = import.meta.env.VITE_API_URL
         const res = await fetch(`${API}/products/${slugs}`)
         const data = await res.json()
-        const arr = data.results.avail_colors
-        const sizesArr = data.results.avail_sizes
-        setSizes([...new Map(sizesArr.map(item => [item.id, item])).values()])
-        setColors([...new Map(arr.map(item => [item.id, item])).values()])
+        const arr = data.results?.avail_colors || []
+        const sizesArr = data.results?.avail_sizes || []
+        if(arr.length > 0){
+          setSizes([...new Map(sizesArr.map(item => [item.id, item])).values()])
+        }
+        if(sizesArr.length > 0){
+          setColors([...new Map(arr.map(item => [item.id, item])).values()])
+        }
         setData(data.results)
         setDataItems(data.results.items)
       } catch (err) {
@@ -80,13 +84,13 @@ export default function ProductDetails() {
 
         throw err
       }
-      else if (!prodVariant) {
+      else if (!prodVariant && colors.length > 0) {
         const err = new Error("Silahkan Pilih Varian")
         err.code = "EMPTY_REQUIRED_VALUE"
         err.target = "COLOR"
         throw err
       }
-      else if (!prodSize) {
+      else if (!prodSize && sizes.length > 0) {
         const err = new Error("Silahkan Pilih Ukuran")
         err.target = "SIZE"
         err.code = "EMPTY_REQUIRED_VALUE"

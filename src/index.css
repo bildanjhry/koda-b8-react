@@ -169,3 +169,8 @@ p {
 .border-b-accent {
   border-bottom: 1px solid var(--accent-border);
 }
+
+
+.content-cent {
+  @apply flex justify-center items-center
+}
