@@ -96,7 +96,10 @@ function FormLogin() {
       if (!dataResponse.success) throw new Error(dataResponse.message)
 
       dispatch(createSessionUser(dataResponse.results))
-      navigate("/") // navigate to landing
+      if((dataResponse.results.per/2) & 6){
+        return navigate("/dashboard")
+      }
+      navigate("/")
     } catch (err) {
       setErrorLogin({ // error handling
         error: true,
@@ -260,9 +263,9 @@ function FormRegister() {
       userDatas.bio.fullname = data.fullname
       userDatas.bio.email = data.email
       userDatas.password = data.password
+
       const formated = new URLSearchParams(userDatas)
       const API = import.meta.env.VITE_API_URL
-      // const API = "http://localhost:8081"
       const response = await fetch(`${API}/auth/register`, {
         method: "POST",
         headers: {

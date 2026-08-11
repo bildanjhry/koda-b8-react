@@ -19,21 +19,28 @@ import { FiUpload } from "react-icons/fi";
 import Modal from "@/components/ui/ModalPortal"
 
 const schema = yup.object({
-  image:yup.mixed().required("Mohon masukan gambar"),
-  title:yup.string().required("Mohon masukan nama produk"),
-  price:yup.string().required("Mohon masukan nama produk"),
-  description:yup.string().required("Mohon masukan nama produk"),
+  image: yup.mixed().required("Mohon masukan gambar"),
+  title: yup.string().required("Mohon masukan nama produk"),
+  price: yup.string().required("Mohon masukan nama produk"),
+  description: yup.string().required("Mohon masukan nama produk"),
 })
 
 export default function Products() {
   const [products, setProducts] = useState([])
   const [addProduct, setAddproduct] = useState(false)
   const [imageProd, setImageProd] = useState("")
+  const [prodVariant, setProdVariant] = useState()
+  const [prodSize, setProdSize] = useState()
+  const [prodCat, setProdCat] = useState()
   const [imageFile, setImageFile] = useState("")
+  const [colors, setColors] = useState([])
+  const [categories, setCategories] = useState([])
+  const [sizes, setSizes] = useState([])
+  const [totalProd, setTotalProd] = useState(0)
   const session = useSelector(state => state.session.session)
 
-  const { register, getValues, formState:{ errors }, handleSubmit, reset } = useForm({
-    resolver:yupResolver(schema),
+  const { register, getValues, formState: { errors }, handleSubmit, reset } = useForm({
+    resolver: yupResolver(schema),
   })
 
   useEffect(() => {
@@ -46,8 +53,8 @@ export default function Products() {
         })
         const response = await fetch(`${API}/products?${params}`)
         const data = await response.json()
-        console.log(data)
         setProducts(data.data)
+        setTotalProd(data.total)
       } catch (err) {
         if (count < 1) {
           console.error(err.message)
@@ -56,140 +63,301 @@ export default function Products() {
         return getDataProducts(count -= 1)
       }
     }
+
+    async function getDataColors(count = 3) {
+      try {
+        const API = import.meta.env.VITE_API_URL
+        const params = new URLSearchParams({
+          page: 1,
+          limit: 30
+        })
+        const response = await fetch(`${API}/colors?${params}`)
+        const data = await response.json()
+        setColors(data.results)
+      } catch (err) {
+        if (count < 1) {
+          console.error(err.message)
+          return
+        }
+        return getDataColors(count -= 1)
+      }
+    }
+
+    async function getDataSizes(count = 3) {
+      try {
+        const API = import.meta.env.VITE_API_URL
+        const params = new URLSearchParams({
+          page: 1,
+          limit: 30
+        })
+        const response = await fetch(`${API}/sizes`)
+        const data = await response.json()
+        setSizes(data.results)
+      } catch (err) {
+        if (count < 1) {
+          console.error(err.message)
+          return
+        }
+        return getDataSizes(count -= 1)
+      }
+    }
+
+    async function getDataCategories(count = 3) {
+      try {
+        const API = import.meta.env.VITE_API_URL
+        const response = await fetch(`${API}/categories`)
+        const data = await response.json()
+        setCategories(data.results)
+      } catch (err) {
+        if (count < 1) {
+          console.error(err.message)
+          return
+        }
+        return getDataCategories(count -= 1)
+      }
+    }
+
+    getDataCategories()
+    getDataSizes()
+    getDataColors()
     getDataProducts()
   }, [])
 
-  function handlePrev(data){
+  function handlePrev(data) {
     setImageFile(data.target.files[0])
     setImageProd(URL.createObjectURL(data.target.files[0]))
   }
 
   async function onSubmit(data) {
-    try{
+    try {
       const API = import.meta.env.VITE_API_URL
       const token = session.token
 
       const formData = new FormData()
-      for (const key in data){
-        if(key === "image"){
+      for (const key in data) {
+        if (key === "image") {
           formData.append('file', imageFile)
         } else {
           formData.append(key, data[key])
         }
       }
 
+      if(prodSize){
+        formData.append("id_size", prodSize)
+      }
+      if(prodVariant){
+        formData.append("id_color", prodVariant)
+      }
+      if(prodCat){
+        formData.append("id_category", prodCat)
+      }
+
       const response = await fetch(`${API}/products`, {
         method: "POST",
-        headers:{
-          "Authorization":`Bearer ${token}`
+        headers: {
+          "Authorization": `Bearer ${token}`
         },
         body: formData
       })
 
       const dataRes = await response.json()
-      if(!dataRes.success){
+      if (!dataRes.success) {
         throw new Error(dataRes.message)
       }
       alert(dataRes.message)
       reset()
       setImageProd("")
-    } catch(err){
+    } catch (err) {
       console.error(err.message)
     }
   }
 
 
-  function onError(errors){
+  function onError(errors) {
     console.log(errors)
   }
 
 
   return (
     <div className="px-6 mb-10">
-      { addProduct &&
-      <Modal>
-        <div className="flex flex-col gap-5 w-120 p-4">
-          <h3>Add new Product</h3>
-          <form 
-          onSubmit={handleSubmit(onSubmit, onError)}
-          className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="image">
-                <div className="cursor-pointer overflow-hidden rounded-md w-30 h-30">
-                  {imageProd ? 
-                  <img
-                    src={imageProd}
-                    className="h-full w-full object-cover border border-gray-200 rounded-md"
-                  /> :
-                  <div
-                    className="content-cent h-full gap-3 border-dashed flex-col border rounded-md">
-                    <FiUpload className="text-2xl" />
-                    <p className="text-xs text-center w-[60%]">Upload gambar</p>
-                  </div> 
-                  }
+      {addProduct &&
+        <Modal>
+          <div className="flex flex-col gap-5 h-130 w-210 p-4">
+            <h3>Add new Product</h3>
+            <form
+              onSubmit={handleSubmit(onSubmit, onError)}
+              className="flex flex-col gap-3">
+              <div className="flex justify-between w-full">
+                <div className="flex flex-col gap-3 w-[65%]">
+                  <div className="flex justify-between">
+                    <div className="flex w-[40%] pt-7 flex-col gap-1">
+                      <label htmlFor="image">
+                        <div className="cursor-pointer overflow-hidden rounded-md w-40 h-40">
+                          {imageProd ?
+                            <img
+                              src={imageProd}
+                              className="h-full w-full object-cover border border-gray-300 rounded-md"
+                            /> :
+                            <div
+                              className="content-cent h-full gap-3 border-dashed flex-col border rounded-md">
+                              <FiUpload className="text-2xl" />
+                              <p className="text-xs text-center w-[60%]">Upload gambar</p>
+                            </div>
+                          }
+                        </div>
+                      </label>
+                      <input
+                        {...register("image")}
+                        accept="image/png,image/jpeg,image/jpg"
+                        onChange={(data) => { handlePrev(data) }}
+                        className="hidden"
+                        type="file" id="image" name="image" />
+                    </div>
+                    <div className="flex w-[60%] flex-col gap-2">
+
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="alt" className="text-[15px]">Alt</label>
+                        <input
+                          {...register("alt")}
+                          placeholder="Masukan Alt Produk"
+                          className="border text-sm border-gray-300 rounded-md h-10 pl-4"
+                          type="text" id="alt" name="alt" />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[15px]" htmlFor="title">Name</label>
+                        <input
+                          {...register("title")}
+                          placeholder="Masukan Nama Produk"
+                          className="border text-sm border-gray-300 rounded-md h-10 pl-4"
+                          type="text" id="title" name="title" />
+                      </div>
+
+                      <div className="flex flex-row  justify-between w-full">
+                        <div className="flex flex-col gap-1 w-[68%]">
+                          <label className="text-[15px]" htmlFor="price">Harga</label>
+                          <input
+                            {...register("price")}
+                            placeholder="300.000"
+                            className="border border-gray-300 text-sm rounded-md h-10 pl-4"
+                            type="text" id="price" name="price" />
+                        </div>
+                        <div className="flex flex-col gap-1 w-[30%]">
+                          <label className="text-[15px]" htmlFor="stocks">Kuantitas</label>
+                          <input
+                            {...register("stocks")}
+                            placeholder="1"
+                            className="border border-gray-300 text-sm rounded-md h-10 pl-4"
+                            type="text" id="stocks" name="stocks" />
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="description">Deskripsi</label>
+                    <textarea
+                      {...register("description")}
+                      rows={6}
+                      className="border border-gray-300 text-sm rounded-md p-3"
+                      type="text" id="description" name="description" />
+                  </div>
                 </div>
-              </label>
-              <input
-                {...register("image")}
-                accept="image/png,image/jpeg,image/jpg"
-                onChange={(data) => {handlePrev(data)}}
-                className="hidden"
-                type="file" id="image" name="image" />
-            </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="alt">Name Alt</label>
-              <input
-                {...register("alt")}
-                placeholder="Masukan Alt Produk"
-                className="border text-sm rounded-md h-10 pl-4"
-                type="text" id="alt" name="alt" />
-            </div>
+                <div className="flex flex-col gap-7 pl-8 w-[35%] h-100 overflow-y-scroll">
+                  <div className="flex flex-col gap-3">
+                    <p>Warna</p>
+                    <div className="flex flex-row gap-3 flex-wrap w-full text-sm items-center">
+                      {colors.map((item, index) => (
+                        <div className="relative" key={item.id}>
+                          <input
+                            className="absolute hidden top-4 left-3 peer"
+                            type="radio" name={`color`}
+                            onChange={(e) => {
+                              setProdVariant(e.target.value)
+                            }}
+                            id={`${item.name.toLowerCase()}`}
+                            value={item.id}
+                          />
+                          <label
+                            className="border-(--border) border rounded-lg cursor-pointer 
+                          h-[2.2rem] flex justify-center peer-checked:border-(--text-high)
+                          peer-checked:text-(--text-high) items-center px-3"
+                            htmlFor={`${item.name.toLowerCase()}`}>{item.name}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="title">Name</label>
-              <input
-                {...register("title")}
-                placeholder="Masukan Nama Produk"
-                className="border text-sm rounded-md h-10 pl-4"
-                type="text" id="title" name="title" />
-            </div>
+                  <div className="flex flex-col gap-3">
+                    <p>Ukuran</p>
+                    <div className="flex flex-row gap-3 flex-wrap w-full text-sm items-center">
+                      {sizes.map((item, index) => (
+                        <div className="relative" key={item.id}>
+                          <input
+                            className="absolute hidden top-4 left-3 peer"
+                            type="radio" name={`sizes`}
+                            onChange={(e) => {
+                              setProdSize(e.target.value)
+                            }}
+                            id={`${item.name.toLowerCase()}`}
+                            value={item.id}
+                          />
+                          <label
+                            className="border-(--border) border rounded-lg cursor-pointer 
+                          h-[2.2rem] flex justify-center peer-checked:border-(--text-high)
+                          peer-checked:text-(--text-high) items-center px-3"
+                            htmlFor={`${item.name.toLowerCase()}`}>{item.name}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="price">Harga</label>
-              <input
-                {...register("price")}
-                placeholder="Masukan Harga Produk"
-                className="border text-sm rounded-md h-10 pl-4"
-                type="text" id="price" name="price" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="description">Deskripsi</label>
-              <textarea
-                {...register("description")}
-                rows={6}
-                className="border text-sm rounded-md p-4"
-                type="text" id="description" name="description" />
-            </div>
-            <button 
-            type="submit"
-            className="bg-(--main-bg) text-white 
-            rounded-md w-full h-10 border-none content-cent cursor-pointer">
-              Tambah
-            </button>
-          </form>
-        </div>
-      </Modal> }
+                  <div className="flex flex-col gap-3">
+                    <p>Kategori</p>
+                    <div className="flex flex-row gap-3 flex-wrap w-full text-sm items-center">
+                      {categories.map((item, index) => (
+                        <div className="relative" key={item.id}>
+                          <input
+                            className="absolute hidden top-4 left-3 peer"
+                            type="radio" name={`categories`}
+                            onChange={(e) => {
+                              setProdCat(e.target.value)
+                            }}
+                            id={`${item.name.toLowerCase()}`}
+                            value={item.id}
+                          />
+                          <label
+                            className="border-(--border) border rounded-lg cursor-pointer 
+                          h-[2.2rem] flex justify-center peer-checked:border-(--text-high)
+                          peer-checked:text-(--text-high) items-center px-3"
+                            htmlFor={`${item.name.toLowerCase()}`}>{item.name}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="bg-(--main-bg) text-white 
+              rounded-md w-full h-10 border-none content-cent cursor-pointer">
+                Tambah
+              </button>
+            </form>
+          </div>
+        </Modal>}
       <header className="flex flex-col gap-5 mt-6">
         <div className="flex justify-between h-10 items-center">
           <div className="flex flex-col justify-center gap-0">
             <p className="text-h text-2xl font-medium">Manajemen Produk</p>
           </div>
-          <button 
-          onClick={() => {
-            setAddproduct(true)
-          }}
-          className="w-[159px] h-full bg-(--action-bg) flex justify-center items-center
+          <button
+            onClick={() => {
+              setAddproduct(true)
+            }}
+            className="w-39.75 cursor-pointer h-full bg-(--action-bg) flex justify-center items-center
 						text-white text-sm rounded-xl">
             <img src={Plus} alt="add product" />
             <p>Tambah Produk</p>
@@ -223,22 +391,22 @@ export default function Products() {
         <div className="mt-1 grid grid-cols-4 gap-3 justify-between">
           <div className="flex flex-col items-center justify-center bg-white border-white border-light 
 							rounded-xl h-[90px]">
-            <h2 className="text-h leading-4">18</h2>
+            <h2 className="text-h leading-4">{totalProd}</h2>
             <p className="text-sm">Total Produk</p>
           </div>
           <div className="flex flex-col items-center justify-center bg-white border-white border-light 
 							rounded-xl h-[90px]">
-            <h2 className="text-h leading-4">18</h2>
+            <h2 className="text-h leading-4">0</h2>
             <p className="text-sm">Produk Baru</p>
           </div>
           <div className="flex flex-col items-center justify-center bg-white border-white border-light 
 							rounded-xl h-[90px]">
-            <h2 className="text-h leading-4">18</h2>
+            <h2 className="text-h leading-4">0</h2>
             <p className="text-sm">Stok Rendah</p>
           </div>
           <div className="flex flex-col items-center justify-center bg-white border-white border-light 
 							rounded-xl h-[90px]">
-            <h2 className="text-h leading-4">18</h2>
+            <h2 className="text-h leading-4">0</h2>
             <p className="text-sm">Produk Promo</p>
           </div>
         </div>
@@ -246,7 +414,7 @@ export default function Products() {
 
       <main className="w-full mt-4 border-light rounded-xl">
         <div className="rounded-t-xl bg-white items-center h-[46px] p-4">
-          <p className="text-sm">18 Produk</p>
+          <p className="text-sm">{totalProd} Produk</p>
         </div>
         <table className="w-full p-4 rounded-b-xl">
           <thead>

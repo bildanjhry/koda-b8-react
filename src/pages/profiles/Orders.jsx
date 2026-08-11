@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 export default function Orders() {
   const { checkout } = useUser()
+  const [checkoutHis, setCheckoutHis] = useState([])
   const [data, setData] = useState({})
   const session = useSelector(state => state.session.session)
 
@@ -22,6 +23,7 @@ export default function Orders() {
         }
 
         setData(data.results[0])
+        setCheckoutHis(data.results[0].checkout_histories)
 
       } catch (err) {
         if (count < 1) {
@@ -38,7 +40,7 @@ export default function Orders() {
     <div className="w-[95%] pt-1 h-full">
       <h3>Pesanan Saya</h3>
       <div className="w-full flex flex-col-reverse gap-6 mt-6">
-        { data.checkout_histories && data?.checkout_histories.map((item, index) => (
+        { checkoutHis && checkoutHis.map((item, index) => (
           <div
             key={index}
             className=" w-full border-light bg-white rounded-2xl 
@@ -82,7 +84,7 @@ export default function Orders() {
         ))
         }
 
-        {data.checkout_histories && data?.checkout_histories.length < 1 &&
+        { checkoutHis.length < 1 &&
           <div className="w-full rounded-xl border-light h-88 mt-2 
           flex flex-col gap-3 justify-center items-center">
             <LuShoppingBag size={66} />
