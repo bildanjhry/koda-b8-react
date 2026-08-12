@@ -35,7 +35,7 @@ export default function ProductDetails() {
   const [selected, setSelected] = useState(null)
   const [itemStock, setItemStock] = useState(null)
   const [dataItems, setDataItems] = useState([])
-  const [ , setGlobalCart] = useContext(UserContext)
+  const [, setGlobalCart] = useContext(UserContext)
   const [errorData, setErrorData] = useState({
     error: false,
     code: "",
@@ -80,44 +80,41 @@ export default function ProductDetails() {
   }
 
   useEffect(() => {
-    try{
-      if(prodSize && prodVariant){
-        const item = dataItems.filter((item) => item.color === prodVariant && item.size === prodSize)[0]
-        setSelected(item)
-        setItemStock(item?.stock)
-      }
-      console.log(prodSize)
-      console.log(prodVariant)
-    } catch(err){
-      console.error(err)
-    }
-  },[prodSize, setProdSize, setProdVariant, prodVariant])
+    if (!prodSize || !prodVariant || !dataItems?.length) return
+
+    const item = dataItems.find(
+      (item) => item.color === prodVariant && item.size === prodSize
+    )
+
+    setSelected(item ?? null)
+    setItemStock(item?.stock ?? 0)
+  }, [prodSize, prodVariant, dataItems])
 
   console.log(selected)
 
   async function addToCart(data) {
-    try{
+    try {
       const API = import.meta.env.VITE_API_URL
       const token = user.token
       const id = user.id
       const formated = new URLSearchParams(data)
-      const response = await fetch(`${API}/carts/${id}`,{
+      const response = await fetch(`${API}/carts/${id}`, {
         method: "POST",
         headers: {
-          "Authorization":`Bearer ${token}`,
-          "Content-Type":"application/x-www-form-urlencoded"
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded"
         },
-        body:formated
+        body: formated
       })
       const dataResponse = await response.json()
-      if(!dataResponse.success){
+      if (!dataResponse.success) {
         throw new Error(response.message)
       }
       setGlobalCart((prev) => {
         return [...prev, dataResponse.results]
       })
-    } catch(err){
-        console.error(err)
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -156,7 +153,7 @@ export default function ProductDetails() {
 
       switch (code) {
         case "ADD_TO_CART":
-          if(selected){
+          if (selected) {
             addToCart({
               id_product: selected.id_variant,
               quantity: quantity
@@ -399,7 +396,7 @@ export default function ProductDetails() {
                       <img src={Plus} alt="increase qty" />
                     </button>
                   </div>
-                  <p className="text-sm">Stok: { itemStock? itemStock : data?.stocks} pcs</p>
+                  <p className="text-sm">Stok: {itemStock ? itemStock : data?.stocks} pcs</p>
                 </div>
               </div>
 
