@@ -80,12 +80,18 @@ export default function ProductDetails() {
   }
 
   useEffect(() => {
-    if(prodSize && prodVariant){
-      const item = dataItems.filter((item) => item.color === prodVariant && item.size === prodSize)[0]
-      setSelected(item)
-      setItemStock(item?.stock)
+    try{
+      if(prodSize && prodVariant){
+        const item = dataItems.filter((item) => item.color === prodVariant && item.size === prodSize)[0]
+        setSelected(item)
+        setItemStock(item?.stock)
+      }
+      console.log(prodSize)
+      console.log(prodVariant)
+    } catch(err){
+      console.error(err)
     }
-  },[prodSize, prodVariant])
+  },[prodSize, setProdSize, setProdVariant, prodVariant])
 
   console.log(selected)
 
