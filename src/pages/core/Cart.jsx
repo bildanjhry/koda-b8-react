@@ -19,24 +19,39 @@ import { useLocation, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 
 export default function Cart(){
-  const {cart, setCart} = useUser()
+  const {cart, address, setCart} = useUser()
   const [globalCart, setGlobalCart] = useContext(UserContext)
   const [cartProps, setCartProps] = useState({})
+  const [loading, setLoading] = useState(false)
   const session = useSelector(state => state.session.session)
   const navigate = useNavigate()
-  const {address} = useUser()
   const location = useLocation()
 
-  function handleDelete(id){
-    // const filteredItem = globalCart.filter((item) => item.cartId !== id)
-    // setCart(filteredItem)
-    // setGlobalCart(() => filteredItem)
+  async function handleDelete(id){
+    try{
+      setLoading(true)
+      const API = import.meta.env.VITE_API_URL
+      const token = session.token
+      const result = await fetch(`${API}/carts/item/${id}`,{
+        method: "DELETE",
+        headers: {
+          "Authorization":`Bearer ${token}`
+        }
+      })
+      const data = await result.json()
+      if(!data.success){
+        throw new Error(data.message)
+      }
+    } catch(err){
+      console.error(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
     async function getDataCart(){
       try{
-        // const API = 'http://localhost:8081'
         const API = import.meta.env.VITE_API_URL
         const response = await fetch(`${API}/carts/user/${session.id}`, {
           headers:{
@@ -45,6 +60,8 @@ export default function Cart(){
         })
         const data = await response.json()
         if(!data.success){
+          setCart([])
+          setGlobalCart([])
           throw new Error(data.message)
         }
         setCartProps({
@@ -52,37 +69,13 @@ export default function Cart(){
           total: data.result?.total
         })
         setCart(data.result?.order_items)
-
+        setGlobalCart(data.result?.order_items)
       } catch(err){
         console.error(err.message)
       }
     }
-    if(session.token) getDataCart()
-  },[])
-
-  //   useEffect(() => {
-  //   async function getDataAddress(){
-  //     try{
-  //       // const API = 'http://localhost:8081'
-  //       const API = import.meta.env.VITE_API_URL
-  //       const response = await fetch(`${API}/address/user/${session.id}`, {
-  //         headers:{
-  //           "Authorization":`Bearer ${session.token}`
-  //         }
-  //       })
-  //       const data = await response.json()
-  //       if(!data.succes){
-  //         throw new Error(data.message)
-  //       }
-  //       console.log(data)
-  //       setAddress(data.result)
-
-  //     } catch(err){
-  //       console.error(err.message)
-  //     }
-  //   }
-  //   getDataAddress()
-  // },[])
+    if(session.token && !loading) getDataCart()
+  },[loading])
 
   function handleCheckout(){
     try{
@@ -103,7 +96,7 @@ export default function Cart(){
           Keranjang Belanja ({cart?.length} item)
         </h4>
 
-        { cart.length > 0 ?
+        { cart.length > 0 || globalCart.length > 0 ?
           <div className="w-full min-h-77.25 mt-5 flex flex-row justify-between">
             <main className="w-[66%] min-h-full flex flex-col gap-3 justify-between">
               {globalCart.map((item, index) => (
@@ -115,10 +108,10 @@ export default function Cart(){
                   <div className="flex items-center h-25 gap-6 justify-between">
                     <img 
                       className="w-24 h-full rounded-xl overflow-hidden"
-                      src={item.image?.path} alt={item.image?.alt} />
+                      src={`${import.meta.env.VITE_API_URL}/${item.image}`} alt={item?.alt} />
                     <div className="flex flex-col justify-between h-full ">
                       <p className="text-h font-medium text-xm">{item.name}</p>
-                      <p className="text-xs">{item?.color?.charAt(0).toUpperCase() + item?.color?.slice(1)}</p>
+                      <p className="text-xs">{item?.color}</p>
                       <div className="flex felx-col h-[1.9rem] text-sm w-fit items-center 
                           rounded-lg border-light">
                         <div className="w-10 flex justify-center items-center">
@@ -141,7 +134,8 @@ export default function Cart(){
                   <div className="flex flex-col h-26 items-end">
                     <button 
                       className="cursor-pointer"
-                      onClick={() => {handleDelete(item.cartId)}}>
+                      disabled={loading}
+                      onClick={() => {handleDelete(item.id)}}>
                       <img src={Delete} alt="delete product" />
                     </button>
                     <h4 className="text-(--text-high) font-medium flex mt-[40%]">
