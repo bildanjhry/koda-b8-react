@@ -50,7 +50,7 @@ export default function useUser() {
       }
     }
     getUserAddress()
-  }, [])
+  }, [setAddress])
 
   useEffect(() => {
     async function getUserProfiles() {
@@ -65,7 +65,7 @@ export default function useUser() {
           headers: {
             "Authorization": `Bearer ${token}`
           }
-        }) 
+        })
         const data = await response.json()
         if (!data.success) {
           throw new Error(data.message)
@@ -77,6 +77,25 @@ export default function useUser() {
     }
     getUserProfiles()
   }, [])
+
+
+  async function setterAddress(data) {
+    const API = import.meta.env.VITE_API_URL
+    const token = session.token
+    const formated = new URLSearchParams(data)
+    const response = await fetch(`${API}/address`,{
+      method: "POST",
+      headers:{
+        "Authorization":`Bearer ${token}`
+      },
+      body: formated
+    })
+
+    const res = await response.json()
+    if(!res.succes){
+      throw new Error(res.message)
+    }
+  }
 
 
   // useEffect(() => {
@@ -143,7 +162,8 @@ export default function useUser() {
     // setterAccounts,
     // setterUser, 
     // setterCart,
-    // setterAddress,
+    setAddress,
+    setterAddress,
     // setterCheckout,
     setCart,
     // setUser,
