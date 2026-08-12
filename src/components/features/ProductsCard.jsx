@@ -11,7 +11,8 @@ import { useEffect, useState } from "react";
 export default function Card({
   count = 4,
   width = "LARGE",
-  scroll = "SCROLL", params
+  scroll = "SCROLL", 
+  params = ""
 }) {
 
   let { data } = useFetch("/data/products.json", params)
@@ -21,13 +22,13 @@ export default function Card({
   useEffect(() => {
     async function getDataProduct() {
       try {
-
-        const params = new URLSearchParams({
+        const newParams = new URLSearchParams({
           page: 1,
           limit: 40,
+          search:params
         });
         const API = import.meta.env.VITE_API_URL
-        const res = await fetch(`${API}/products?${params}`)
+        const res = await fetch(`${API}/products?${newParams}`)
         const data = await res.json()
 
         if (!data.success) {
@@ -40,7 +41,7 @@ export default function Card({
       }
     }
     getDataProduct()
-  }, [])
+  }, [params])
 
 
   switch (params) {

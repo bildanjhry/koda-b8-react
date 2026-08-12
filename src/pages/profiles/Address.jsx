@@ -55,7 +55,6 @@ export default function Address(){
         setEventAdd(prev => {return {...prev, event:false}})
         if(location.state) navigate(location.state)
           setAddAddress(false)
-          setAddress([])
       },2000)
     } catch(err){
       setEventAdd({

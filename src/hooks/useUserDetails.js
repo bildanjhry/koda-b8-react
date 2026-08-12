@@ -47,20 +47,8 @@ export default function useUserDetails() {
       }
 
     }
-    if (account.username === undefined || account.email === undefined ) getUserDetail()
-    else {
-      let profiles = account
-      let username = profiles.username
-      let email = profiles.email
-      username = atob(username)
-      email = atob(email)
-      setInitial(username.charAt(0).toUpperCase())
-      setUserProfile({
-        username:username,
-        email:email
-      })
-    }
-  }, [account])
+    getUserDetail()
+  }, [])
 
-  return { userProfile, initial }
+  return { userProfile, initial, setUserProfile }
 }

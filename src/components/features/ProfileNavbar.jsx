@@ -22,7 +22,6 @@ export default function ProfileNavbar(){
   useEffect(() => {
       async function getDataCart(){
       try{
-        // const API = 'http://localhost:8081'
         const API = import.meta.env.VITE_API_URL
         const response = await fetch(`${API}/carts/user/${sessionUser.id}`, {
           headers:{
@@ -43,7 +42,7 @@ export default function ProfileNavbar(){
 
     return () => setGlobalCart([])
   },[])
-  
+
   return(
     <div className="h-full w-full md:w-fit flex items-center ">
       { !sessionUser.id ?

@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import { Link, useNavigate, useSearchParams } from "react-router"
 
 // hook
 import useFetch from "@/hooks/useFetch.js"
@@ -11,18 +11,27 @@ import { CiSearch } from "react-icons/ci";
 // component
 import Logo from "@/components/ui/Logo"
 import ProfileNavbar from "@/components/features/ProfileNavbar"
+import { useEffect } from "react";
 
 export default function Navbar() {
-  const {data: categories} = useFetch("/data/categories.json")
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { data: categories } = useFetch("/data/categories.json")
+  const search = searchParams.get("search") || ""
+  const navigate = useNavigate()
 
-  function handleSearch(e){
+  function handleSearch(e) {
     e.preventDefault()
-    try{
-      const inputData = new FormData(e.target).get("search")
-      if(inputData) window.location.herf = "/browse-product"
-    } catch(err){
+    try {
+      if (search) navigate(`/browse-product/all?search=${search}`)
+    } catch (err) {
       console.error(err.message)
     }
+  }
+
+  function handleOnChange(e) {
+    setSearchParams({
+      search: e.target.value
+    })
   }
 
   return (
@@ -38,10 +47,10 @@ export default function Navbar() {
           </div>
           <div className="flex flex-row justify-between w-[32%] ">
             <p className="text-light">
-							📞 0800-1234-5678 (Gratis)
+              📞 0800-1234-5678 (Gratis)
             </p>
             <p className="text-light">
-							🚀 Gratis ongkir di atas Rp 100.000
+              🚀 Gratis ongkir di atas Rp 100.000
             </p>
           </div>
         </div>
@@ -52,27 +61,29 @@ export default function Navbar() {
 				justify-self-center">
           <Logo />
           <div id="search" className="w-full md:w-[45%] ">
-            <form id="search-input" 
+            <form id="search-input"
               onSubmit={(e) => handleSearch(e)}
               action="" className="h-11 md:h-10 flex w-full">
-              <input 
+              <input
                 id="search"
-                type="search" 
+                type="search"
                 name="search"
+                defaultValue={search}
+                onChange={handleOnChange}
                 placeholder="Cari produk, merek, kategori..."
                 className="rounded-l-lg h-full w-[90%]
                 input-bg pl-4 text-sm md:border-light"/>
-              <button 
+              <button
                 type="submit"
                 className=" flex justify-center items-center rounded-r-lg 
                 h-full w-[15%] md:w-[10%] bg-(--input-bg)">
-                <CiSearch className="font-bold text-h text-xl"/>
+                <CiSearch className="font-bold text-h text-xl" />
               </button>
             </form>
           </div>
 
           <div className="hidden md:flex">
-            <ProfileNavbar/>
+            <ProfileNavbar />
           </div>
 
         </div>
@@ -80,14 +91,14 @@ export default function Navbar() {
 
       <section className="h-15 py-2 md:py-0 md:h-10.25 bg-(--content-bg) md:bg-white  flex items-center gap-5 
       overflow-scroll md:pl-0 md:overflow-hidden large:w-315 w-full px-[2%] md:px-0 md:w-[83%] justify-self-center ">
-		    <div className="md:flex hidden gap-1 items-center h-full px-1 ">
+        <div className="md:flex hidden gap-1 items-center h-full px-1 ">
           <img src={hamMenu} alt="category menu list" />
           <select name="cateogry" id="category" className="text-h text-sm">
-            <option value=""id="category">Semua Kategori</option>
+            <option value="" id="category">Semua Kategori</option>
           </select>
-        </div>		
+        </div>
         <ul className="w-full h-full gap-2 md:gap-5 text-sm flex">
-          {categories.map((item, index) =>(
+          {categories.map((item, index) => (
             <li key={index} className="shrink-0">
               <Link to={""} className="md:px-0 px-4 flex gap-2 bg-white rounded-lg md:w-fit items-center h-full">
                 <span className="">{item.iconText}</span>
