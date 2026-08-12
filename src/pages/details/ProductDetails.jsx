@@ -63,7 +63,7 @@ export default function ProductDetails() {
           setColors([...new Map(arr.map(item => [item.id, item])).values()])
         }
         setData(data.results)
-        setDataItems(data.results.items)
+        setDataItems(data.results?.items)
       } catch (err) {
         console.error(err.message)
       }
@@ -83,7 +83,7 @@ export default function ProductDetails() {
     if(prodSize && prodVariant){
       const item = dataItems.filter((item) => item.color === prodVariant && item.size === prodSize)[0]
       setSelected(item)
-      setItemStock(item.stock)
+      setItemStock(item?.stock)
     }
   },[prodSize, prodVariant])
 
@@ -391,7 +391,7 @@ export default function ProductDetails() {
                       <img src={Plus} alt="increase qty" />
                     </button>
                   </div>
-                  <p className="text-sm">Stok: { itemStock? itemStock : data?.items[0]?.stock} pcs</p>
+                  <p className="text-sm">Stok: { itemStock? itemStock : data?.stocks} pcs</p>
                 </div>
               </div>
 

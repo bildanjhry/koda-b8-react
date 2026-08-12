@@ -60,30 +60,29 @@ export default function Cart(){
     if(session.token) getDataCart()
   },[])
 
-    useEffect(() => {
-    async function getDataAddress(){
-      try{
-        // const API = 'http://localhost:8081'
-        const API = import.meta.env.VITE_API_URL
-        const response = await fetch(`${API}/address/user/${session.id}`, {
-          headers:{
-            "Authorization":`Bearer ${session.token}`
-          }
-        })
-        const data = await response.json()
-        if(!data.success){
-          throw new Error(data.message)
-        }
-        console.log(data.result)
-        setAddress(data.result)
+  //   useEffect(() => {
+  //   async function getDataAddress(){
+  //     try{
+  //       // const API = 'http://localhost:8081'
+  //       const API = import.meta.env.VITE_API_URL
+  //       const response = await fetch(`${API}/address/user/${session.id}`, {
+  //         headers:{
+  //           "Authorization":`Bearer ${session.token}`
+  //         }
+  //       })
+  //       const data = await response.json()
+  //       if(!data.succes){
+  //         throw new Error(data.message)
+  //       }
+  //       console.log(data)
+  //       setAddress(data.result)
 
-      } catch(err){
-        setAddress([])
-        console.error(err.message)
-      }
-    }
-    getDataAddress()
-  },[])
+  //     } catch(err){
+  //       console.error(err.message)
+  //     }
+  //   }
+  //   getDataAddress()
+  // },[])
 
   function handleCheckout(){
     try{

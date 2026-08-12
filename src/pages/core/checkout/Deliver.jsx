@@ -204,7 +204,9 @@ export default function Deliver() {
             <div className="flex flex-col w-full mt-2">
               <ul className="grid w-full gap-4 justify-between grid-cols-1">
                 {deliveryMethods.map((item) => (
-                  <li className="relative">
+                  <li
+                    key={item.id}
+                   className="relative">
                     <input
                       {...register("deliveryMethod")}
                       className="absolute top-7.5 left-4 peer/jne-reg"
