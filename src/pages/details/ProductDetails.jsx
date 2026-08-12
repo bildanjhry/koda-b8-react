@@ -35,6 +35,7 @@ export default function ProductDetails() {
   const [selected, setSelected] = useState(null)
   const [itemStock, setItemStock] = useState(null)
   const [dataItems, setDataItems] = useState([])
+  const [loading, setLoading] = useState(false)
   const [, setGlobalCart] = useContext(UserContext)
   const [errorData, setErrorData] = useState({
     error: false,
@@ -79,46 +80,17 @@ export default function ProductDetails() {
     setQuantity(quantity + 1)
   }
 
-  // useEffect(() => {
-  //   if (!prodSize || !prodVariant || !dataItems?.length) return
-
-  //   const item = dataItems.find(
-  //     (item) => item.color === prodVariant && item.size === prodSize
-  //   )
-
-  //   setSelected(item ?? null)
-  //   setItemStock(item?.stock ?? 0)
-  // }, [prodSize, prodVariant, dataItems])
-
-  // console.log(selected)
-
   useEffect(() => {
-  console.log("=== DEBUG ===")
-  console.log("prodSize:", prodSize, typeof prodSize)
-  console.log("prodVariant:", prodVariant, typeof prodVariant)
-  console.log("dataItems:", dataItems)
-
-  const item = dataItems?.find(item => {
-    console.log({
-      itemColor: item.color,
-      itemColorType: typeof item.color,
-      itemSize: item.size,
-      itemSizeType: typeof item.size,
-      colorMatch: item.color === prodVariant,
-      sizeMatch: item.size === prodSize
+    const item = dataItems?.find(item => {
+      return item.color === prodVariant && item.size === prodSize
     })
-
-    return item.color === prodVariant && item.size === prodSize
-  })
-
-  console.log("FOUND:", item)
-
-  setSelected(item ?? null)
-  setItemStock(item?.stock ?? 0)
-}, [prodSize, prodVariant, dataItems])
+    setSelected(item ?? null)
+    setItemStock(item?.stock ?? 0)
+  }, [prodSize, prodVariant, dataItems])
 
 
   async function addToCart(data) {
+    setLoading(true)
     try {
       const API = import.meta.env.VITE_API_URL
       const token = user.token
@@ -141,6 +113,8 @@ export default function ProductDetails() {
       })
     } catch (err) {
       console.error(err)
+    } finally{
+      setLoading(false)
     }
   }
 
