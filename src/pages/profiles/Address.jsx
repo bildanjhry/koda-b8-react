@@ -21,7 +21,7 @@ const schema = yup.object({
 })
 
 export default function Address(){
-  const {address: userAddress, profiles, setterAddress } = useUser()
+  const {address: userAddress, profiles, setAddress, setterAddress } = useUser()
   const [addAddress, setAddAddress] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
@@ -54,8 +54,9 @@ export default function Address(){
       window.setTimeout(() => {
         setEventAdd(prev => {return {...prev, event:false}})
         if(location.state) navigate(location.state)
+          setAddAddress(false)
+          setAddress([])
       },2000)
-      setAddAddress(false)
     } catch(err){
       setEventAdd({
         event:true,
