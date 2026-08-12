@@ -345,7 +345,7 @@ export default function ProductDetails() {
                           setProdVariant(e.target.value)
                         }}
                         id={`${item.name.toLowerCase()}`}
-                        value={`${item.name}`}
+                        value={item.name}
                       />
                       <label
                         className="border-(--border) border rounded-lg cursor-pointer 
