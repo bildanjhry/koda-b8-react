@@ -24,7 +24,7 @@ export default function Cart(){
   const [cartProps, setCartProps] = useState({})
   const session = useSelector(state => state.session.session)
   const navigate = useNavigate()
-  const [address, setAddress] = useState()
+  const {address} = useUser()
   const location = useLocation()
 
   function handleDelete(id){
@@ -89,9 +89,6 @@ export default function Cart(){
     try{
       if(address.length < 1){
         throw new Error("/my-profiles/address")
-      }
-      if(bio.phone === ""){
-        throw new Error("/my-profiles/settings")
       }
       navigate("/checkout")
 

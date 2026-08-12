@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { CheckoutContext } from "@/hooks/context/UserContext"
+import { UserContext } from "@/hooks/context/UserContext"
+
 
 // assets
 import Delivery from "@/assets/icons/delivery-blue.svg"
@@ -20,7 +22,8 @@ const schema = yup.object({
 
 export default function Deliver() {
   const [step, setStep] = useContext(CheckoutContext)
-  const { profiles, address, bio } = useUser()
+  const [cart, ] = useContext(UserContext)
+  const { profiles, address, bio} = useUser()
   const navigate = useNavigate()
   const [delivery, setDelivery] = useState()
   const [deliveryMethods, setDeliveryMethods] = useState([])
@@ -39,7 +42,7 @@ export default function Deliver() {
     for (const key in profiles) {
       setValue(key, profiles[key])
     }
-  }, [address, profiles])
+  }, [profiles])
 
   useEffect(() => {
     function getState() {
@@ -85,9 +88,9 @@ export default function Deliver() {
     navigate("/checkout/payment", {
       state: {
         step: 2, data: {
-          items: [{ ...location.state.prod }], ...data,
+          items: [{ ...location.state?.prod }], ...data,
           order_items: [
-            { quantity: location.state.prod.qty, id_product: location.state.prod.id_var }
+            { quantity: location.state?.prod.qty, id_product: location.state?.prod.id_var }
           ]
         }
       }

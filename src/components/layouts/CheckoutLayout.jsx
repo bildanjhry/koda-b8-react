@@ -2,10 +2,11 @@ import { Outlet, useLocation, useNavigate } from "react-router"
 import useUser from "@/hooks/useUser"
 import moneyFormat from "@/utils/money-format.js"
 import classNames from "classnames"
+import { UserContext } from "@/hooks/context/UserContext"
 
 // component
 import MainLayout from "@/components/layouts/MainLayout.jsx"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 
 export default function CheckoutLayout(){
 
@@ -99,9 +100,13 @@ function Header() {
 }
 
 function Aside(){
-  let { cart } = useUser()
+  const [cart, ] = useContext(UserContext)
   const location = useLocation()
-  const [cartProduct, setCartProduct] = useState(cart || [])
+  const [cartProduct, setCartProduct] = useState([])
+  
+  useEffect(() => {
+    setCartProduct(cart)
+  },[cart])
 
   useEffect(() => {
     function handleBuyNow(){
@@ -111,7 +116,6 @@ function Aside(){
     }
     handleBuyNow()
   },[location])
-
 
   return (
     <aside className="w-88 min-h-67.75 max-h-fit sticky top-35 border-light bg-white 
@@ -135,7 +139,7 @@ function Aside(){
       <div className="w-full flex flex-col gap-2 py-3  border-b-light">
         <ul className="flex justify-between items-center">
           <li>Subtotal</li>
-          <li>{moneyFormat(cartProduct.reduce((acc, item) => acc + (item.price * item.qty),0))[0]}</li>
+          <li>{moneyFormat(cartProduct.reduce((acc, item) => acc + (item.price * (item.qty || item.quantity_prod)),0))[0]}</li>
         </ul>
         <ul className="flex justify-between items-center">
           <li>Ongkir</li>
@@ -146,7 +150,7 @@ function Aside(){
         <ul className="flex justify-between items-center mb-5">
           <li className="text-(--text-h)">Total</li>
           <li className="text-(--text-high) font-semibold">
-            {moneyFormat(cartProduct.reduce((acc, item) => acc + (item.price * item.qty),0))[0]}</li>
+            {moneyFormat(cartProduct.reduce((acc, item) => acc + (item.price * (item.qty || item.quantity_prod)),0))[0]}</li>
         </ul>
         <p className="text-center relative  text-xs">🔒 Pembayaran aman dan terenkripsi</p>
       </div>
