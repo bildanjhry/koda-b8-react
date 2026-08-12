@@ -40,6 +40,8 @@ export default function ProfileNavbar(){
       }
     }
     if(sessionUser.token) getDataCart()
+
+    return () => setGlobalCart([])
   },[])
   
   return(
