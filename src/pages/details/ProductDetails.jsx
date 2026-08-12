@@ -87,6 +87,8 @@ export default function ProductDetails() {
     }
   },[prodSize, prodVariant])
 
+  console.log(selected)
+
   async function addToCart(data) {
     try{
       const API = import.meta.env.VITE_API_URL
