@@ -54,8 +54,8 @@ export default function ProductDetails() {
         const API = import.meta.env.VITE_API_URL
         const res = await fetch(`${API}/products/${slugs}`)
         const data = await res.json()
-        const arr = data.results?.avail_colors || []
-        const sizesArr = data.results?.avail_sizes || []
+        const arr = data.results.avail_colors || []
+        const sizesArr = data.results.avail_sizes || []
         if (arr.length > 0) {
           setSizes([...new Map(sizesArr.map(item => [item.id, item])).values()])
         }
@@ -63,7 +63,7 @@ export default function ProductDetails() {
           setColors([...new Map(arr.map(item => [item.id, item])).values()])
         }
         setData(data.results)
-        setDataItems(data.results?.items)
+        setDataItems(data.results.items)
       } catch (err) {
         console.error(err.message)
       }
