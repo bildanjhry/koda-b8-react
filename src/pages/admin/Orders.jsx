@@ -2,8 +2,49 @@
 import Export from "@/assets/icons/export-white.svg"
 import Search from "@/assets/icons/search-mute.svg"
 import Watch from "@/assets/icons/watch-mute.svg"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+
+import moneyFormat from "@/utils/money-format"
 
 export default function Orders(){
+  const [dataCheckout, setDataCheckout] = useState([])
+  const session = useSelector(state => state.session.session)
+
+  useEffect(() => {
+    async function getOrderUser(){
+      try{
+        const API = import.meta.env.VITE_API_URL
+        const token = session.token
+        const params = new URLSearchParams({
+          page:1,
+          limit:20
+        })
+        const result = await fetch(`${API}/users/checkout-histories?${params}`,{
+          headers:{
+            "Authorization":`Bearer ${token}`
+          }
+        })
+        
+        const data = await result.json()
+        const userData = data.results.map((item) => {
+          return {
+            name: item.fullname,
+            email: item.email
+          }
+        })
+        const newData = []
+        const dataCheckoutUser = data.results.forEach((item) => newData.push(...item.checkout_histories))
+        setDataCheckout(newData)
+
+      } catch(err){
+        console.error(err.message)
+      }
+    }
+    getOrderUser()
+  },[])
+
+
   return(
     <div className="px-6 mb-10">
       <header className="flex flex-col gap-5 mt-6">
@@ -61,46 +102,52 @@ export default function Orders(){
               </tr>
             </thead>
             <tbody>
-              <tr className="h-13 bg-white text-sm">
-                <td className="pl-4 text-(--text-high) w-47 text-sm font-semibold">
-                  <p>#67263KOU</p>
-                </td>
-                <td className="flex flex-col justify-end pt-1 text-sm w-60	">
-                  <p className="text-h">Budi</p>
-                  <p>budi@mail.com</p>
-                </td>
-                <td className="text-xs w-33">
-                  <p>28 Mei 2026</p>
-                </td>
-                <td className="w-22">
-                  <p>1</p>
-                </td>
-                <td className="text-(--text-high) w-44">
-                  <p>Rp 400.000</p>
-                </td>
-                <td className="w-40">
-                  <p>Gopay</p>
-                </td>
-                <td className="w-33">
-                  <div className="px-2 py-[2.5px] w-fit rounded-full bg-(--success-bg) text-(--text-success) text-xs">
-												Terkirim
-                  </div>
-                </td>
-                <td className="w-33">
-                  <ul className="flex gap-3 items-center">
-                    <li className=" text-xs">
-                      <button className="cursor-pointer">
-                        <img src={Watch} alt="" />
-                      </button>
-                    </li>
-                    <li className=" text-xs">
-                      <button className="cursor-pointer">
-                        <img src={null} alt="" />
-                      </button>
-                    </li>
-                  </ul>
-                </td>
-              </tr>
+
+              {dataCheckout.length > 0 && dataCheckout.map((item) => (
+                <tr 
+                key={item.id_checkout}
+                className="h-13 bg-white text-sm">
+                  <td className="pl-4 text-(--text-high) w-47 text-sm font-semibold">
+                    <p>#{item.id_checkout}</p>
+                  </td>
+                  <td className="flex flex-col justify-end pt-1 text-sm w-60	">
+                    <p className="text-h">{item.fullname}</p>
+                    <p>{item.email}</p>
+                  </td>
+                  <td className="text-xs w-33">
+                    <p>28 Mei 2026</p>
+                  </td>
+                  <td className="w-22">
+                    <p>{item.products.length}</p>
+                  </td>
+                  <td className="text-(--text-high) w-44">
+                    <p>{moneyFormat(item.total)[0]}</p>
+                  </td>
+                  <td className="w-40">
+                    <p>{item.id_payment}</p>
+                  </td>
+                  <td className="w-33">
+                    <div className="px-2 py-[2.5px] w-fit rounded-full bg-(--success-bg) text-(--text-success) text-xs">
+                          Terkirim
+                    </div>
+                  </td>
+                  <td className="w-33">
+                    <ul className="flex gap-3 items-center">
+                      <li className=" text-xs">
+                        <button className="cursor-pointer">
+                          <img src={Watch} alt="" />
+                        </button>
+                      </li>
+                      <li className=" text-xs">
+                        <button className="cursor-pointer">
+                          <img src={null} alt="" />
+                        </button>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              ))}
+
             </tbody>
           </table>
         </div>			
