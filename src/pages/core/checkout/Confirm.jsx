@@ -73,9 +73,6 @@ export default function Confirm() {
     setItems(itemsTotal)
   }, [globalCart, location])
 
-  console.log(totalCheckout)
-  console.log(location.state.data.items.reduce((acc, item) => acc + (item.price) * (item.quantity_prod), 0))
-
   async function handleCheckout() {
     const formCheckoutProcess = {
       ...formCheckout,
@@ -105,14 +102,17 @@ export default function Confirm() {
         const result = await fetch(`${API}/carts/${id}`, {
           method: "DELETE",
           headers: {
-            "Authorization":`Bearer ${token}`
+            "Authorization": `Bearer ${token}`
           }
         })
         const data = await result.json()
-        if(data.success){
+        if (data.success) {
           navigate("/checkout-complete", { state: { data: formCheckoutProcess } })
           window.scrollTo({ top: 0 })
         }
+      } else {
+        navigate("/checkout-complete", { state: { data: formCheckoutProcess } })
+        window.scrollTo({ top: 0 })
       }
     }
   }

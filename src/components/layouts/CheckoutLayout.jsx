@@ -105,7 +105,9 @@ function Aside(){
   const [cartProduct, setCartProduct] = useState([])
   
   useEffect(() => {
-    setCartProduct(cart)
+    if(cart.length > 0){
+      setCartProduct(cart)
+    }
   },[cart])
 
   useEffect(() => {
