@@ -2,6 +2,8 @@ import moneyFormat from "@/utils/money-format.js"
 import * as yup from "yup"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { IoClose } from "react-icons/io5";
+import { useSearchParams } from "react-router";
 
 // assets
 import Plus from "@/assets/icons/plus-white.svg"
@@ -36,12 +38,34 @@ export default function Products() {
   const [colors, setColors] = useState([])
   const [categories, setCategories] = useState([])
   const [sizes, setSizes] = useState([])
+  const [searchParams, setSearchParams] = useSearchParams()
   const [totalProd, setTotalProd] = useState(0)
+  const [searchProd, setSearchProd] = useState("")
   const session = useSelector(state => state.session.session)
 
   const { register, getValues, formState: { errors }, handleSubmit, reset } = useForm({
     resolver: yupResolver(schema),
   })
+  const search = searchParams.get("search") || ""
+
+  useEffect(() => {
+
+    const timer = setTimeout(() => {
+      if (search.length > 3) {
+        setSearchProd(search)
+      } else if(search.length == 0){
+        setSearchProd(search)
+      }
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [search])
+
+  function handleOnChange(e) {
+    setSearchParams({
+      search: e.target.value
+    })
+  }
 
   useEffect(() => {
     async function getDataProducts(count = 3) {
@@ -49,7 +73,8 @@ export default function Products() {
         const API = import.meta.env.VITE_API_URL
         const params = new URLSearchParams({
           page: 1,
-          limit: 30
+          limit: 30,
+          search: searchProd
         })
         const response = await fetch(`${API}/products?${params}`)
         const data = await response.json()
@@ -121,7 +146,7 @@ export default function Products() {
     getDataSizes()
     getDataColors()
     getDataProducts()
-  }, [])
+  }, [searchProd])
 
   function handlePrev(data) {
     setImageFile(data.target.files[0])
@@ -142,13 +167,13 @@ export default function Products() {
         }
       }
 
-      if(prodSize){
+      if (prodSize) {
         formData.append("id_size", prodSize)
       }
-      if(prodVariant){
+      if (prodVariant) {
         formData.append("id_color", prodVariant)
       }
-      if(prodCat){
+      if (prodCat) {
         formData.append("id_category", prodCat)
       }
 
@@ -177,13 +202,23 @@ export default function Products() {
     console.log(errors)
   }
 
-
   return (
     <div className="px-6 mb-10">
       {addProduct &&
         <Modal>
           <div className="flex flex-col gap-5 h-130 w-210 p-4">
-            <h3>Add new Product</h3>
+            <div className="flex justify-between items-center">
+              <h3>Add new Product</h3>
+              <button
+                onClick={() => {
+                  setAddproduct((prev) => !prev)
+                }}
+                className="w-10 h-10 cursor-pointer text-3xl text-red-500 content-cent"
+                type="button">
+                <IoClose />
+              </button>
+            </div>
+
             <form
               onSubmit={handleSubmit(onSubmit, onError)}
               className="flex flex-col gap-3">
@@ -373,6 +408,8 @@ export default function Products() {
                 className="absolute top-3 left-4"
                 src={Search} alt="search" />
               <input
+                defaultValue={search}
+                onChange={handleOnChange}
                 placeholder="Cari produk atau merk"
                 className="h-full rounded-xl w-full bg-(--input-bg) border-light pl-10"
                 type="search" name="search" id="" />
