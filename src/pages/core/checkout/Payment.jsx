@@ -31,44 +31,6 @@ export default function Payment() {
     resolver: yupResolver(schema)
   })
 
-  const paymetMetod = [
-    {
-      id: "1vi",
-      name: "🏦 Virtual Account BCA",
-      inputName: "va-bca",
-      value: ["1vi", "Virtual Account BCA"]
-    },
-    {
-      id: "2vi",
-      name: "🏦 Virtual Account BNI",
-      inputName: "va-bni",
-      value: ["2vi", "Virtual Account BNI"]
-    },
-    {
-      id: "3ka",
-      name: "🏦 Kartu Kredit / Debit",
-      inputName: "kredit-debit",
-      value: ["3ka", "Kartu Kredit / Debit"]
-    },
-    {
-      id: "4go",
-      name: "📱 GoPay",
-      inputName: "gopay",
-      value: ["4go", "GoPay"]
-    },
-    {
-      id: "5ov",
-      name: "📱 OVO",
-      inputName: "ovo",
-      value: ["5ov", "OVO"]
-    },
-    {
-      id: "6da",
-      name: "📱 Dana",
-      inputName: "dana",
-      value: ["6da", "Dana"]
-    },
-  ]
 
   useEffect(() => {
     async function getPaymentMethods(count = 3) {

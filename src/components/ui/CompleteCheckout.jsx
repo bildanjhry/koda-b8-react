@@ -45,7 +45,7 @@ export default function CompleteCheckout(){
               </div>
               <div className="flex flex-col  items-end">
                 <p>Total Pembayaran</p>
-                <h5 className="text-h font-semibold">{moneyFormat(data?.grandTotal)[0]}</h5>
+                <h5 className="text-h font-semibold">{data?.grandTotal}</h5>
               </div>
             </header>
             <main className="mt-4">
@@ -55,7 +55,7 @@ export default function CompleteCheckout(){
                     className="mt-0.5"
                     src={Delivery} alt="" />
                   <div className="flex flex-col ">
-                    <p className="text-sm text-h">{data?.deliveryMethod.split(",")[0]}</p>
+                    <p className="text-sm text-h">{data?.deliveryMethod.split(",")[1]}</p>
                     <p className="text-xs">Estimasi tiba: {data?.deliveryMethod.split(",")[1]}</p>
                   </div>
                 </li>

@@ -88,7 +88,7 @@ export default function Deliver() {
     navigate("/checkout/payment", {
       state: {
         step: 2, data: {
-          items: [{ ...location.state?.prod }], ...data,
+          items: [ location.state?.prod ? { ...location.state?.prod } : {...cart}], ...data,
           order_items: [
             { quantity: location.state?.prod.qty, id_product: location.state?.prod.id_var }
           ]

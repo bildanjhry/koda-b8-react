@@ -72,7 +72,9 @@ export default function Confirm() {
     }
     setItems(itemsTotal)
   }, [globalCart, location])
-  
+
+  console.log(totalCheckout)
+  console.log(location.state.data.items.reduce((acc, item) => acc + (item.price) * (item.quantity_prod), 0))
 
   async function handleCheckout() {
     const formCheckoutProcess = {
@@ -80,7 +82,7 @@ export default function Confirm() {
       idCheckout: 1,
       checkoutDate: new Date().toLocaleString(),
       products: location.state.data.items,
-      grandTotal: location.state.data.items.reduce((acc, item) => acc + (item.price * item.qty), 0),
+      grandTotal: totalCheckout,
       status: {
         STEP: 1,
         message: "Pesanan Diterima",
@@ -96,8 +98,22 @@ export default function Confirm() {
       items: items
     })
     if (res.success) {
-      navigate("/checkout-complete", { state: { data: formCheckoutProcess } })
-      window.scrollTo({ top: 0 })
+      if (globalCart.length > 0) {
+        const API = import.meta.env.VITE_API_URL
+        const token = session.token
+        const id = globalCart[0].id_cart
+        const result = await fetch(`${API}/carts/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization":`Bearer ${token}`
+          }
+        })
+        const data = await result.json()
+        if(data.success){
+          navigate("/checkout-complete", { state: { data: formCheckoutProcess } })
+          window.scrollTo({ top: 0 })
+        }
+      }
     }
   }
 
