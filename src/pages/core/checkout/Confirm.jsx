@@ -67,7 +67,7 @@ export default function Confirm() {
       })
     } else {
       setItemsPre(location.state.data.items)
-      setTotalCheckout(moneyFormat(location.state.data.items.reduce((acc, item) => acc + (item.price * item.qty), 0))[0])
+      setTotalCheckout(moneyFormat(location.state.data.items.reduce((acc, item) => acc + (item.price * item.quantity_prod), 0))[0])
       itemsTotal = location.state.data.order_items
     }
     setItems(itemsTotal)
@@ -116,6 +116,7 @@ export default function Confirm() {
       }
     }
   }
+
 
   return (
     <>

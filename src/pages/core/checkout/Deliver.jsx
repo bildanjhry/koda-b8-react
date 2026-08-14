@@ -8,7 +8,6 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { CheckoutContext } from "@/hooks/context/UserContext"
 import { UserContext } from "@/hooks/context/UserContext"
 
-
 // assets
 import Delivery from "@/assets/icons/delivery-blue.svg"
 import ArrowRight from "@/assets/icons/bc-arrow-right-white.svg"
@@ -87,17 +86,16 @@ export default function Deliver() {
     setStep(2)
     navigate("/checkout/payment", {
       state: {
+        code: location?.state?.code || "",
         step: 2, data: {
           items: [ location.state?.prod ? { ...location.state?.prod } : {...cart}], ...data,
           order_items: [
-            { quantity: location.state?.prod.qty, id_product: location.state?.prod.id_var }
+            { quantity: location.state?.prod.quantity_prod, id_product: location.state?.prod.id_var }
           ]
         }
       }
     })
   }
-
-  console.log(userAddress)
 
   return (
     <div>

@@ -142,13 +142,13 @@ export default function ProductDetails() {
       }
 
       const dataProduct = {
-        title: data.title,
+        name: data.title,
         image: data.image,
         path: data.path,
         price: data.price,
         color: prodVariant,
         size: prodSize,
-        qty: quantity
+        quantity_prod: quantity
       }
 
       switch (code) {
