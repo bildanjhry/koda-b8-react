@@ -17,7 +17,7 @@ const schema = yup.object({
   fulladdress:yup.string().required("Alamat kamu masih kosong"),
   city:yup.string().required("Kota kamu masih kosong"),
   province:yup.string().required("Provinsi kamu masih kosong"),
-  postCode:yup.string().required("Kode pos kamu masih kosong"),
+  postcode:yup.string().required("Kode pos kamu masih kosong"),
 })
 
 export default function Address(){
@@ -114,7 +114,7 @@ export default function Address(){
                         <p>{profiles?.phone}</p>
                       </div>
                       <p>{item.fulladdress}</p>
-                      <p>{item.city}, <span>{item.province}</span><span> {item.postCode}</span></p>
+                      <p>{item.city}, <span>{item.province}</span><span> {item.postcode}</span></p>
                     </div>
                   </main>
                 </div>
@@ -180,13 +180,13 @@ export default function Address(){
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="post-code">Kode Pos *</label>
               <input 
-                {...register("postCode")}
+                {...register("postcode")}
                 placeholder="Kode Pos Penerima"
-                name="postCode"
+                name="postcode"
                 className="w-full h-[46px] bg-(--input-bg) rounded-xl pl-4 border-light"
-                type="number" id="postCode" 
+                type="number" id="postcode" 
               />
-              {errors?.postCode && <p className="text-xs text-red-500 mt-1">{errors.postCode?.message}</p>}
+              {errors?.postcode && <p className="text-xs text-red-500 mt-1">{errors.postcode?.message}</p>}
             </div>
             <div className="flex flex-col gap-2 w-[49%]">
               <label htmlFor="optional">Catatan (optional)</label>

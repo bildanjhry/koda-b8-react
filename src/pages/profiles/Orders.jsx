@@ -3,6 +3,19 @@ import useUser from "@/hooks/useUser";
 import moneyFormat from "@/utils/money-format.js"
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import classNames from "classnames";
+
+function OrderStatus({ id, status }) {
+  return (
+    <div className={classNames(
+      `text-xs py-1 px-3 rounded-full`,
+      { "text-(--text-success) bg-(--accent-bg)": id === 1 },
+      { "text-[#d1a700] border border-[#d1a700] bg-[yellow]/20": id === 2 },
+      )}>
+      {status}
+    </div>
+  )
+}
 
 export default function Orders() {
   const { checkout } = useUser()
@@ -40,7 +53,7 @@ export default function Orders() {
     <div className="w-[95%] pt-1 h-full">
       <h3>Pesanan Saya</h3>
       <div className="w-full flex flex-col-reverse gap-6 mt-6">
-        { checkoutHis && checkoutHis.map((item, index) => (
+        {checkoutHis && checkoutHis.map((item, index) => (
           <div
             key={index}
             className=" w-full border-light bg-white rounded-2xl 
@@ -50,10 +63,7 @@ export default function Orders() {
                 <p className="text-h font-semibold">#{item.id_order}</p>
                 <p className="text-xs">{item.date}</p>
               </div>
-              <div className="text-(--text-success) text-xs py-1 px-3 
-              rounded-full bg-(--accent-bg)">
-                {item.status_order}
-              </div>
+              <OrderStatus id={item.id_order_status} status={item.order_status} />
             </header>
 
             {item?.products.map((prod, index) => (
@@ -84,7 +94,7 @@ export default function Orders() {
         ))
         }
 
-        { checkoutHis.length < 1 &&
+        {checkoutHis.length < 1 &&
           <div className="w-full rounded-xl border-light h-88 mt-2 
           flex flex-col gap-3 justify-center items-center">
             <LuShoppingBag size={66} />

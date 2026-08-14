@@ -97,6 +97,8 @@ export default function Deliver() {
     })
   }
 
+  console.log(userAddress)
+
   return (
     <div>
       <header className="flex items-center gap-2">

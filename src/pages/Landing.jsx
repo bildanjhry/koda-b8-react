@@ -19,7 +19,7 @@ export default function Landing(){
   const [time, setTime] = useState({
     hours:5,
     minutes:21,
-    seconds:38
+    seconds:55
   })
 
   useEffect(() => { // counting times
@@ -61,7 +61,7 @@ export default function Landing(){
               </section>
             </header>
             <Suspense fallback={ <SkeletonCard count={4} total={4} />}>
-              <ProductsCard params={"FLASH_DEALS"}/>
+              <ProductsCard/>
             </Suspense>
           </div>
 
@@ -81,7 +81,7 @@ export default function Landing(){
               </section>
             </header>
             <Suspense fallback={ <SkeletonCard count={4} total={4}/>}>
-              <ProductsCard params={"NEW"}/>
+              <ProductsCard/>
             </Suspense>
           </div>   
 

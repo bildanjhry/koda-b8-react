@@ -72,7 +72,7 @@ export default function Card({
         <Link
           key={index}
           to={`/details/cat/${item.slugs}`}
-          className="bg-(--container-bg) border-light md:w-full rounded-xl h-90 md:h-109 shrink-0 overflow-hidden">
+          className="bg-(--content-bg) border-light md:w-full rounded-xl h-90 md:h-109 shrink-0 overflow-hidden">
           <header className="w-full h-[66%] md:h-[68%] md:overflow-hidden relative">
             <img
               className="h-full w-full object-cover relative"

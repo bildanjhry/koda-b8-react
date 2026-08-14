@@ -15,7 +15,7 @@ export default function useUser() {
 
   // const [initial, setInitial] = useState("")
   // const [checkout, setCheckout] = useState(user.checkout || [])
-  // const [wishlist, setWishlist] = useState(user.wishlist || [])
+  const [wishlist, setWishlist] = useState([])
   const [address, setAddress] = useState([])
   // const [error, setError] = useState("")
   // const [bio, setBio] = useState(user.bio || {})
@@ -174,7 +174,7 @@ export default function useUser() {
     // setBio,
     // initial,
     cart,
-    // wishlist, 
+    wishlist, 
     // checkout, 
     // error
   }

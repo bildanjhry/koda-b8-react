@@ -4,8 +4,22 @@ import Search from "@/assets/icons/search-mute.svg"
 import Watch from "@/assets/icons/watch-mute.svg"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import classNames from "classnames"
 
 import moneyFormat from "@/utils/money-format"
+
+
+function OrderStatus({ id, status }) {
+  return (
+    <div className={classNames(
+      `text-xs py-1 px-3 w-fit rounded-full`,
+      { "text-(--text-success) bg-(--accent-bg)": id === 1 },
+      { "text-[#d1a700] border border-[#d1a700] bg-[yellow]/20": id === 2 },
+      )}>
+      {status}
+    </div>
+  )
+}
 
 export default function Orders(){
   const [dataCheckout, setDataCheckout] = useState([])
@@ -18,7 +32,7 @@ export default function Orders(){
         const token = session.token
         const params = new URLSearchParams({
           page:1,
-          limit:20
+          limit:10
         })
         const result = await fetch(`${API}/users/checkout-histories?${params}`,{
           headers:{
@@ -127,9 +141,7 @@ export default function Orders(){
                     <p>{item.id_payment}</p>
                   </td>
                   <td className="w-33">
-                    <div className="px-2 py-[2.5px] w-fit rounded-full bg-(--success-bg) text-(--text-success) text-xs">
-                          Terkirim
-                    </div>
+                    <OrderStatus id={item.id_order_status} status={item.order_status}/>
                   </td>
                   <td className="w-33">
                     <ul className="flex gap-3 items-center">
