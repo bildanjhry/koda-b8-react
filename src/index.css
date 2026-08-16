@@ -30,7 +30,7 @@
   --accent-border:#364153;
   --container-bg: #ffffff;
   --content-deep-bg:#E5E7EB80;
-  --main-bg:#1A73E8;
+  --main-bg:oklch(0.765 0.177 163.223);
   --primary-bg:#111827;
   --skeleton-bg:#e2e2e2;
   --content-bg:#ffffff;

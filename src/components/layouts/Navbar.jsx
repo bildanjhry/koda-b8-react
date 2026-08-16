@@ -36,9 +36,9 @@ export default function Navbar() {
 
   return (
     <div className="flex flex-col w-full h-fit fixed top-0 justify-center 
-      items-center bg-white z-10">
+      items-center bg-white z-20">
 
-      <section className="main-bg hidden md:flex justify-center w-full">
+      <section className="bg-black hidden md:flex justify-center w-full">
         <div className="h-7 text-[12px] flex flex-row justify-between 
 				items-center w-[83%] text-light large:w-315">
           <div className="w-fit flex gap-1 items-center">
@@ -99,7 +99,7 @@ export default function Navbar() {
             <option value="" id="category">Semua Kategori</option>
           </select>
         </div>
-        <ul className="w-full h-full ml-1 gap-2 md:gap-5 text-sm flex">
+        <ul className="w-full h-full gap-2 md:gap-3 text-sm flex">
           {categories.map((item, index) => (
             <li key={index} className="shrink-0">
               <Link to={""} className="md:px-2 text-black/60 px-4 flex gap-2 bg-white rounded-lg md:w-fit items-center h-full">
