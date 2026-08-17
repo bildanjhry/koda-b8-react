@@ -4,12 +4,12 @@ import HerroBg from "@/assets/bg/herro-bg.png"
 import { RiGeminiFill } from "react-icons/ri";
 import { FiShoppingCart } from "react-icons/fi";
 import Cart from "@/assets/hero-cart.png"
-import { Search, Sparkles, ShoppingBag, CheckCircle2, Truck, RotateCcw, ShieldCheck, Carrot, Laptop, Shirt, Droplet, Leaf } from "lucide-react";
+import { Search, Sparkles, ShoppingBag, Dumbbell, CheckCircle2, Truck, RotateCcw, ShieldCheck, Carrot, Laptop, Shirt, Droplet, Leaf } from "lucide-react";
 
 export default function Herro(){
   return(
         <section 
-        className="relative overflow-hidden h-130 w-[83%] rounded-3xl mt-10 bg-gradient-to-br 
+        className="relative overflow-hidden h-130 w-[83%] rounded-3xl mt-10 bg-linear-to-br 
         from-emerald-50 to-emerald-100 grid md:grid-cols-2 items-center">
       {/* decorative leaves */}
       <Leaf className="hidden md:block absolute top-10 left-[46%] w-6 h-6 text-emerald-700/20 -rotate-12" />
@@ -118,8 +118,8 @@ export default function Herro(){
  
         {/* floating category chips */}
         <div className="absolute top-10 left-22 z-10 -rotate-3 bg-white rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
-          <Carrot className="w-6 h-6 text-emerald-700" />
-          <span className="text-[11px] font-bold text-gray-900">Segar</span>
+          <Dumbbell className="w-6 h-6 text-emerald-700" />
+          <span className="text-[11px] font-bold text-gray-900">Olahraga</span>
         </div>
  
         <div className="absolute bottom-10 left-20 z-10 rotate-2 bg-white rounded-2xl shadow-lg p-3 w-28 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
@@ -133,7 +133,7 @@ export default function Herro(){
         </div>
  
         <div className="absolute bottom-12 right-25 z-10 -rotate-6 bg-white rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
-          <Droplet className="w-6 h-6 text-rose-700" />
+          <Sparkles className="w-6 h-6 text-rose-700" />
           <span className="text-[11px] font-bold text-gray-900">Kecantikan</span>
         </div>
       </div>
