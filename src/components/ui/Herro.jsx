@@ -3,7 +3,7 @@ import ArrowRight from "@/assets/icons/arrow-right-blue.svg"
 import HerroBg from "@/assets/bg/herro-bg.png"
 import { RiGeminiFill } from "react-icons/ri";
 import { FiShoppingCart } from "react-icons/fi";
-import Cart from "@/assets/cart.png"
+import Cart from "@/assets/hero-cart.png"
 import { Search, Sparkles, ShoppingBag, CheckCircle2, Truck, RotateCcw, ShieldCheck, Carrot, Laptop, Shirt, Droplet, Leaf } from "lucide-react";
 
 export default function Herro(){
@@ -95,44 +95,43 @@ export default function Herro(){
       {/* ===== Visual ===== */}
       <div className="relative min-h-96 flex items-center justify-center px-8 pb-10 md:pb-0">
         {/* backdrop platform */}
-        <div className="absolute w-72 h-72 rounded-full bg-gradient-to-br from-white to-emerald-50 shadow-2xl" />
+        <div className="absolute w-102 h-102 rounded-full bg-gradient-to-br from-white to-emerald-50 shadow-2xl" />
  
         {/* floor shadow */}
         <div className="absolute bottom-20 w-40 h-3 bg-black/10 blur-sm rounded-full" />
  
         {/* shopping bag */}
         <div className="relative z-10 flex flex-col items-center">
-          <div className="relative">
+          <div className="relative overflow-hidden">
             <img
-             width={300}
-             className=""
+             className="w-100 rounded-full object-cover overflow-hidden"
              src={Cart} alt="" />
           </div>
         </div>
  
         {/* floating discount badge */}
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 bg-white rounded-2xl shadow-xl px-4 py-2 flex items-center gap-2">
+        <div className="absolute top-0 right-30 z-10 bg-white rounded-2xl shadow-xl px-4 py-2 flex items-center gap-2">
           <span className="font-extrabold text-xl text-orange-600 leading-none">40%</span>
           <span className="text-[11px] font-bold text-gray-500 leading-tight">Diskon<br />Minggu Ini</span>
         </div>
  
         {/* floating category chips */}
-        <div className="absolute top-6 left-0 z-10 -rotate-3 bg-emerald-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute top-15 left-26 z-10 -rotate-3 bg-emerald-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Carrot className="w-6 h-6 text-emerald-700" />
           <span className="text-[11px] font-bold text-gray-900">Segar</span>
         </div>
  
-        <div className="absolute bottom-8 left-0 z-10 rotate-2 bg-slate-50 rounded-2xl shadow-lg p-3 w-28 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute bottom-10 left-26 z-10 rotate-2 bg-slate-50 rounded-2xl shadow-lg p-3 w-28 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Laptop className="w-7 h-7 text-slate-700" />
           <span className="text-[11px] font-bold text-gray-900">Elektronik</span>
         </div>
  
-        <div className="absolute top-10 right-0 z-10 rotate-3 bg-orange-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute top-25 right-13 z-10 rotate-3 bg-orange-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Shirt className="w-6 h-6 text-orange-700" />
           <span className="text-[11px] font-bold text-gray-900">Fashion</span>
         </div>
  
-        <div className="absolute bottom-4 right-6 z-10 -rotate-6 bg-rose-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute bottom-12 right-25 z-10 -rotate-6 bg-rose-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Droplet className="w-6 h-6 text-rose-700" />
           <span className="text-[11px] font-bold text-gray-900">Kecantikan</span>
         </div>
