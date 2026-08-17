@@ -17,21 +17,22 @@ export default function Herro(){
  
       {/* ===== Copy ===== */}
       <div className="relative z-6 px-8 py-14 md:px-12 md:py-16">
-        <span className="inline-flex items-center gap-1.5 bg-white text-emerald-700 text-xs font-bold px-3.5 py-2 rounded-full shadow-sm mb-5">
+        <span className="inline-flex items-center gap-1.5 bg-white text-emerald-700 
+        text-xs font-bold px-3.5 py-2 rounded-full shadow-sm mb-5">
           <Sparkles className="w-3.5 h-3.5" />
           Belanja harian jadi mudah
         </span>
  
-        <h1 className="font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight text-gray-900 mb-4 max-w-lg">
+        <p className="font-bold text-3xl sm:text-4xl lg:text-[2.7rem] leading-tight text-gray-900 mb-20 max-w-lg">
           Semua kebutuhanmu, <span className="text-orange-600">dari pakaian sampai desktop</span>
-        </h1>
+        </p>
  
-        <p className="text-gray-600 text-base max-w-sm mb-6">
+        <p className="text-gray-600 pt-3 text-base max-w-sm mb-6">
           Tools, elektronik, fashion, dan lainnya dikirim cepat ke depan pintu.
         </p>
  
         {/* Search */}
-        <div className="flex items-center mt-5 bg-white rounded-full shadow-md p-1.5 max-w-md mb-6">
+        <div className="flex items-center mt-7 bg-white rounded-full shadow-md p-1.5 max-w-md mb-6">
           <select
             className="w-28 shrink-0 bg-transparent text-xs font-semibold text-gray-700 outline-none pl-4 pr-1 py-2.5 cursor-pointer"
             defaultValue="Semua Kategori"
@@ -104,7 +105,7 @@ export default function Herro(){
         <div className="relative z-10 flex flex-col items-center">
           <div className="relative overflow-hidden">
             <img
-             className="w-100 rounded-full object-cover overflow-hidden"
+             className="w-101 rounded-full object-cover overflow-hidden"
              src={Cart} alt="" />
           </div>
         </div>
@@ -116,22 +117,22 @@ export default function Herro(){
         </div>
  
         {/* floating category chips */}
-        <div className="absolute top-15 left-26 z-10 -rotate-3 bg-emerald-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute top-10 left-22 z-10 -rotate-3 bg-white rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Carrot className="w-6 h-6 text-emerald-700" />
           <span className="text-[11px] font-bold text-gray-900">Segar</span>
         </div>
  
-        <div className="absolute bottom-10 left-26 z-10 rotate-2 bg-slate-50 rounded-2xl shadow-lg p-3 w-28 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute bottom-10 left-20 z-10 rotate-2 bg-white rounded-2xl shadow-lg p-3 w-28 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Laptop className="w-7 h-7 text-slate-700" />
           <span className="text-[11px] font-bold text-gray-900">Elektronik</span>
         </div>
  
-        <div className="absolute top-25 right-13 z-10 rotate-3 bg-orange-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute top-25 right-13 z-10 rotate-3 bg-white rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Shirt className="w-6 h-6 text-orange-700" />
           <span className="text-[11px] font-bold text-gray-900">Fashion</span>
         </div>
  
-        <div className="absolute bottom-12 right-25 z-10 -rotate-6 bg-rose-50 rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
+        <div className="absolute bottom-12 right-25 z-10 -rotate-6 bg-white rounded-2xl shadow-lg p-3 w-24 flex flex-col items-center gap-1.5 transition-transform duration-200 hover:scale-105 hover:rotate-0">
           <Droplet className="w-6 h-6 text-rose-700" />
           <span className="text-[11px] font-bold text-gray-900">Kecantikan</span>
         </div>
